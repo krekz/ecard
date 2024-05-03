@@ -35,7 +35,7 @@ const StepOne = () => {
       <h1 className="text-2xl font-bold">Majlis</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 border p-3 rounded-md">
         <FormField
-          name="bride"
+          name={`bride`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Bride&apos;s Full Name</FormLabel>
@@ -47,7 +47,7 @@ const StepOne = () => {
           )}
         />
         <FormField
-          name="groom"
+          name={`groom`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Groom&apos;s Full Name</FormLabel>
@@ -59,7 +59,7 @@ const StepOne = () => {
           )}
         />
         <FormField
-          name="couple"
+          name={`couple`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Couple&apos;s short name</FormLabel>
@@ -72,7 +72,7 @@ const StepOne = () => {
         />
 
         <FormField
-          name="phone_number"
+          name={`phone_number`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Phone Number</FormLabel>
@@ -87,7 +87,7 @@ const StepOne = () => {
 
       <div className="grid grid-cols-2 gap-2">
         <FormField
-          name="father"
+          name={`father`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Father&apos;s Full Name</FormLabel>
@@ -99,7 +99,7 @@ const StepOne = () => {
           )}
         />
         <FormField
-          name="mother"
+          name={`mother`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Mother&apos;s Full Name</FormLabel>
@@ -337,7 +337,7 @@ function StepThree() {
             <FormItem className="space-y-0">
               <FormLabel>QR code</FormLabel>
               <FormControl>
-                <Input type="file" {...fileRef}/>
+                <Input type="text" {...field}/>
               </FormControl>
               <FormMessage />
             </FormItem>
