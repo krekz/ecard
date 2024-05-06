@@ -1,4 +1,4 @@
-import FormNavbar from "@/components/create/form-navbar";
+import FormNavbar from "@/components/forms/form-navbar";
 
 export default function CreateLayout({
   children,

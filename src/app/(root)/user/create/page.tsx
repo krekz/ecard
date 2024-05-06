@@ -1,4 +1,4 @@
-import CreateCardForm from "@/components/create/form"
+import CreateCardForm from "@/components/forms/form"
 
 const CreateCardPage = () => {
   return (

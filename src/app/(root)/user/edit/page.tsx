@@ -1,8 +1,8 @@
-import CardForm from "@/components/create/form";
-import FormNavbar from "@/components/create/form-navbar";
+import CardForm from "@/components/forms/form";
+import FormNavbar from "@/components/forms/form-navbar";
 
 const getCardContent = async () => {
-  const response = await fetch("http://localhost:3000/api/form-actions", {
+  const response = await fetch("http://localhost:3000/api/card", {
     method: "GET",
     cache: "no-cache"
   });
@@ -13,7 +13,6 @@ const getCardContent = async () => {
 
 const EditCardPage = async () => {
   const data = await getCardContent();
-  console.log(data);
   return (
     <>
       <FormNavbar />
