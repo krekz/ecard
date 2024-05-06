@@ -34,7 +34,7 @@ const navbarContent = [
   },
   {
     name: "Create card",
-    url: "/create",
+    url: "/catalog",
     target: "_blank",
     className: `${buttonVariants({ variant: "default" })} font-semibold`,
   },

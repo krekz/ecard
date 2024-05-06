@@ -79,14 +79,14 @@ const CatalogPage = ({
 
                 <CardFooter className="gap-2 flex flex-col lg:flex-row items-center justify-center md:w-full">
                   <Link
-                    href="/preview/card"
+                    href="/preview/demo"
                     target="_blank"
                     className={cn("w-full", buttonVariants({ variant: "secondary" }))}
                   >
                     Preview
                   </Link>
                   <Link
-                    href="/card"
+                    href={`/user/create`}
                     className={cn("w-full", buttonVariants({ variant: "default" }))}
                   >
                     Buy now

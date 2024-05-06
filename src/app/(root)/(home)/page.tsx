@@ -41,7 +41,7 @@ const HomePage = () => {
               Pricing
             </Link>
             <Link
-              href="/create"
+              href="/catalog"
               className={`${buttonVariants({
                 variant: "default",
                 size: "lg",
@@ -61,12 +61,12 @@ const HomePage = () => {
       </section>
 
       <section>
-        <div className=" py-14 flex flex-col items-center justify-center  bg-gradient-to-r from-purple-800 to-purple-400 via-purple-600  text-center min-h-[50vh]">
+        <div className=" p-10 flex flex-col items-center justify-center  bg-gradient-to-r from-purple-800 to-purple-400 via-purple-600  text-center min-h-[50vh]">
           <h1 className="text-5xl font-bold text-gray-900">How to create?</h1>
           <div className="flex flex-col lg:flex-row gap-5">
             {cardsData.map(
               ({ title, description, content, hasButton }, index) => (
-                <Card key={index} className="mt-5 max-w-96 h-60">
+                <Card key={index} className="mt-5 max-w-96">
                   <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
