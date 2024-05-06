@@ -1,5 +1,20 @@
-import { prisma } from "../../../../prisma";
+// import { prisma } from "../../../../prisma";
+import { PrismaClient } from "@prisma/client";
+import { format } from "date-fns";
 import { NextResponse } from "next/server";
+
+const prisma = new PrismaClient().$extends({
+  result: {
+    event: {
+      dateShort: {
+        needs: {date:true},
+        compute({date}){
+          return format(date,"dd/L/y")
+        }
+      }
+    }
+  },
+})
 
 export async function GET(req: Request) {
   const response = NextResponse.next();
@@ -12,7 +27,7 @@ export async function GET(req: Request) {
     try {
       const data = await prisma.eCard.findUnique({
         where: {
-          id: "clvqhrobm0000eevasdpn4lnp",
+          id: "clvszabdq00071451ep3y32k1",
         },
         select: {
           id:true,
@@ -23,34 +38,14 @@ export async function GET(req: Request) {
           couple: true,
           phone_number: true,
           youtubeURL: true,
-          heirs: {
-            select: {
-              id:true,
-              name: true,
-              phone_number: true,
-              relationship: true,
-            },
-          },
-          event: {
-            select: {
-              id:true,
-              venue: true,
-              address: true,
-              date: true,
-              time: true,
-              gMap: true,
-              greeting: true,
-            },
-          },
-          donation: {
-            select: {
-              id:true,
-              name: true,
-              bank: true,
-              accountNo: true,
-              qrCode: true,
-            },
-          },
+          designId: true,
+          primary_font: true,
+          secondary_font: true,
+          plan:true,
+          images: true,
+          heirs:true,
+          event:true,
+          donation: true,
         },
       }); // Corrected from 'card' to 'eCard' based on lint context
       return NextResponse.json(data);

@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "../prisma";
 import { organizerSchema } from "../schema/zod/ecard-form";
+import { NextResponse } from "next/server";
 
 export const createCard = async (formData: FormData) => {
   const validatedData = organizerSchema.safeParse(formData);
@@ -11,6 +12,19 @@ export const createCard = async (formData: FormData) => {
     };
   }
   try {
+    // validate the choosen design and pass to the card
+    const design = await prisma.design.findUnique({
+      where: {
+        designId: validatedData.data.designId,
+      },
+    });
+    const plan = await prisma.plans.findUnique({
+      where: {
+        name: "basic",
+      },
+    });
+    if (!plan) throw new Error("Plan not exists");
+    if (!design) throw new Error("Design not exists");
     const card = await prisma.eCard.create({
       data: {
         father: validatedData.data.father,
@@ -20,6 +34,10 @@ export const createCard = async (formData: FormData) => {
         couple: validatedData.data.couple,
         phone_number: validatedData.data.phone_number,
         youtubeURL: validatedData.data.youtubeURL,
+        designId: design?.designId,
+        primary_font: validatedData.data.primary_font,
+        secondary_font: validatedData.data.secondary_font,
+        plan: plan.name,
         event: {
           create: {
             date: validatedData.data.event.date,
@@ -48,13 +66,35 @@ export const createCard = async (formData: FormData) => {
       },
     });
 
-    return card;
+    const { id } = card;
+    // console.log(validatedData.data.heirs);
+    // if (validatedData.data.heirs && validatedData.data.heirs.length > 0) {
+    //   await prisma.heirs.createMany({
+    //     data: validatedData.data.heirs.map((heir) => ({
+    //       name: heir.name,
+    //       phone_number: heir.phone,
+    //       relationship: heir.relation,
+    //       eCardId: id,
+    //     })),
+    //   });
+    // }
+
+    // get the auto generate ID in DB
+    return { ok: true, id };
   } catch (error) {
     console.log(error);
   }
 };
 
-export const updateCard = async (formData: FormData, {cardId,eventId,donationId,heirsId}: {cardId: string, eventId: number, donationId: number, heirsId: number[]}) => {
+export const updateCard = async (
+  formData: FormData,
+  {
+    cardId,
+    eventId,
+    donationId,
+    heirsId,
+  }: { cardId: string; eventId: number; donationId: number; heirsId: number[] }
+) => {
   const validatedData = organizerSchema.safeParse(formData);
   if (!validatedData.success) {
     return {
@@ -63,6 +103,12 @@ export const updateCard = async (formData: FormData, {cardId,eventId,donationId,
   }
 
   try {
+    // validate the choosen design and pass to the card
+    const design = await prisma.design.findUnique({
+      where: {
+        designId: validatedData.data.designId,
+      },
+    });
     const card = await prisma.eCard.update({
       where: {
         id: cardId, // Use the cardId parameter instead of a hardcoded value
@@ -75,10 +121,12 @@ export const updateCard = async (formData: FormData, {cardId,eventId,donationId,
         couple: validatedData.data.couple,
         phone_number: validatedData.data.phone_number,
         youtubeURL: validatedData.data.youtubeURL,
+        designId: design?.designId,
+        primary_font: validatedData.data.primary_font,
+        secondary_font: validatedData.data.secondary_font,
         event: {
           update: {
-            // Changed from 'create' to 'update'
-            where: { id: eventId }, // You need to provide a way to identify the event
+            where: { id: eventId },
             data: {
               date: validatedData.data.event.date,
               time: validatedData.data.event.time,
@@ -102,7 +150,7 @@ export const updateCard = async (formData: FormData, {cardId,eventId,donationId,
           },
         },
         heirs: {
-          update: validatedData?.data?.heirs?.map((heir,index) => ({
+          update: validatedData?.data?.heirs?.map((heir, index) => ({
             where: { id: heirsId[index] }, // Correctly map each heir to its corresponding ID
             data: {
               name: heir.name,

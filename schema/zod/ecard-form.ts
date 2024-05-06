@@ -30,24 +30,40 @@ export const organizerSchema = z.object({
   couple: z
     .string()
     .min(1, "Couple's name is required")
-    .regex(stringRegex, { message: "Invalid format" }),
-  // phone cannot contain - or + or space
-  phone_number: numberFormat,
-  heirs: z.array( z.object({
+    .regex(stringRegex, { message: "Invalid format" })
+    .refine((val) => val.includes("&"), { message: "Missing '&' character" }),
+  phone_number: numberFormat, // phone cannot contain - or + or space
+  designId: z.string().min(1, { message: "Design is required" }),
+  youtubeURL: z.string().url().optional(),
+  primary_font: z.string().min(1, "Font is required"),
+  secondary_font: z.string().min(1, "Font is required"),
+  // images: z.array(
+  //   z.object({
+  //     url: z.string().optional(),
+  //   })
+  // ),
+
+  //waris
+  heirs: z
+    .array(
+      z.object({
         name: z.string().optional(),
         phone: z.string().optional(),
         relation: z.string().optional(),
-      })).optional(),
+      })
+    )
+    .optional()
+    .default([]),
 
   // EVENTS
   event: z.object({
-  //   name: z.string().min(1, { message: "Event name is required" }),
-    date: z.date({required_error: "Date is required"}),
+    //   name: z.string().min(1, { message: "Event name is required" }),
+    date: z.date({ required_error: "Date is required" }),
     time: z.string().min(1, { message: "Event time is required" }),
     venue: z.string().min(1, { message: "Event venue is required" }),
     address: z.string().min(1, { message: "Event address is required" }),
-    gMap: z.string().optional(),
-  //   waze: z.string().optional(),
+    gMap: z.string().url().optional(),
+    //   waze: z.string().optional(),
     greeting: z.string().min(1, { message: "Event greeting is required" }),
   }),
 
@@ -61,33 +77,7 @@ export const organizerSchema = z.object({
       .string()
       // .regex(stringRegex, { message: "Invalid format" })
       .optional(),
-    accountNo: z
-      .string()
-      .regex(numberRegex, { message: "Invalid format" })
-      .optional(),
+    accountNo: z.string().optional(),
     qrcode: z.any().optional(),
   }),
-
-  // gallery: z.array(z.string()).optional(),
-  youtubeURL: z.string().optional(),
 });
-
-// export const eventSchema = z.object({
-//   event: z.object({
-//     name: z.string().min(1, { message: "Event name is required" }),
-//     date: z.string(),
-//     time: z.string().min(1, { message: "Event time is required" }),
-//     venue: z.string().min(1, { message: "Event venue is required" }),
-//     address: z.string().min(1, { message: "Event address is required" }),
-//     gMap: z.string().optional(),
-//     greeting: z.string().min(1, { message: "Event greeting is required" }),
-//   }),
-// });
-
-// export const donationSchema = z.object({
-//   name: z.string().regex(stringRegex, { message: "Invalid format" }).optional(),
-//   account: z
-//     .string()
-//     .regex(numberRegex, { message: "Invalid format" })
-//     .optional(),
-// });

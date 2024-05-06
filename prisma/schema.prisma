@@ -1,83 +1,82 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
-//vercel postgres
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
+// model Post {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   title     String   @db.VarChar(255)
+//   content   String?
+//   published Boolean  @default(false)
+//   authorId  Int
+//   author    User     @relation(fields: [authorId], references: [id])
+// }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
-}
+// model Profile {
+//   id     Int     @id @default(autoincrement())
+//   bio    String?
+//   userId Int     @unique
+//   user   User    @relation(fields: [userId], references: [id])
+// }
 
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
-}
+// model User {
+//   id      Int      @id @default(autoincrement())
+//   email   String   @unique
+//   name    String?
+//   posts   Post[]
+//   profile Profile?
+// }
 
 model ECard {
-  id           String    @id @default(cuid())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  father       String
-  mother       String
-  bride        String
-  groom        String
-  couple       String
-  phone_number String
-  published    Boolean   @default(false)
-  youtubeURL   String?
-  heirs        Heirs[]
-  event        Event?
-  donation     Donation?
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  father         String
+  mother         String
+  bride          String
+  groom          String
+  couple         String
+  phone_number   String
+  published      Boolean       @default(false)
+  youtubeURL     String?
+  primary_font   String
+  secondary_font String
+  images         CardGallery[]
+  donation       Donation?
+  event          Event?
+  heirs          Heirs[]
+  Design         Design        @relation(fields: [designId], references: [designId])
+  designId       String
+  Plans          Plans       @relation(fields: [plan], references: [name])
+  plan           String
 }
 
 model Heirs {
-  id           Int     @id @default(autoincrement())
+  id           Int     @id  @default(autoincrement())
   name         String?
   phone_number String?
   relationship String?
-  ECard        ECard   @relation(fields: [eCardId], references: [id])
-  eCardId      String
+  eCardId      String?
+  ECard        ECard?   @relation(fields: [eCardId], references: [id])
 }
 
 model Event {
   id       Int      @id @default(autoincrement())
   venue    String
   address  String
-  date     DateTime
+  date     DateTime @db.Date
   time     String
   gMap     String?
   greeting String
-
-  ECard   ECard?  @relation(fields: [eCardId], references: [id])
-  eCardId String? @unique
+  eCardId  String  @unique
+  ECard    ECard   @relation(fields: [eCardId], references: [id])
 }
 
 model Donation {
@@ -86,7 +85,29 @@ model Donation {
   bank      String?
   accountNo String?
   qrCode    String?
-  
-  ECard     ECard?   @relation(fields: [eCardId], references: [id])
-  eCardId   String?  @unique
+  eCardId   String? @unique
+  ECard     ECard?  @relation(fields: [eCardId], references: [id])
+}
+
+model Design {
+  designId String @unique
+  category String
+  name     String
+  url      String
+
+  ECard ECard[]
+}
+
+model Plans {
+  name  String @unique
+  price Float
+
+  ECard ECard[]
+}
+
+model CardGallery {
+  id      String  @id @default(cuid())
+  url     String
+  ECard   ECard?  @relation(fields: [eCardId], references: [id])
+  eCardId String?
 }
