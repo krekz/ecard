@@ -9,7 +9,7 @@ const getDemoCard = async (demoId: string) => {
 };
 
 const DemoPage = async () => {
-  const data = await getDemoCard("clvszabdq00071451ep3y32k1");
+  const data = await getDemoCard("clvxacr4z0001ogcfdwuz8tdt");
   return (
     <>
       <ECard dataFromDB={data} />

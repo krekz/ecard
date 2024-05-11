@@ -91,7 +91,7 @@ export function CalendarDrawerContent({
   return (
     <>
       {/*  BUG */}
-      <h1>{calendar?.date.toDateString()}</h1>
+      <h1>{new Date(calendar.date).toDateString()}</h1>
     </>
   );
 }

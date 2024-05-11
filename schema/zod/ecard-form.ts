@@ -34,7 +34,7 @@ export const organizerSchema = z.object({
     .refine((val) => val.includes("&"), { message: "Missing '&' character" }),
   phone_number: numberFormat, // phone cannot contain - or + or space
   designId: z.string().min(1, { message: "Design is required" }),
-  youtubeURL: z.string().url().optional(),
+  youtubeURL: z.string().url().optional().or(z.literal('')),
   primary_font: z.string().min(1, "Font is required"),
   secondary_font: z.string().min(1, "Font is required"),
   // images: z.array(
@@ -52,17 +52,22 @@ export const organizerSchema = z.object({
         relation: z.string().optional(),
       })
     )
-    .optional()
-    .default([]),
+    .optional(),
 
   // EVENTS
   event: z.object({
     //   name: z.string().min(1, { message: "Event name is required" }),
     date: z.date({ required_error: "Date is required" }),
-    time: z.string().min(1, { message: "Event time is required" }),
+    start_time: z.string(),
+    end_time: z.object({
+      hour: z.number(),
+      minute: z.number(),
+      zone: z.string(),
+    }).optional(),
+    // end_time: z.string().min(1, { message: "End time is required" }),
     venue: z.string().min(1, { message: "Event venue is required" }),
     address: z.string().min(1, { message: "Event address is required" }),
-    gMap: z.string().url().optional(),
+    gMap: z.string().url().optional().or(z.literal('')),
     //   waze: z.string().optional(),
     greeting: z.string().min(1, { message: "Event greeting is required" }),
   }),

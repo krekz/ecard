@@ -50,7 +50,8 @@ export type CardFormProps = {
       date: Date;
       address: string;
       gMap: string;
-      time: string;
+      start_time:string;
+      end_time:string;
       venue: string;
       greeting: string;
     };

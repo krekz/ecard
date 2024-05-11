@@ -16,7 +16,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
   const { event, donation, images, heirs, Design,primary_font } = dataFromDB;
 
   const getDate = new Date(
-    format(dataFromDB?.event.date ?? new Date(), "dd/L/y")
+    format(event.date ?? new Date(), "dd/L/y")
   );
 
   const weekday = [
@@ -83,8 +83,8 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
             backgroundAttachment: "fixed",
           }}
         />
-        <div className="relative mt-10 flex flex-col gap-5 mx-auto items-center h-full max-w-64 text-center">
-          <h1 className="text-sm font-semibold">
+        <div className="relative mt-10 flex flex-col gap-5 mx-auto items-center h-full max-w-72 text-center">
+          <h1 className="text-2xl font-semibold">
             Assalamualaikum WBT & Salam sejahtera
           </h1>
 
@@ -94,7 +94,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
             <h1>{dataFromDB?.mother}</h1>
           </div>
 
-          <p className="text-sm font-normal">{dataFromDB?.event.greeting}</p>
+          <p className="text-md font-normal">{dataFromDB?.event.greeting}</p>
 
           <div className="flex flex-col  text-2xl font-medium italic  p-3 rounded-md bord bg-red-100/50 w-[350px]">
             <h1>{dataFromDB?.bride}</h1>
@@ -104,7 +104,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
 
           <div className="flex flex-col items-center">
             <HiCalendar size={25} />
-            <h2 className="text-amber-700">
+            <h2 className="text-amber-700 text-2xl">
               {dataFromDB.event.date
                 ? weekday[getDate.getDay()] +
                   ", " +
@@ -115,28 +115,28 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
           {/* KIV */}
           <div className="flex flex-col items-center">
             <HiOutlineClock size={25} />
-            <h2 className="text-amber-700">11.00 a.m - 4.00 p.m</h2>
+            <h2 className="text-amber-700 text-2xl">11.00 a.m - 4.00 p.m</h2>
           </div>
 
           <div className="flex flex-col items-center">
             <HiLocationMarker size={25} />
-            <h2 className="text-amber-700">{event.venue}</h2>
-            <p className="font-light text-sm">{event.address}</p>
+            <h2 className="text-amber-700 text-2xl">{event.venue}</h2>
+            <p className="font-light text-base">{event.address}</p>
           </div>
           {/* KIV */}
           <div className="flex flex-col items-center gap-2">
-            <h2 className="text-amber-700">Atur Cara Majlis</h2>
-            <div className="flex flex-col items-center font-light text-sm">
+            <h2 className="text-amber-700 text-2xl">Atur Cara Majlis</h2>
+            <div className="flex flex-col items-center font-light text-base">
               <p>Jamuan Makan:</p>
               <p>11.00 a.m - 1.00 p.m</p>
             </div>
-            <div className="flex flex-col items-center font-light text-sm">
+            <div className="flex flex-col items-center font-light text-base">
               <p>Ketibaan Pengantin:</p>
               <p>12.30 Tengahari</p>
             </div>
           </div>
 
-          <Countdown secondary_font={getSecondaryFont} />
+          <Countdown event_date={event.date} secondary_font={getSecondaryFont} />
 
           <CardCarousel />
         </div>

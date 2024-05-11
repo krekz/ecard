@@ -10,11 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createCard, updateCard } from "../../../actions/form-actions";
 import { CardFormProps } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import FormButton from "../button";
 import { Button } from "../ui/button";
 import PromptAlert from "../alert";
-import { Dialog } from "../ui/dialog";
+
 
 const CardForm = ({ dataFromDB }: CardFormProps) => {
   const router = useRouter();
@@ -43,7 +42,8 @@ const CardForm = ({ dataFromDB }: CardFormProps) => {
             address: dataFromDB.event.address,
             greeting: dataFromDB.event.greeting,
             gMap: dataFromDB.event.gMap,
-            time: dataFromDB.event.time,
+            // start_time: dataFromDB.event.start_time,
+            // end_time: dataFromDB.event.end_time,
             venue: dataFromDB.event.venue,
           },
 
@@ -69,7 +69,11 @@ const CardForm = ({ dataFromDB }: CardFormProps) => {
             address: "",
             greeting: "",
             gMap: "",
-            time: "",
+            start_time: {
+              hour: 0,
+              minute: 0,
+            },
+            // end_time: "",
             venue: "",
           },
 
@@ -86,23 +90,55 @@ const CardForm = ({ dataFromDB }: CardFormProps) => {
     try {
       // update card if props exist
       if (dataFromDB) {
-        await updateCard(data, {
-          cardId: dataFromDB.id,
-          eventId: dataFromDB.event.id,
-          donationId: dataFromDB.donation.id,
-          heirsId: dataFromDB.heirs.map((heir) => heir.id),
-        });
-        toast.success("Form UPDATED successfully");
+        // await updateCard(data, {
+        //   cardId: dataFromDB.id,
+        //   eventId: dataFromDB.event.id,
+        //   donationId: dataFromDB.donation.id,
+        //   heirsId: dataFromDB.heirs.map((heir) => heir.id),
+        // });
+        toast.promise(
+          updateCard(data, {
+            cardId: dataFromDB.id,
+            eventId: dataFromDB.event.id,
+            donationId: dataFromDB.donation.id,
+            heirsId: dataFromDB.heirs.map((heir) => heir.id),
+          }),
+          {
+            loading: "Updating...",
+            success: "Card updated successfully",
+            error: "An error occurred while updating the form",
+          }
+        );
         return;
       }
+console.log(data);
       //else create new card
-      const response = await createCard(data);
-      if (response?.ok) {
-        toast.success("Form submitted successfully");
-        router.push(`/preview/${response.id}`);
-      }
+      // toast
+      //   .promise(createCard(data), {
+      //     loading: "Creating...",
+      //     success: "Card created successfully",
+      //     error: "An error occurred while creating the card",
+      //   })
+        // .then((response) => {
+        //   const toastId = toast.loading("Redirecting...");
+        //   if (!response?.id) {
+        //     toast.dismiss(toastId);
+        //     toast.error("Invalid card ID received.");
+        //     return;
+        //   }
+        //   const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
+        //   setTimeout(() => {
+        //     toast.dismiss(toastId);
+        //     router.push(`/preview/${response.id}`);
+        //   }, redirectDelay);
+        // })
+        // .catch((error) => {
+        //   // Handle any unexpected errors here
+        //   console.error("An unexpected error occurred:", error);
+        //   toast.error("An unexpected error occurred during redirection.");
+        // });
     } catch (e) {
-      toast.error("An error occurred while submitting the form");
+      toast.error("An error occurred while creating the card");
     }
   };
 
@@ -128,7 +164,7 @@ const CardForm = ({ dataFromDB }: CardFormProps) => {
             <>
               <StepThree />
               {dataFromDB ? (
-                <Button disabled={form.formState.isSubmitting} >Update</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>Update</Button>
               ) : (
                 <PromptAlert onSubmit={onSubmit}>Submit</PromptAlert>
               )}

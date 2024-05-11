@@ -1,10 +1,17 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "../prisma";
+import { PrismaClient } from "@prisma/client";
+// import { prisma } from "../prisma";
+import prisma from "../prisma";
 import { organizerSchema } from "../schema/zod/ecard-form";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 export const createCard = async (formData: FormData) => {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.redirect("/login");
+  }
   const validatedData = organizerSchema.safeParse(formData);
   if (!validatedData.success) {
     return {
@@ -23,6 +30,12 @@ export const createCard = async (formData: FormData) => {
         name: "basic",
       },
     });
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session?.user?.id,
+      },
+    });
     if (!plan) throw new Error("Plan not exists");
     if (!design) throw new Error("Design not exists");
     const card = await prisma.eCard.create({
@@ -30,6 +43,7 @@ export const createCard = async (formData: FormData) => {
         father: validatedData.data.father,
         mother: validatedData.data.mother,
         bride: validatedData.data.bride,
+        userId: user?.id ?? "",
         groom: validatedData.data.groom,
         couple: validatedData.data.couple,
         phone_number: validatedData.data.phone_number,
@@ -41,7 +55,8 @@ export const createCard = async (formData: FormData) => {
         event: {
           create: {
             date: validatedData.data.event.date,
-            time: validatedData.data.event.time,
+            start_time: validatedData.data.event.start_time,
+            end_time: validatedData.data.event.end_time,
             venue: validatedData.data.event.venue,
             address: validatedData.data.event.address,
             greeting: validatedData.data.event.greeting,
@@ -80,6 +95,7 @@ export const createCard = async (formData: FormData) => {
     // }
 
     // get the auto generate ID in DB
+
     return { ok: true, id };
   } catch (error) {
     console.log(error);
@@ -95,6 +111,20 @@ export const updateCard = async (
     heirsId,
   }: { cardId: string; eventId: number; donationId: number; heirsId: number[] }
 ) => {
+  const session = await auth();
+  if (!session) NextResponse.redirect("/index");
+  const existingCard = await prisma.eCard.findUnique({
+    where: {
+      id: cardId,
+    },
+    select: {
+      userId: true,
+    },
+  });
+
+  if (!existingCard || existingCard.userId !== session?.user?.id) {
+    throw new Error("Unauthorized access");
+  }
   const validatedData = organizerSchema.safeParse(formData);
   if (!validatedData.success) {
     return {
@@ -129,7 +159,8 @@ export const updateCard = async (
             where: { id: eventId },
             data: {
               date: validatedData.data.event.date,
-              time: validatedData.data.event.time,
+              start_time: validatedData.data.event.start_time,
+              end_time: validatedData.data.event.end_time,
               venue: validatedData.data.event.venue,
               address: validatedData.data.event.address,
               greeting: validatedData.data.event.greeting,

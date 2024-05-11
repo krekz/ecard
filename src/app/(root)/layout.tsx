@@ -1,14 +1,22 @@
 import Navbar from "@/components/navbar";
+import { auth } from "@/auth";
+import getServerSession from "next-auth";
+import { SessionProvider } from "next-auth/react";
 
-export default function HomeLayout({
+export default async function HomeLayout({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
   return (
     <>
-      <Navbar />
+      <SessionProvider session={session}>
+        <Navbar />
+        </SessionProvider>
+
       <main className="mt-20">{children}</main>
+
     </>
   );
 }

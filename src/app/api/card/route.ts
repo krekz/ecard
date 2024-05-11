@@ -1,20 +1,22 @@
 // import { prisma } from "../../../../prisma";
 import { PrismaClient } from "@prisma/client";
 import { format } from "date-fns";
+import prisma from "../../../../prisma";
+// import { prisma } from "../../../../prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient().$extends({
-  result: {
-    event: {
-      dateShort: {
-        needs: {date:true},
-        compute({date}){
-          return format(date,"dd/L/y")
-        }
-      }
-    }
-  },
-})
+// const prisma = new PrismaClient().$extends({
+//   result: {
+//     event: {
+//       dateShort: {
+//         needs: {date:true},
+//         compute({date}){
+//           return format(date,"dd/L/y")
+//         }
+//       }
+//     }
+//   },
+// })
 
 export async function GET(req: Request) {
   const response = NextResponse.next();
@@ -27,7 +29,7 @@ export async function GET(req: Request) {
     try {
       const data = await prisma.eCard.findUnique({
         where: {
-          id: "clvszabdq00071451ep3y32k1",
+          id: "clvxacr4z0001ogcfdwuz8tdt",
         },
         select: {
           id:true,

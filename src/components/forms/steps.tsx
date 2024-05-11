@@ -1,4 +1,6 @@
 "use client";
+import { TimePicker } from "antd";
+import { RHFInput } from "react-hook-form-input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -28,11 +30,12 @@ import { LuCalendarCheck } from "react-icons/lu";
 import { cn } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 import { primaryFontsConst, secondaryFontsConst } from "@/lib/constant";
+import { register } from "module";
+// import { TimePicker } from "../ui/datetime-picker";
 
 // STEP 1
 
 const StepOne = () => {
-
   // if (typeof design !== "string" || design.trim() === "") {
   //   throw new Error("Design parameter is required");
   // }
@@ -172,7 +175,11 @@ const StepOne = () => {
                   <FormItem className="space-y-0 w-52">
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="0123456789" type="number" {...field} />
+                      <Input
+                        placeholder="0123456789"
+                        type="number"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -199,6 +206,7 @@ const StepOne = () => {
 
 // STEP 2
 const StepTwo = () => {
+  const { register, setValue } = useFormContext();
   return (
     <>
       <h1 className="text-2xl font-bold">Location</h1>
@@ -283,17 +291,37 @@ const StepTwo = () => {
             )}
           />
 
-          <FormField
-            name={`event.time`}
+          {/* <FormField
+            name={`event.start_time`}
             render={({ field }) => (
-              <FormItem className="space-y-0 w-1/2">
-                <FormLabel>Time</FormLabel>
+              <FormItem>
+                <FormLabel htmlFor="datetime">Start time</FormLabel>
                 <FormControl>
-                  <Input placeholder="12:00 PM" {...field} />
+                  <TimePicker {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
+          />
+          <FormField
+            name={`event.end_time`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="datetime">End time</FormLabel>
+                <FormControl>
+                  <TimePicker {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+
+          <RHFInput
+            as={<TimePicker.RangePicker format={"HH:mm a"} />}
+            type="input"
+            register={register}
+            name="event.start_time"
+            setValue={setValue}
           />
         </div>
       </div>
@@ -301,7 +329,7 @@ const StepTwo = () => {
       <FormField
         name={`event.greeting`}
         render={({ field }) => (
-          <FormItem className="space-y-0 w-1/2 w-full">
+          <FormItem className="space-y-0  w-full">
             <FormLabel>Greeting</FormLabel>
             <FormControl>
               <Textarea
@@ -424,7 +452,7 @@ function StepThree() {
               <SelectContent>
                 {primaryFontsConst.map((font, index) => (
                   <SelectItem
-                    className={cn("text-xl",font.font.className)}
+                    className={cn("text-xl", font.font.className)}
                     key={index}
                     value={font.id}
                   >
@@ -451,7 +479,7 @@ function StepThree() {
               <SelectContent>
                 {secondaryFontsConst.map((font, index) => (
                   <SelectItem
-                    className={cn("text-xl",font.font.className)}
+                    className={cn("text-xl", font.font.className)}
                     key={index}
                     value={font.id}
                   >
