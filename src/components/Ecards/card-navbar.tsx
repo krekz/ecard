@@ -56,7 +56,7 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
                 <DrawerDescription className="text-center">
                   <CalendarDrawerContent
                     calendar={{
-                      date: dataFromDB?.event.dateShort ?? new Date(),
+                      date: dataFromDB?.event.date ?? new Date(),
                     }}
                   />
                 </DrawerDescription>

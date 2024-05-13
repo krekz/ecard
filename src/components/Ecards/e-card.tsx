@@ -1,8 +1,7 @@
 "use client";
-import { format } from "date-fns";
+import {format} from "date-fns-tz";
 import Bar from "@/components/Ecards/card-navbar";
 import { cn } from "@/lib/utils";
-import * as f from "@/components/fonts";
 import Image from "next/image";
 import { HiCalendar, HiOutlineClock, HiLocationMarker } from "react-icons/hi";
 import CardCarousel from "@/components/Ecards/card-carousel";
@@ -14,10 +13,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
 
   if (!dataFromDB) return null;
   const { event, donation, images, heirs, Design,primary_font } = dataFromDB;
-
-  const getDate = new Date(
-    format(event.date ?? new Date(), "dd/L/y")
-  );
+//  const zoneDate = toZonedTime(event.date, 'Asia/Kuala_Lumpur')
 
   const weekday = [
     "Ahad",
@@ -105,10 +101,10 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
           <div className="flex flex-col items-center">
             <HiCalendar size={25} />
             <h2 className="text-amber-700 text-2xl">
-              {dataFromDB.event.date
-                ? weekday[getDate.getDay()] +
+              {event.date
+                ? weekday[new Date(event.date).getDay()] +
                   ", " +
-                  getDate.toLocaleDateString()
+                  format(event.date, "dd/L/y")
                 : ""}
             </h2>
           </div>
