@@ -11,31 +11,36 @@ export async function GET(
   if (!userId) {
     return new NextResponse("User ID is required", { status: 400 });
   }
-
-  const findUser = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-
-  if (!findUser) {
-    return new NextResponse("User not found", { status: 404 });
-  }
-
-  const getUserCards = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      cards: {
-        select: {
-          id: true,
-          userId: true,
-          couple: true,
+  try {
+    const userWithCards = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        name: true, // Assuming you want to return the name, adjust fields as necessary
+        cards: {
+          select: {
+            id: true,
+            userId: true,
+            couple: true,
+            updatedAt:true,
+            //  TODO : status:true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
         },
       },
-    },
-  });
+    });
 
-  return NextResponse.json(getUserCards);
+    if (!userWithCards) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
+    return NextResponse.json(userWithCards);
+  } catch (error) {
+    console.error("Database access error:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }

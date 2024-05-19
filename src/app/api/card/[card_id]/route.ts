@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 
 const prisma = new PrismaClient().$extends({
   result: {

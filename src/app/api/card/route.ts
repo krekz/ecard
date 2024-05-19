@@ -39,11 +39,11 @@ export async function GET(req: Request) {
           groom: true,
           couple: true,
           phone_number: true,
-          youtubeURL: true,
+          youtube_url: true,
           designId: true,
           primary_font: true,
           secondary_font: true,
-          plan:true,
+          // plan:true
           images: true,
           heirs:true,
           event:true,
