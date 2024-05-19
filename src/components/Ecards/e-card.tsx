@@ -32,7 +32,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
     <main className={cn("relative", getPrimaryFont?.font.className)}>
       <section className="relative h-screen max-w-[400px] mx-auto flex justify-center">
         <Image
-          src={"/design2.jpg"}
+          src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${dataFromDB.Design.front_design_url}`}
           alt={"background"}
           layout="fill"
           objectFit="cover"
@@ -73,7 +73,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
         <div
           className="absolute inset-0 object-cover"
           style={{
-            backgroundImage: `url(/hero4.png)`,
+            backgroundImage: `url(https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${dataFromDB.Design.content_design_url})`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
             backgroundAttachment: "fixed",

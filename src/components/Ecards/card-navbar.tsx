@@ -21,25 +21,30 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
     <nav className="flex fixed z-50 bottom-5 justify-center w-full">
       <div className="flex justify-center rounded-md max-w-[400px] p-5 bg-black text-center gap-5 text-xs text-white">
         {/* Donation */}
-        <Drawer>
-          <DrawerTrigger>
-            <div className="flex flex-col items-center cursor-pointer transition-all hover:-translate-y-1 delay-100">
-              <LuGift color="white" size={30} className="" />
-              <p>Donation</p>
-            </div>
-          </DrawerTrigger>
+        {dataFromDB?.donation ? (
+          <Drawer>
+            <DrawerTrigger>
+              <div className="flex flex-col items-center cursor-pointer transition-all hover:-translate-y-1 delay-100">
+                <LuGift color="white" size={30} className="" />
+                <p>Donation</p>
+              </div>
+            </DrawerTrigger>
 
-          <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
-            <div className="flex flex-col items-center max-w-[400px] mx-auto ">
-              <DrawerHeader>
-                <DrawerTitle className="text-center">DONATION</DrawerTitle>
-                <DrawerDescription className="text-center">
-                  <DonateDrawerContent donate={dataFromDB?.donation ?? {}} />
-                </DrawerDescription>
-              </DrawerHeader>
-            </div>
-          </DrawerContent>
-        </Drawer>
+            <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
+              <div className="flex flex-col items-center max-w-[400px] mx-auto ">
+                <DrawerHeader>
+                  <DrawerTitle className="text-center">DONATION</DrawerTitle>
+                  <DrawerDescription className="text-center">
+                    <DonateDrawerContent
+                      donation={dataFromDB?.donation ?? {}}
+                    />
+                  </DrawerDescription>
+                </DrawerHeader>
+              </div>
+            </DrawerContent>
+          </Drawer>
+        ) : null}
+
         {/* Calendar */}
         <Drawer>
           <DrawerTrigger>

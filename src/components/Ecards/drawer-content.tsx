@@ -55,22 +55,23 @@ export function ContactDrawerContent({ heirs }: ContactProp) {
 }
 
 type DonateDrawerContentProps = {
-  donate: {
+  donation: {
     id?: number;
     name?: string;
     bank?: string;
     accountNo?: string;
     qrCode?: string;
   };
+
 };
-export function DonateDrawerContent({ donate }: DonateDrawerContentProps) {
+export function DonateDrawerContent({ donation}: DonateDrawerContentProps) {
   return (
     <>
-      <h1>{donate.name}</h1>
-      <h2>{donate.bank}</h2>
-      <h3>{donate.accountNo}</h3>
+      <h1>{donation.name}</h1>
+      <h2>{donation.bank}</h2>
+      <h3>{donation.accountNo}</h3>
       <Image
-        src={"/qrcode.jpg"}
+        src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${donation.qrCode}`}
         alt="QrCode"
         width={100}
         height={100}
