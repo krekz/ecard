@@ -1,7 +1,7 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
-import { useRouter, useSearchParams,usePathname } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -36,7 +36,7 @@ const CatalogFilter: React.FC<CatalogFilterProps> = ({ checkboxList }) => {
         .getAll("filter")
         .filter((paramsValue) => paramsValue !== listID);
       urlSearchParams.delete("filter"); // clear all the existed params/query 'filter'
-      newFilter.forEach((id) => urlSearchParams.append("filter", id)); 
+      newFilter.forEach((id) => urlSearchParams.append("filter", id));
     } else {
       urlSearchParams.append("filter", listID);
     }
@@ -52,7 +52,8 @@ const CatalogFilter: React.FC<CatalogFilterProps> = ({ checkboxList }) => {
 
   return (
     <>
-      {/* SortBy (Select) */}
+      {/* SortBy (Select) section */}
+      {/* <h1 className="text-2xl font-medium">Sort By</h1>
       <Select onValueChange={handleOnChangeSelect}>
         <SelectTrigger className="w-[180px]">
           <SelectValue
@@ -69,9 +70,10 @@ const CatalogFilter: React.FC<CatalogFilterProps> = ({ checkboxList }) => {
           <SelectItem value="popular">Popular</SelectItem>
           <SelectItem value="newest">Newest</SelectItem>
         </SelectContent>
-      </Select>
-      <h1 className="text-2xl font-medium mt-5">Filter</h1>
+      </Select> */}
 
+      {/* Filter section */}
+      <h1 className="text-2xl font-medium mt-5">Filter</h1>
       <div className="mt-3 flex flex-col gap-2">
         {checkboxList.map((list) => (
           <div key={list.id} className="flex gap-2">
