@@ -1,137 +1,111 @@
 "use client";
-import { LuAlignJustify, LuXCircle } from "react-icons/lu";
 import Link from "next/link";
-import { Button, buttonVariants } from "./ui/button";
-import Image from "next/image";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import NavDropdown, { User } from "./navbar-dropdown";
 
-const navbarContent = [
-  {
-    name: "Catalog",
-    url: "/catalog",
-    target: "_blank",
-    className: "hover:text-muted-foreground",
-  },
-  // {
-  //   name: "Pricing",
-  //   url: "/pricing",
-  //   target: "_blank",
-  //   className: "hover:text-muted-foreground",
-  // },
-  {
-    name: "FAQ",
-    url: "/faq",
-    target: "_blank",
-    className: "hover:text-muted-foreground",
-  },
-  {
-    name: "Sign in",
-    url: "/signin",
-    target: "_blank",
-    className: "hover:text-muted-foreground ",
-  },
-  {
-    name: "Create card",
-    url: "/catalog",
-    target: "_blank",
-    className: `${buttonVariants({ variant: "default" })} font-semibold`,
-  },
+const navigation = [
+  { title: "Catalog", path: "/catalog" },
+  { title: "Pricing", path: "../#pricing" },
+  { title: "FAQ", path: "/faq" },
 ];
 
 const Navbar = () => {
-  const router = useRouter();
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
+  const [state, setState] = useState(false);
 
   return (
-    <nav className="fixed z-10  mx-auto top-0 left-0 right-0 bg-secondary font-bold ">
-      <div
-        className={cn(
-          "relative flex justify-between container p-5",
-          isOpen && "flex flex-col items-center"
-        )}
-      >
-        <div className={cn("flex gap-2 cursor-pointer", isOpen && "hidden")}>
-          <Image
-            className="size-10"
-            src="/favicon1.webp"
-            width={35}
-            height={25}
-            alt="TEA"
-          />
-          <Link href="/" className="text-lg md:text-2xl my-auto font-bold ">
-            #TelekungTEA
-            {/* {session?.user ? (
-              <div className="flex items-center gap-2">
-                <Image
-                  src={session?.user?.image ?? " "}
-                  width={25}
-                  height={25}
-                  alt="test"
-                />
-                {session?.user?.name}
-              </div>
-            ) : (
-              "{NO USER}"
-            )}{" "} */}
+    <nav className=" bg-white border-b w-full z-20 fixed md:text-sm md:border-none">
+      <div className="items-center px-4 container mx-auto md:flex md:px-8">
+        <div className="flex items-center justify-between py-3 md:py-5 md:block">
+          <Link href="/" className="text-2xl font-bold">
+            #TELEKUNGTEA
           </Link>
-        </div>
-        <ul
-          className={cn(
-            "hidden md:flex gap-3 text-lg md:items-center ",
-            isOpen && "flex flex-col min-h-screen items-center justify-center"
-          )}
-        >
-          {/* Navbar on center */}
-          {navbarContent.slice(0, 2).map((item, index) => (
-            <Link
-              key={index}
-              onClick={() => setIsOpen(false)}
-              href={item.url}
-              className={cn(
-                "hover:text-primary",
-                pathname === item.url ? "text-primary" : "text-gray-500"
-              )}
+          <div className="md:hidden">
+            <button
+              className="text-gray-500 hover:text-gray-800"
+              onClick={() => setState(!state)}
             >
-              {item.name}
-            </Link>
-          ))}
-        </ul>
-        {/* Navbar on right */}
-        <div className="space-x-3 text-lg hidden md:block">
-          <Link
-            href="/catalog"
-            className={`font-semibold ${buttonVariants({
-              variant: "default",
-            })}`}
-          >
-            Create Card
-          </Link>
-          {session ? (
-            <NavDropdown user={session.user as User} />
-          ) : (
-            <Button variant="outline" onClick={() => signIn()}>
-              Sign in
-            </Button>
-          )}
+              {state ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
-        <LuAlignJustify
-          size={30}
-          className="cursor-pointer my-auto md:hidden block"
-          onClick={() => setIsOpen(!isOpen)}
-        />
-        {isOpen && (
-          <LuXCircle
-            size={30}
-            className="cursor-pointer absolute top-7 right-5"
-            onClick={() => setIsOpen(!isOpen)}
-          />
-        )}
+        <div
+          className={`flex-1 pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
+            state ? "block" : "hidden"
+          }`}
+        >
+          <ul className="justify-end items-center space-y-6 md:flex md:space-x-6 md:space-y-0">
+            {navigation.map((item, idx) => {
+              return (
+                <li key={idx} className="text-gray-700 hover:text-indigo-600">
+                  <Link
+                    href={item.path}
+                    onClick={() => setState(false)}
+                    className={cn(
+                      "block",
+                      pathname === item.path && "text-indigo-600 font-bold"
+                    )}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+            <span className="hidden w-px h-6 bg-gray-300 md:block"></span>
+            <div className="space-y-3 items-center gap-x-2 md:flex md:space-y-0">
+              <li>
+                <Link
+                  href="/catalog"
+                  className="block py-3 px-4 font-medium text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 active:shadow-none rounded-lg shadow md:inline"
+                >
+                  Create Card
+                </Link>
+              </li>
+              <li>
+                {session ? (
+                  <NavDropdown setState={setState} user={session.user as User} />
+                ) : (
+                  <Button variant="link"className="w-full" onClick={() => signIn()}>
+                    Sign in
+                  </Button>
+                )}
+              </li>
+            </div>
+          </ul>
+        </div>
       </div>
     </nav>
   );
