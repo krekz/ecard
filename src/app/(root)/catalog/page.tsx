@@ -5,14 +5,23 @@ import { buttonVariants } from "@/components/ui/button";
 import { cardList, checkboxList } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import CatalogFilter from "@/components/catalog-filter";
+import { getAllDesigns } from "@/lib/utils";
 
-const CatalogPage = ({
+type TCards = {
+  designId: string;
+  category: string;
+  name: string;
+  thumbnail: string;
+};
+
+const CatalogPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const getFilteredCards = () => {
-    let filteredCards = cardList;
+  const getFilteredCards = async () => {
+    const cards = await getAllDesigns();
+    let filteredCards = cards;
 
     // sort based on 'filter' query parameter
     const filters = searchParams.filter;
@@ -27,31 +36,30 @@ const CatalogPage = ({
 
     // sorting based on 'sortBy' query parameter
     const sortBy = searchParams.sortBy as string;
-    switch (sortBy) {
-      case "popular":
-        filteredCards = filteredCards.filter((card) => card.isPopular);
-        break;
-      case "newest":
-        filteredCards = filteredCards.filter((card) => card.isNewest);
-        break;
-      default: // no sorting applied
-        break;
-    }
+    // switch (sortBy) {
+    //   case "popular":
+    //     filteredCards = filteredCards.filter((card) => card.isPopular);
+    //     break;
+    //   case "newest":
+    //     filteredCards = filteredCards.filter((card) => card.isNewest);
+    //     break;
+    //   default: // no sorting applied
+    //     break;
+    // }
 
     return filteredCards;
   };
 
-  const filtered = getFilteredCards();
+  const filtered: TCards[] = await getFilteredCards();
 
   return (
-    <main className="p-10 sm:container flex flex-col flex-wrap">
+    <main className="p-24 sm:container flex flex-col flex-wrap">
       <h1 className="text-center text-4xl font-bold uppercase">
         Browse E-card
       </h1>
       <div className="flex flex-col md:flex-row">
         {/* Filter */}
-        <aside className="p-3 w-52 lg:w-52 lg:block">
-          <h1 className="text-2xl font-medium">Sort By</h1>
+        <aside className="p-3 w-52 lg:w-52 lg:bl1ock">
           <CatalogFilter checkboxList={checkboxList} />
         </aside>
         {/* Card Listing */}
@@ -61,33 +69,39 @@ const CatalogPage = ({
               <Card
                 key={index}
                 className={cn(
-                  "text-center relative ",
-                  card.isPopular &&
-                    "before:content-['Popular'] before:bg-yellow-400 before:absolute before:-left-5 before:-top-2 before:-rotate-[20deg]   before:w-20  before:rounded-lg before:py-1 before:text-white before:font-bold"
+                  "text-center relative "
+                  // card.isPopular &&
+                  //   "before:content-['Popular'] before:bg-yellow-400 before:absolute before:-left-5 before:-top-2 before:-rotate-[20deg]   before:w-20  before:rounded-lg before:py-1 before:text-white before:font-bold"
                 )}
               >
                 <Image
                   className="mx-auto p-3"
-                  src={card.image}
-                  width={card.width}
-                  height={card.height}
-                  alt={card.alt}
+                  src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${card.thumbnail}`}
+                  width={200}
+                  height={200}
+                  alt={card.name}
                 />
                 <CardHeader>
-                  <CardTitle>{card.title}</CardTitle>
+                  <CardTitle>{card.name}</CardTitle>
                 </CardHeader>
 
                 <CardFooter className="gap-2 flex flex-col lg:flex-row items-center justify-center md:w-full">
                   <Link
                     href="/preview/demo"
                     target="_blank"
-                    className={cn("w-full", buttonVariants({ variant: "secondary" }))}
+                    className={cn(
+                      "w-full",
+                      buttonVariants({ variant: "secondary" })
+                    )}
                   >
                     Preview
                   </Link>
                   <Link
-                    href={`/user/create`}
-                    className={cn("w-full", buttonVariants({ variant: "default" }))}
+                    href={`/user/create?design_id=${card.designId}`}
+                    className={cn(
+                      "w-full",
+                      buttonVariants({ variant: "default" })
+                    )}
                   >
                     Buy now
                   </Link>
