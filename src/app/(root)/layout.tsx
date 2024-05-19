@@ -13,10 +13,8 @@ export default async function HomeLayout({
     <>
       <SessionProvider session={session}>
         <Navbar />
-        </SessionProvider>
-
-      <main className="mt-20">{children}</main>
-
+      </SessionProvider>
+      <main>{children}</main>
     </>
   );
 }
