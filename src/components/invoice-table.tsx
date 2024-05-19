@@ -1,4 +1,4 @@
-import { userCard } from "@/app/(root)/user/profile/page";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -13,7 +13,9 @@ import Link from "next/link";
 
 type CardProps = {
   id: string;
+  userId: string;
   couple: string;
+  updatedAt: Date;
 };
 
 const InvoiceTable = ({ card }: { card: CardProps }) => {
@@ -21,20 +23,19 @@ const InvoiceTable = ({ card }: { card: CardProps }) => {
     <>
       <TableBody>
         <TableRow>
-          <TableCell className="font-medium">INV001</TableCell>
+          <TableCell className="font-medium">{card.couple}</TableCell>
+          <TableCell>{format(card.updatedAt, "dd/MM/yyyy")}</TableCell>
           <TableCell>
             <span className="bg-green-500 text-white py-1 px-3 rounded-md">
-              Paid
+              Active
             </span>
           </TableCell>
-          <TableCell>{card.couple}</TableCell>
-          <TableCell className="text-right">$250.00</TableCell>
-          <TableCell className="space-x-1">
+          <TableCell className="space-y-2 md:space-x-2">
             <Button asChild variant="secondary">
-              <Link href={`/user/edit?id=${card.id}`}>Edit</Link>
+              <Link className="w-full md:w-auto" href={`/user/edit?id=${card.id}`}>Edit</Link>
             </Button>
             <Button asChild>
-              <Link target="_blank" href={`/preview/${card.id}`}>
+              <Link className="w-full md:w-auto" target="_blank" href={`/preview/${card.id}`}>
                 View
               </Link>
             </Button>
