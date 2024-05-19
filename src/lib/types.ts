@@ -1,3 +1,4 @@
+import { User } from "next-auth";
 import { NextFont } from "next/dist/compiled/@next/font";
 
 export type TOrganizers = {
@@ -30,7 +31,7 @@ export type CardFormProps = {
     primary_font: string;
     secondary_font : string;
     images: string;
-    plan: string;
+    // plan: string;
     heirs: {
       id: number;
       name: string;
@@ -59,9 +60,14 @@ export type CardFormProps = {
       designId : string;
       category: string;
       name :string;
-      url: string;
+      front_design_url: string;
+      content_design_url: string;
     }
   };
+
+  user?: User | undefined
+
+
 };
 
 export type TFonts = {
