@@ -9,6 +9,7 @@ import {
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { LuLogOut } from "react-icons/lu";
+import { buttonVariants } from "./ui/button";
 
 export type User = {
   id: string;
@@ -17,26 +18,36 @@ export type User = {
   image: string;
 };
 
-const NavDropdown = ({ user }: { user: User | undefined }) => {
+const NavDropdown = ({
+  setState,
+  user,
+}: {
+  setState: React.Dispatch<React.SetStateAction<boolean>>;
+  user: User | undefined;
+}) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>{user?.name}</DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        className={`w-full ${buttonVariants({ variant: "secondary" })}`}
+      >
+        {user?.name}
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <Link href={`/user/profile`}>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+        <Link href={`/user/cards`}>
+          <DropdownMenuItem onClick={() => setState(false)}>Cards</DropdownMenuItem>
+        </Link>
+        <Link href={`/auth/admin`}>
+          <DropdownMenuItem onClick={() => setState(false)}>Dashboard</DropdownMenuItem>
         </Link>
 
-        {/* <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem> */}
-
         <DropdownMenuItem
-          className="justify-between bg-red-500 text-white font-medium cursor-pointer"
+          className="justify-between  font-medium cursor-pointer"
           onClick={() => signOut({ callbackUrl: "/" })}
         >
-            Log out
-            <LuLogOut />
+          Log out
+          <LuLogOut />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
