@@ -19,7 +19,7 @@ const FormNavbar = () => {
 
   const pathname = usePathname();
   return (
-    <div className="flex justify-center w-full p-5 container">
+    <div className="flex justify-center w-full pt-24 container">
       <ul className="flex w-1/2 justify-center border border-gray-500 rounded p-2">
         {linkItems.map((item) => (
           <li key={item.href} className="w-full">

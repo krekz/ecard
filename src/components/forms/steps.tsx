@@ -1,6 +1,9 @@
 "use client";
 import { TimePicker } from "antd";
 import { RHFInput } from "react-hook-form-input";
+import { LuCalendarCheck } from "react-icons/lu";
+import { cn } from "@/lib/utils";
+import { primaryFontsConst, secondaryFontsConst } from "@/lib/constant";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -26,11 +29,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { LuCalendarCheck } from "react-icons/lu";
-import { cn } from "@/lib/utils";
-import { useFormContext } from "react-hook-form";
-import { primaryFontsConst, secondaryFontsConst } from "@/lib/constant";
-import { register } from "module";
+import { useState } from "react";
+import Image from "next/image";
 // import { TimePicker } from "../ui/datetime-picker";
 
 // STEP 1
@@ -47,13 +47,27 @@ const StepOne = () => {
   return (
     <>
       <FormField
-        name={`designId`}
+        name={`design_id`}
         render={({ field }) => (
           <FormItem className="space-y-0">
             <FormLabel className="text-2xl font-bold">
               Select your desired design
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={(value) => {
+                const searchParams = new URLSearchParams(
+                  window.location.search
+                );
+                searchParams.set("design_id", value.toString()); // Use 'set' instead of 'append'
+                window.history.replaceState(
+                  null,
+                  "",
+                  `${window.location.pathname}?${searchParams}`
+                );
+                field.onChange(value);
+              }}
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose your design template" />
@@ -148,7 +162,7 @@ const StepOne = () => {
           )}
         />
       </div>
-      <h1 className="text-center text-2xl font-bold mt-4">
+      {/* <h1 className="text-center text-2xl font-bold mt-4">
         Heirs <span className="text-lg">(Waris)</span>{" "}
         <span className="text-sm text-gray-500">-Optional</span>
       </h1>
@@ -199,14 +213,13 @@ const StepOne = () => {
               />
             </div>
           ))}
-      </div>
+      </div> */}
     </>
   );
 };
 
 // STEP 2
 const StepTwo = () => {
-  const { register, setValue } = useFormContext();
   return (
     <>
       <h1 className="text-2xl font-bold">Location</h1>
@@ -214,7 +227,7 @@ const StepTwo = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ">
         <div className="p-3">
           <FormField
-            name={`event.venue`}
+            name={`venue`}
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <FormLabel>Venue</FormLabel>
@@ -226,7 +239,7 @@ const StepTwo = () => {
             )}
           />
           <FormField
-            name={`event.address`}
+            name={`address`}
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <FormLabel>Address</FormLabel>
@@ -238,7 +251,7 @@ const StepTwo = () => {
             )}
           />
           <FormField
-            name={`event.gMap`}
+            name={`google_map`}
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <FormLabel>Google Map link</FormLabel>
@@ -252,7 +265,7 @@ const StepTwo = () => {
         </div>
         <div className="flex flex-row md:flex-col gap-2">
           <FormField
-            name={`event.date`}
+            name={`date`}
             render={({ field }) => (
               <FormItem className="flex flex-col ">
                 <FormLabel>Date</FormLabel>
@@ -316,18 +329,18 @@ const StepTwo = () => {
             )}
           /> */}
 
-          <RHFInput
+          {/* <RHFInput
             as={<TimePicker.RangePicker format={"HH:mm a"} />}
             type="input"
             register={register}
             name="event.start_time"
             setValue={setValue}
-          />
+          /> */}
         </div>
       </div>
 
       <FormField
-        name={`event.greeting`}
+        name={`greeting`}
         render={({ field }) => (
           <FormItem className="space-y-0  w-full">
             <FormLabel>Greeting</FormLabel>
@@ -347,9 +360,7 @@ const StepTwo = () => {
 };
 
 function StepThree() {
-  const { register } = useFormContext();
-  const fileRef = register(`donation.qrcode`); // file ref for upload image
-
+  const [preview, setPreview] = useState<string | null>(null);
   return (
     <>
       <h1 className="text-2xl font-bold">
@@ -357,7 +368,7 @@ function StepThree() {
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 border rounded-md p-3">
         <FormField
-          name={`donation.name`}
+          name={`acc_name`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Account Holder</FormLabel>
@@ -369,7 +380,7 @@ function StepThree() {
           )}
         />
         <FormField
-          name={`donation.bank`}
+          name={`bank`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Bank Name</FormLabel>
@@ -381,7 +392,7 @@ function StepThree() {
           )}
         />
         <FormField
-          name={`donation.accountNo`}
+          name={`acc_number`}
           render={({ field }) => (
             <FormItem className="space-y-0">
               <FormLabel>Account No.</FormLabel>
@@ -396,17 +407,34 @@ function StepThree() {
           )}
         />
         <FormField
-          name={`donation.qrcode`}
-          render={({ field }) => (
+          name={`qrcode`}
+          render={({ field: { value, ...fieldValues } }) => (
             <FormItem className="space-y-0">
               <FormLabel>QR code</FormLabel>
               <FormControl>
-                <Input type="text" {...field} />
+                <Input
+                  {...fieldValues}
+                  type="file"
+                  accept="image/png"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) {
+                      fieldValues.onChange(file);
+                      setPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {preview && (
+          <Image src={preview} alt="preview" width={200} height={200} />
+        )}
+        {preview && <Button onClick={() => setPreview(null)}>Remove</Button>}
+        {/* <input type="file" {...register(`donation.qrcode`)} /> */}
       </div>
 
       {/* <FormField
@@ -424,7 +452,7 @@ function StepThree() {
       /> */}
 
       <FormField
-        name={`youtubeURL`}
+        name={`youtube_url`}
         render={({ field }) => (
           <FormItem className="space-y-0">
             <FormLabel>Youtube URL</FormLabel>
