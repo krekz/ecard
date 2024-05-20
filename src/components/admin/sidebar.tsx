@@ -72,7 +72,7 @@ const Sidebar = () => {
   const { data: session } = useSession();
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full h-full border-r bg-white space-y-8 sm:w-80">
+      <nav className="fixed top-0 left-0 w-full h-full border-r bg-white space-y-8 sm:w-44">
         <div className="flex flex-col h-full">
           <div className="h-20 flex items-center px-8">
             <Link href="/auth/admin" className="flex-none">
