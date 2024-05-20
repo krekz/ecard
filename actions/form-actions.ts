@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import prisma from "../prisma";
-import { organizerSchema } from "../schema/zod/ecard-form";
+import { organizerSchema, voucherClaimSchema } from "../schema/zod/ecard-form";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -205,7 +205,7 @@ export const updateCard = async (
 
       const promises = [];
 
-      // Update the eCard
+      // update ecard
       const eCardUpdatePromise = prisma.eCard.update({
         where: {
           id: cardId,
@@ -225,7 +225,7 @@ export const updateCard = async (
       });
       promises.push(eCardUpdatePromise);
 
-      // Update the event
+      // pdate the event
       const eventUpdatePromise = prisma.event.update({
         where: {
           id: eventId,
@@ -273,8 +273,8 @@ export const updateCard = async (
         const { data: list } = await supabase.storage
           .from("e-card bucket")
           .list(`${userId}/qrcode`);
-          // Qr existed in DB?
-          //Only allow 1 Qr
+        // Qr existed in DB?
+        //Only allow 1 Qr
         if ((list?.length ?? 0) >= 1 && qrcode) {
           const removedFiles = list?.map(
             (img) => `${userId}/qrcode/${img.name}`
@@ -322,3 +322,45 @@ export const updateCard = async (
       console.log(error);
     }
   };
+
+export const voucherClaim = async (formData: FormData) => {
+  const values = Object.fromEntries(formData.entries());
+  const { voucher_code } = voucherClaimSchema.parse(values);
+  console.log(voucher_code);
+
+  try {
+    const session = await auth();
+    if (!session) throw new Error("Unauthorized access");
+
+    const voucher = await prisma.voucher.findUnique({
+      where: {
+        code: voucher_code,
+      },
+    });
+
+    if (!voucher) return { ok: false, message: "Voucher not found" };
+
+    const existingClaim = await prisma.userVoucher.findUnique({
+      where: {
+        userId_voucherId: {
+          userId: session?.user?.id!,
+          voucherId: voucher?.code!,
+        },
+      },
+    });
+
+    if (existingClaim) return { ok: false, message: "Voucher already claimed" };
+
+    //else create new record
+    await prisma.userVoucher.create({
+      data: {
+        voucherId: voucher?.code!,
+        userId: session?.user?.id!,
+      },
+    });
+
+    return { ok: true, message: "Voucher claimed" };
+  } catch (error) {
+    console.log(error);
+  }
+};
