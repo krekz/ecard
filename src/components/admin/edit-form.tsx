@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { deleteDesignSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { deleteDesign } from "../../../actions/admin-actions";
+import { deleteDesign } from "../../../actions/admin/admin-actions";
 import DesignForm from "./admin-form";
 import { useEffect, useState } from "react";
 

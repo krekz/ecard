@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { updateDesign, uploadDesign } from "../../../actions/admin-actions";
+import { updateDesign, uploadDesign } from "../../../actions/admin/admin-actions";
 
 type DesignFormProps = {
   design?: {
