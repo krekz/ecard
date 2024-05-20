@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "../ui/textarea";
-import { uploadVoucher } from "../../../actions/admin-voucher";
+import { uploadVoucher } from "../../../actions/admin/admin-voucher";
 
 const VoucherForm = () => {
   const form = useForm<z.infer<typeof createVoucherFormSchema>>({
