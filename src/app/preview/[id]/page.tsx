@@ -1,6 +1,5 @@
 import ECard from "@/components/Ecards/e-card";
-import { NextResponse } from "next/server";
-import  useStore  from "@/store/store";
+
 
 const getDetailPage = async (id: string) => {
   try {

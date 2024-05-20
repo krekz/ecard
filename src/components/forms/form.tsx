@@ -101,25 +101,10 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
             variant: "destructive",
           });
         }
-
-        // toast.promise(
-        //   updateCard(formData, {
-        //     cardId: dataFromDB.id,
-        //     eventId: dataFromDB.event?.id,
-        //     donationId: dataFromDB.donation?.id ,
-        //     userId: user?.id
-        //     // heirsId: dataFromDB.heirs.map((heir) => heir.id),
-        //   }),
-        //   {
-        //     loading: "Updating...",
-        //     success: "Card updated successfully",
-        //     error: "An error occurred while updating the form",
-        //   }
-        // );
         return;
       }
-      //else create new card
 
+      //else create new card
       try {
         const response = await createCard(formData);
         if (response?.ok) {
@@ -140,35 +125,6 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           variant: "destructive",
         });
       }
-
-      // toast
-      //   .promise(createCard(formData), {
-      //     loading: "Creating...",
-      //     success: "Card created successfully",
-      //     error: (error) => {
-      //       console.log(error);
-      //       return "An error occurred while creating the card";
-      //     },
-      //   })
-      //   .then((response) => {
-      //     const toastId = toast.loading("Redirecting...");
-      //     const cardResponse = response as { ok: boolean; id: string };
-      //     if (!cardResponse?.id) {
-      //       toast.dismiss(toastId);
-      //       toast.error("Invalid card ID received.");
-      //       return;
-      //     }
-      //     const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
-      //     setTimeout(() => {
-      //       toast.dismiss(toastId);
-      //       router.push(`/preview/${cardResponse.id}`);
-      //     }, redirectDelay);
-      //   })
-      //   .catch((error) => {
-      //     // Handle any unexpected errors here
-      //     console.error("An unexpected error occurred:", error);
-      //     toast.error("An unexpected error occurred during redirection.");
-      //   });
     } catch (e) {
       toast({
         title: "An error occurred while creating the card",
