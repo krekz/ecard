@@ -1,6 +1,7 @@
 "use client";
 
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { StepOne, StepThree, StepTwo } from "./steps";
 import useStore from "@/store/store";
 import { useForm, FormProvider } from "react-hook-form";
@@ -15,6 +16,7 @@ import { Button } from "../ui/button";
 import PromptAlert from "../alert";
 
 const CardForm = ({ dataFromDB, user }: CardFormProps) => {
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const designId = searchParams.get("design_id");
   const router = useRouter();
@@ -78,54 +80,100 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
     try {
       // update card if props exist
       if (dataFromDB) {
-        toast.promise(
-          updateCard(formData, {
+        try {
+          const response = await updateCard(formData, {
             cardId: dataFromDB.id,
             eventId: dataFromDB.event?.id,
-            donationId: dataFromDB.donation?.id ,
-            userId: user?.id
+            donationId: dataFromDB.donation?.id,
+            userId: user?.id,
             // heirsId: dataFromDB.heirs.map((heir) => heir.id),
-          }),
-          {
-            loading: "Updating...",
-            success: "Card updated successfully",
-            error: "An error occurred while updating the form",
+          });
+          if (response?.ok) {
+            toast({
+              title: response.message,
+              variant: "success",
+            });
           }
-        );
+        } catch (error) {
+          console.log(error);
+          toast({
+            title: "An error occurred while updating the card",
+            variant: "destructive",
+          });
+        }
+
+        // toast.promise(
+        //   updateCard(formData, {
+        //     cardId: dataFromDB.id,
+        //     eventId: dataFromDB.event?.id,
+        //     donationId: dataFromDB.donation?.id ,
+        //     userId: user?.id
+        //     // heirsId: dataFromDB.heirs.map((heir) => heir.id),
+        //   }),
+        //   {
+        //     loading: "Updating...",
+        //     success: "Card updated successfully",
+        //     error: "An error occurred while updating the form",
+        //   }
+        // );
         return;
       }
-      console.log(data);
       //else create new card
-      toast
-        .promise(createCard(formData), {
-          loading: "Creating...",
-          success: "Card created successfully",
-          error: (error) => {
-            console.log(error);
-            return "An error occurred while creating the card";
-          },
-        })
-        .then((response) => {
-          const toastId = toast.loading("Redirecting...");
-          const cardResponse = response as { ok: boolean; id: string };
-          if (!cardResponse?.id) {
-            toast.dismiss(toastId);
-            toast.error("Invalid card ID received.");
-            return;
-          }
+
+      try {
+        const response = await createCard(formData);
+        if (response?.ok) {
+          toast({
+            title: response?.message,
+            variant: "success",
+          });
+
           const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
           setTimeout(() => {
-            toast.dismiss(toastId);
-            router.push(`/preview/${cardResponse.id}`);
+            router.push(`/preview/${response.id}`);
           }, redirectDelay);
-        })
-        .catch((error) => {
-          // Handle any unexpected errors here
-          console.error("An unexpected error occurred:", error);
-          toast.error("An unexpected error occurred during redirection.");
+        }
+      } catch (error) {
+        console.log(error);
+        toast({
+          title: "An error occurred while creating the card",
+          variant: "destructive",
         });
+      }
+
+      // toast
+      //   .promise(createCard(formData), {
+      //     loading: "Creating...",
+      //     success: "Card created successfully",
+      //     error: (error) => {
+      //       console.log(error);
+      //       return "An error occurred while creating the card";
+      //     },
+      //   })
+      //   .then((response) => {
+      //     const toastId = toast.loading("Redirecting...");
+      //     const cardResponse = response as { ok: boolean; id: string };
+      //     if (!cardResponse?.id) {
+      //       toast.dismiss(toastId);
+      //       toast.error("Invalid card ID received.");
+      //       return;
+      //     }
+      //     const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
+      //     setTimeout(() => {
+      //       toast.dismiss(toastId);
+      //       router.push(`/preview/${cardResponse.id}`);
+      //     }, redirectDelay);
+      //   })
+      //   .catch((error) => {
+      //     // Handle any unexpected errors here
+      //     console.error("An unexpected error occurred:", error);
+      //     toast.error("An unexpected error occurred during redirection.");
+      //   });
     } catch (e) {
-      toast.error("An error occurred while creating the card");
+      toast({
+        title: "An error occurred while creating the card",
+        variant: "destructive",
+      });
       console.error("Failed to create card", e);
     }
   };
@@ -147,7 +195,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
         >
           {currentStep === 1 && <StepOne />}
           {currentStep === 2 && <StepTwo />}
-          
+
           {/* Display submit / update button */}
           {currentStep === 3 && (
             <>

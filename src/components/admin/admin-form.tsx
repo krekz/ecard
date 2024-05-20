@@ -1,8 +1,9 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "../ui/use-toast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import {  upsertDesignSchema } from "../../../schema/zod/admin-form";
+import { upsertDesignSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
@@ -21,7 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { updateDesign, uploadDesign } from "../../../actions/admin/admin-actions";
+import {
+  updateDesign,
+  uploadDesign,
+} from "../../../actions/admin/admin-actions";
 
 type DesignFormProps = {
   design?: {
@@ -32,6 +36,7 @@ type DesignFormProps = {
 };
 
 const DesignForm = ({ design }: DesignFormProps) => {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof upsertDesignSchema>>({
     resolver: zodResolver(upsertDesignSchema),
     defaultValues: design
@@ -61,10 +66,21 @@ const DesignForm = ({ design }: DesignFormProps) => {
       if (design) {
         await updateDesign(formData);
       } else {
-        await uploadDesign(formData);
+        const response = await uploadDesign(formData);
+        if (response?.ok) {
+          toast({
+            title: response.message,
+            variant: "success",
+          });
+        } else {
+          toast({
+            title: response?.message,
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
-      console.log("helo from form", error);
+      console.log(error);
     }
   };
   return (
@@ -176,7 +192,9 @@ const DesignForm = ({ design }: DesignFormProps) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button disabled={form.formState.isSubmitting} type="submit">
+          Submit
+        </Button>
       </form>
     </Form>
   );

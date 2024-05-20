@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { createVoucherFormSchema } from "../../../schema/zod/admin-form";
@@ -15,21 +16,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "../ui/textarea";
-import { uploadVoucher } from "../../../actions/admin/admin-voucher";
+import { uploadVoucher } from "../../../actions/admin/voucher-actions";
 
 const VoucherForm = () => {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof createVoucherFormSchema>>({
     resolver: zodResolver(createVoucherFormSchema),
     defaultValues: {
       code: "",
       description: "",
-      amount: "",
+      max_claims: 0,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof createVoucherFormSchema>) => {
     try {
-      await uploadVoucher(data);
+      const response = await uploadVoucher(data);
+      if (!response?.ok) {
+        toast({
+          variant: "destructive",
+          title: response?.message,
+        });
+      } else {
+        toast({
+          title: response?.message,
+          variant: "success",
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -37,6 +50,7 @@ const VoucherForm = () => {
 
   return (
     //  TODO: toast
+    // TODO: update form
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -73,7 +87,7 @@ const VoucherForm = () => {
         />
         <FormField
           control={form.control}
-          name="amount"
+          name="max_claims"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Quantity</FormLabel>

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { jakarta_sans } from "@/components/fonts";
 import "./globals.css";
-import {Toaster} from 'react-hot-toast'
+// import {Toaster} from 'react-hot-toast'
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "E-Card",
@@ -15,10 +16,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jakarta_sans.className}>
-      <body
-        className="min-h-screen bg-[#FAFAFA] font-sans antialiased "
-      >
-        <Toaster position="top-center" />
+      <body className="min-h-screen bg-[#FAFAFA] font-sans antialiased ">
+        <Toaster />
         {children}
       </body>
     </html>
