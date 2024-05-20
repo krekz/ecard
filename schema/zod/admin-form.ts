@@ -10,7 +10,7 @@ const fileFormat = z
     return !file || file.size < 1024 * 1024 * 2;
   }, "File must be less than 2MB");
 
-export const createDesignFormSchema = z.object({
+export const upsertDesignSchema = z.object({
   design_name: z
     .string()
     .min(2, "Design name is required")
@@ -21,7 +21,7 @@ export const createDesignFormSchema = z.object({
   content_design: fileFormat,
 });
 
-export const editDesignSchema = z.object({
+export const deleteDesignSchema = z.object({
   choose_design: z.string().min(2, "You must choose design"),
 });
 

@@ -18,7 +18,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { editDesignSchema } from "../../../schema/zod/admin-form";
+import { deleteDesignSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { deleteDesign } from "../../../actions/admin-actions";
@@ -35,16 +35,20 @@ type DesignProps = {
   }[];
 };
 const EditDesign = ({ cards }: DesignProps) => {
-  const [selectedDesign, setSelectedDesign] = useState<string | null>(null);
+  const [selectedDesign, setSelectedDesign] = useState<{
+    designId: string;
+    category: string;
+    name: string;
+  } | null>(null);
 
-  const form = useForm<z.infer<typeof editDesignSchema>>({
-    resolver: zodResolver(editDesignSchema),
+  const form = useForm<z.infer<typeof deleteDesignSchema>>({
+    resolver: zodResolver(deleteDesignSchema),
     defaultValues: {
       choose_design: "",
     },
   });
-  
-  const onSubmit = async (data: z.infer<typeof editDesignSchema>) => {
+
+  const onDelete = async (data: z.infer<typeof deleteDesignSchema>) => {
     const formData = new FormData();
     formData.append("choose_design", data.choose_design);
     try {
@@ -56,7 +60,7 @@ const EditDesign = ({ cards }: DesignProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onDelete)}
         className="flex flex-col items-center justify-center gap-2"
       >
         <FormField
@@ -72,7 +76,13 @@ const EditDesign = ({ cards }: DesignProps) => {
                     (card) => card.name === value
                   );
                   setSelectedDesign(
-                    selectedCard ? selectedCard.designId : null
+                    selectedCard
+                      ? {
+                          designId: selectedCard.designId,
+                          category: selectedCard.category,
+                          name: selectedCard.name,
+                        }
+                      : null
                   );
                 }}
                 defaultValue={field.value}
@@ -95,7 +105,7 @@ const EditDesign = ({ cards }: DesignProps) => {
           )}
         />
 
-        {selectedDesign && <DesignForm />}
+        {selectedDesign && <DesignForm design={selectedDesign} />}
         {selectedDesign && (
           <Button variant="destructive" type="submit">
             Delete

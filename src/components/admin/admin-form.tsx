@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { createDesignFormSchema } from "../../../schema/zod/admin-form";
+import {  upsertDesignSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
@@ -21,38 +21,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { uploadDesign } from "../../../actions/admin-actions";
+import { updateDesign, uploadDesign } from "../../../actions/admin-actions";
 
 type DesignFormProps = {
-  designs?: {
-    design_name?: string;
-    category?: string;
-    thumbnail?: string;
-    front_design?: string;
-    content_design?: string;
+  design?: {
+    designId: string;
+    category: string;
+    name: string;
   };
 };
 
-const DesignForm = ({ designs }: DesignFormProps) => {
-  const form = useForm<z.infer<typeof createDesignFormSchema>>({
-    resolver: zodResolver(createDesignFormSchema),
-    defaultValues: {
-      design_name: "",
-      category: "",
-      thumbnail: undefined,
-      front_design: undefined,
-      content_design: undefined,
-    },
+const DesignForm = ({ design }: DesignFormProps) => {
+  const form = useForm<z.infer<typeof upsertDesignSchema>>({
+    resolver: zodResolver(upsertDesignSchema),
+    defaultValues: design
+      ? {
+          design_name: design.name,
+          category: design.category,
+          thumbnail: undefined,
+          front_design: undefined,
+          content_design: undefined,
+        }
+      : {
+          design_name: "",
+          category: "",
+          thumbnail: undefined,
+          front_design: undefined,
+          content_design: undefined,
+        },
   });
 
-  const onSubmit = async (data: z.infer<typeof createDesignFormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof upsertDesignSchema>) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, value);
     });
 
     try {
-      await uploadDesign(formData);
+      if (design) {
+        await updateDesign(formData);
+      } else {
+        await uploadDesign(formData);
+      }
     } catch (error) {
       console.log("helo from form", error);
     }

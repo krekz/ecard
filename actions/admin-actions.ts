@@ -6,8 +6,8 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import prisma from "../prisma";
 import {
-  createDesignFormSchema,
-  editDesignSchema,
+  upsertDesignSchema,
+  deleteDesignSchema,
 } from "../schema/zod/admin-form";
 import { revalidatePath } from "next/cache";
 
@@ -21,7 +21,7 @@ export const uploadDesign = async (formData: FormData) => {
 
     const values = Object.fromEntries(formData.entries());
     const { category, design_name, front_design, content_design, thumbnail } =
-      createDesignFormSchema.parse(values);
+      upsertDesignSchema.parse(values);
 
     // TODO: session role != admin
     //TODO:  dynamically change the designId
@@ -72,6 +72,18 @@ export const uploadDesign = async (formData: FormData) => {
   }
 };
 
+export const updateDesign = async (formData: FormData) => {
+  const values = Object.fromEntries(formData.entries());
+  const { category, design_name, thumbnail, front_design, content_design } =
+    upsertDesignSchema.parse(values);
+  try {
+    const session = await auth();
+    if (!session) throw new Error("Unauthorized access");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const deleteDesign = async (formData: FormData) => {
   try {
     const session = await auth();
@@ -80,7 +92,7 @@ export const deleteDesign = async (formData: FormData) => {
     // TODO : Role admin
 
     const values = Object.fromEntries(formData.entries());
-    const { choose_design } = editDesignSchema.parse(values);
+    const { choose_design } = deleteDesignSchema.parse(values);
     const supabase = createClient();
 
     const { data: list } = await supabase.storage
