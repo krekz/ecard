@@ -75,7 +75,7 @@ const Sidebar = () => {
       <nav className="fixed top-0 left-0 w-full h-full border-r bg-white space-y-8 sm:w-80">
         <div className="flex flex-col h-full">
           <div className="h-20 flex items-center px-8">
-            <Link href="javascript:void(0)" className="flex-none">
+            <Link href="/auth/admin" className="flex-none">
               {/* <Image
                 src="https://floatui.com/logo.svg"
                 width={140}
@@ -139,7 +139,7 @@ const Sidebar = () => {
                       {session?.user?.name}
                     </span>
                     <Link
-                      href="javascript:void(0)"
+                      href="/auth/admin"
                       className="block mt-px text-gray-600 hover:text-indigo-600 text-xs"
                     >
                       Admin
