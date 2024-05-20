@@ -28,5 +28,5 @@ export const deleteDesignSchema = z.object({
 export const createVoucherFormSchema = z.object({
   code : z.string().min(3,"Voucher must be more than 3 characters").max(5,"Only 5 characters allowed"),
   description : z.string().min(2,"Description required"),
-  amount: z.string()
-})
+  max_claims: z.coerce.number(),
+});
