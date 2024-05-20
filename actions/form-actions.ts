@@ -130,7 +130,7 @@ export const createCard = async (formData: FormData) => {
 
     // get the auto generate ID in DB
     const { id } = card;
-    return { ok: true, id };
+    return { ok: true, id , message: "Card created"};
   } catch (error) {
     console.log(error);
   }
@@ -316,6 +316,7 @@ export const updateCard = async (
       }
 
       await Promise.all(promises);
+      return { ok: true, message: "Card updated" };
 
       revalidatePath(`/api/card/${cardId}`);
     } catch (error) {
@@ -351,13 +352,25 @@ export const voucherClaim = async (formData: FormData) => {
 
     if (existingClaim) return { ok: false, message: "Voucher already claimed" };
 
-    //else create new record
-    await prisma.userVoucher.create({
-      data: {
-        voucherId: voucher?.code!,
-        userId: session?.user?.id!,
-      },
-    });
+    //else create new record and update voucher count_claims
+    await prisma.$transaction([
+      prisma.userVoucher.create({
+        data: {
+          voucherId: voucher?.code!,
+          userId: session?.user?.id!,
+        },
+      }),
+      prisma.voucher.update({
+        where: {
+          code: voucher?.code!,
+        },
+        data: {
+          count_claims: {
+            increment: 1,
+          },
+        },
+      }),
+    ]);
 
     return { ok: true, message: "Voucher claimed" };
   } catch (error) {

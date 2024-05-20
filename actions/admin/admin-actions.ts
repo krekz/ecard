@@ -12,22 +12,35 @@ import {
 import { revalidatePath } from "next/cache";
 
 export const uploadDesign = async (formData: FormData) => {
-  // BUG: formdata plain object
+  const values = Object.fromEntries(formData.entries());
+  const { category, design_name, front_design, content_design, thumbnail } =
+    upsertDesignSchema.parse(values);
+
   try {
     const session = await auth();
     if (!session) {
       throw new Error("Unauthorized");
     }
 
-    const values = Object.fromEntries(formData.entries());
-    const { category, design_name, front_design, content_design, thumbnail } =
-      upsertDesignSchema.parse(values);
+    const existedDesign = await prisma.design.findUnique({
+      where: {
+        designId: design_name.toLowerCase(),
+      },
+    });
 
+    if (existedDesign)
+      return {
+        ok: false,
+        message: "Design already exists",
+      };
     // TODO: session role != admin
     //TODO:  dynamically change the designId
 
-    if (!front_design || !content_design) {
-      return NextResponse.json({ error: "Image is required" });
+    if (!front_design || !content_design || !thumbnail) {
+      return {
+        ok: false,
+        message: "Image is required",
+      };
     }
     const titleToLower = design_name.toLowerCase();
     const titleToUpper = design_name.toUpperCase();
@@ -51,7 +64,10 @@ export const uploadDesign = async (formData: FormData) => {
         imagesUrl.push(data);
       } else {
         console.log(error);
-        return NextResponse.json({ error: error.message });
+        return {
+          ok: false,
+          message: "Error uploading images",
+        };
       }
     }
 
@@ -67,12 +83,17 @@ export const uploadDesign = async (formData: FormData) => {
     });
 
     revalidatePath("/auth/admin/upload-design");
+    return {
+      ok: true,
+      message: "Design uploaded successfully",
+    };
   } catch (error) {
     console.error(error);
   }
 };
 
 export const updateDesign = async (formData: FormData) => {
+  // INCOMPLETE
   const values = Object.fromEntries(formData.entries());
   const { category, design_name, thumbnail, front_design, content_design } =
     upsertDesignSchema.parse(values);
