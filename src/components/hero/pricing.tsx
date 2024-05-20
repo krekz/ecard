@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { LuInfinity, LuLeaf, LuPackageCheck, LuSparkles } from "react-icons/lu";
 
 const plan = {
@@ -95,7 +96,7 @@ const Pricing = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="flex-1 flex flex-col border-y mt-6 md:max-w-xl md:rounded-xl md:border md:border-x-none md:shadow-lg md:mt-0"
           >
-            <div className="p-4 py-8 border-b md:p-8">
+            <div className="p-4 py-8 border-b md:p-8 flex flex-col">
               <div className="justify-between flex">
                 <div className="max-w-xs">
                   <span className="text-2xl text-gray-800 font-semibold sm:text-3xl">
@@ -107,9 +108,9 @@ const Pricing = () => {
                   RM{plan.price}
                 </div>
               </div>
-              <button className="mt-4 px-3 py-3 rounded-lg w-full font-semibold text-sm duration-150 text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700">
+              <Link href="/catalog" className="mt-4 px-3 py-3 rounded-lg text-center font-semibold text-sm duration-150 text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700">
                 Choose your design
-              </button>
+              </Link>
             </div>
             <ul className="p-4 space-y-3 sm:grid sm:grid-cols-2 md:block md:p-8 lg:grid">
               <div className="pb-2 col-span-2 text-gray-800 font-medium">
