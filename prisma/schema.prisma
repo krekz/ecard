@@ -156,8 +156,7 @@ model CardGallery {
 }
 
 model Voucher {
-  id          Int    @id @default(autoincrement())
-  code        String
+  code        String @unique
   description String
   amount      String
 
@@ -165,10 +164,10 @@ model Voucher {
 }
 
 model UserVoucher {
-  voucherId Int
+  voucherId String
   userId    String
   User      User?    @relation(fields: [userId], references: [id])
-  Voucher   Voucher? @relation(fields: [voucherId], references: [id])
+  Voucher   Voucher? @relation(fields: [voucherId], references: [code])
 
   @@id([userId, voucherId])
 }
