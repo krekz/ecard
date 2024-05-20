@@ -94,3 +94,7 @@ export const organizerSchema = z
 //    })
 //  )
 //  .optional(),
+
+export const voucherClaimSchema = z.object({
+  voucher_code: z.string().optional(),
+});
