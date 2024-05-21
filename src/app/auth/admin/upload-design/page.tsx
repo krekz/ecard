@@ -18,7 +18,7 @@ const UploadDesignPage = async () => {
     <section className="flex flex-col gap-10 justify-center items-center h-full py-10">
       {/* upload design */}
       <h1 className="text-4xl font-bold">Design Upload</h1>
-      <DesignForm />
+      <DesignForm formType="upload" />
       {/* edit design */}
       <h2 className="text-4xl font-bold"> Edit design</h2>
       <EditDesign cards={cards}/>

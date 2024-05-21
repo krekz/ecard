@@ -15,15 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { deleteDesignSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
-import { Button } from "../ui/button";
 import { deleteDesign } from "../../../actions/admin/admin-actions";
 import DesignForm from "./admin-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import DeleteButton from "@/components/delete-button";
 
 type DesignProps = {
   cards: {
@@ -35,6 +35,7 @@ type DesignProps = {
   }[];
 };
 const EditDesign = ({ cards }: DesignProps) => {
+  const { toast } = useToast();
   const [selectedDesign, setSelectedDesign] = useState<{
     designId: string;
     category: string;
@@ -52,67 +53,90 @@ const EditDesign = ({ cards }: DesignProps) => {
     const formData = new FormData();
     formData.append("choose_design", data.choose_design);
     try {
-      await deleteDesign(formData);
+      const response = await deleteDesign(formData);
+      if (response.ok) {
+        toast({
+          title: response.message,
+          description: "All users that create using this design are deleted",
+          variant: "success",
+        });
+      } else {
+        toast({
+          title: response.message,
+          description: "Something went wrong with the delete request",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onDelete)}
-        className="flex flex-col items-center justify-center gap-2"
-      >
-        <FormField
-          control={form.control}
-          name="choose_design"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Design name</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  const selectedCard = cards.find(
-                    (card) => card.name === value
-                  );
-                  setSelectedDesign(
-                    selectedCard
-                      ? {
-                          designId: selectedCard.designId,
-                          category: selectedCard.category,
-                          name: selectedCard.name,
-                        }
-                      : null
-                  );
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select designs" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {cards.map((card) => (
-                    <SelectItem key={card.designId} value={card.name}>
-                      {card.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onDelete)}
+          className="flex flex-col items-center justify-center gap-2"
+        >
+          <FormField
+            control={form.control}
+            name="choose_design"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Design name</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    const selectedCard = cards.find(
+                      (card) => card.name === value
+                    );
+                    setSelectedDesign(
+                      selectedCard
+                        ? {
+                            designId: selectedCard.designId,
+                            category: selectedCard.category,
+                            name: selectedCard.name,
+                          }
+                        : null
+                    );
+                  }}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select designs" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {cards.map((card) => (
+                      <SelectItem key={card.designId} value={card.name}>
+                        {card.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {selectedDesign && <DesignForm design={selectedDesign} />}
-        {selectedDesign && (
-          <Button variant="destructive" type="submit">
-            Delete
-          </Button>
-        )}
-      </form>
-    </Form>
+          {selectedDesign && (
+            <DeleteButton
+              loading={form.formState.isSubmitting}
+              onSubmit={async () =>
+                await onDelete({ choose_design: selectedDesign.designId })
+              }
+            >
+              Users who created their card with this design will be deleted as
+              well
+            </DeleteButton>
+          )}
+        </form>
+      </Form>
+      {selectedDesign && (
+        <DesignForm design={selectedDesign} formType="update" />
+      )}
+    </>
   );
 };
 

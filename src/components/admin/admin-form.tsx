@@ -1,10 +1,13 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "../ui/use-toast";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { upsertDesignSchema } from "../../../schema/zod/admin-form";
-import { z } from "zod";
+import {
+  uploadDesignSchema,
+  updateDesignSchema,
+} from "../../../schema/zod/admin-form";
+import * as z from "zod";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -26,6 +29,7 @@ import {
   updateDesign,
   uploadDesign,
 } from "../../../actions/admin/admin-actions";
+import { useEffect } from "react";
 
 type DesignFormProps = {
   design?: {
@@ -33,58 +37,87 @@ type DesignFormProps = {
     category: string;
     name: string;
   };
+  formType: "upload" | "update";
 };
 
-const DesignForm = ({ design }: DesignFormProps) => {
-  const { toast } = useToast();
-  const form = useForm<z.infer<typeof upsertDesignSchema>>({
-    resolver: zodResolver(upsertDesignSchema),
+const DesignForm = ({ design, formType }: DesignFormProps) => {
+  const schema =
+    formType === "upload" ? uploadDesignSchema : updateDesignSchema;
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: design
-      ? {
-          design_name: design.name,
-          category: design.category,
-          thumbnail: undefined,
-          front_design: undefined,
-          content_design: undefined,
-        }
+      ? { design_name: design.name, category: design.category }
       : {
           design_name: "",
           category: "",
-          thumbnail: undefined,
-          front_design: undefined,
-          content_design: undefined,
         },
   });
 
-  const onSubmit = async (data: z.infer<typeof upsertDesignSchema>) => {
+  useEffect(() => {
+    if (design) {
+      form.reset({
+        design_name: design.name,
+        category: design.category,
+        thumbnail: undefined,
+        front_design: undefined,
+        content_design: undefined,
+      });
+    }
+  }, [design, form]);
+
+  const { toast } = useToast();
+
+  const onSubmit = async (data: z.infer<typeof schema>) => {
+    console.log(data);
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
+      if (value) {
+        formData.append(key, value as Blob);
+      }
     });
 
     try {
       if (design) {
-        await updateDesign(formData);
-      } else {
-        const response = await uploadDesign(formData);
-        if (response?.ok) {
-          toast({
-            title: response.message,
-            variant: "success",
-          });
-        } else {
-          toast({
-            title: response?.message,
-            variant: "destructive",
-          });
+        try {
+          const response = await updateDesign(formData,design.name);
+          if (response?.ok) {
+            toast({
+              title: response.message,
+              variant: "success",
+            });
+          }else {
+            toast({
+              title: response?.message,
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
+        return;
       }
-    } catch (error) {
-      console.log(error);
+
+      const response = await uploadDesign(formData);
+      if (response?.ok) {
+        toast({
+          title: response.message,
+          variant: "success",
+        });
+      } else {
+        toast({
+          title: response?.message,
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({
+        title: "An error occurred while uploading the card",
+        variant: "destructive",
+      });
     }
   };
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col items-center justify-center gap-2"
@@ -172,15 +205,13 @@ const DesignForm = ({ design }: DesignFormProps) => {
           )}
         />
         <FormField
-          control={form.control}
-          name="content_design"
+          name={`content_design`}
           render={({ field: { value, ...fieldValues } }) => (
             <FormItem>
               <FormLabel>Content Design</FormLabel>
               <FormControl>
                 <Input
                   {...fieldValues}
-                  placeholder="shadcn"
                   type="file"
                   accept="image/png, image/jpeg"
                   onChange={(e) => {
@@ -196,7 +227,7 @@ const DesignForm = ({ design }: DesignFormProps) => {
           Submit
         </Button>
       </form>
-    </Form>
+    </FormProvider>
   );
 };
 
