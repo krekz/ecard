@@ -106,22 +106,30 @@ export const updateDesign = async (formData: FormData) => {
 };
 
 export const deleteDesign = async (formData: FormData) => {
+  const values = Object.fromEntries(formData.entries());
+  const { choose_design } = deleteDesignSchema.parse(values);
+  const supabase = createClient();
+  const chooseDesign = choose_design.toLowerCase();
   try {
     const session = await auth();
     if (!session) throw new Error("Unauthorized access");
 
-    // TODO : Role admin
+    const design = await prisma.design.findUnique({
+      where: {
+        designId: chooseDesign,
+      },
+    });
 
-    const values = Object.fromEntries(formData.entries());
-    const { choose_design } = deleteDesignSchema.parse(values);
-    const supabase = createClient();
+    if (!design) throw new Error("Design not found");
+
+    // TODO : Role admin
 
     const { data: list } = await supabase.storage
       .from("e-card bucket")
-      .list(`design/${choose_design.toLowerCase()}`);
+      .list(`design/${chooseDesign}`);
 
     const filesToRemove = list?.map(
-      (img) => `design/${choose_design.toLowerCase()}/${img.name}`
+      (img) => `design/${chooseDesign}/${img.name}`
     );
 
     const { data, error } = await supabase.storage
@@ -134,11 +142,11 @@ export const deleteDesign = async (formData: FormData) => {
     }
 
     await prisma.design.delete({
-      where: { designId: choose_design },
+      where: { designId: chooseDesign },
     });
   } catch (error) {
     console.log(error);
   }
-
+  revalidatePath("/user/cards");
   revalidatePath("/auth/admin/upload-design");
 };
