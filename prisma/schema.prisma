@@ -81,7 +81,7 @@ model ECard {
   youtube_url    String?
   images         CardGallery[]
   donation       Donation?
-  Design         Design        @relation(fields: [designId], references: [designId])
+  Design         Design        @relation(fields: [designId], references: [designId], onDelete: Cascade)
   User           User?         @relation(fields: [userId], references: [id])
   event          Event?
   heirs          Heirs?
@@ -93,7 +93,7 @@ model Heirs {
   phone_number String?
   relationship String?
   eCardId      String? @unique
-  ECard        ECard?  @relation(fields: [eCardId], references: [id])
+  ECard        ECard?  @relation(fields: [eCardId], references: [id], onDelete: Cascade)
 }
 
 model Event {
@@ -106,7 +106,7 @@ model Event {
   eCardId    String   @unique
   end_time   String
   start_time String
-  ECard      ECard    @relation(fields: [eCardId], references: [id])
+  ECard      ECard    @relation(fields: [eCardId], references: [id], onDelete: Cascade)
 }
 
 model Donation {
@@ -116,7 +116,7 @@ model Donation {
   eCardId    String? @unique
   acc_name   String?
   acc_number String?
-  ECard      ECard?  @relation(fields: [eCardId], references: [id])
+  ECard      ECard?  @relation(fields: [eCardId], references: [id], onDelete: Cascade)
 }
 
 model Design {
@@ -133,11 +133,13 @@ model CardGallery {
   id      String  @id @default(cuid())
   url     String
   eCardId String?
-  ECard   ECard?  @relation(fields: [eCardId], references: [id])
+  ECard   ECard?  @relation(fields: [eCardId], references: [id], onDelete: Cascade)
 }
+
 
 model Voucher {
   code         String        @unique
+  active       Boolean       @default(true)
   description  String
   max_claims   Int
   count_claims Int           @default(0)
@@ -147,8 +149,8 @@ model Voucher {
 model UserVoucher {
   voucherId String
   userId    String
-  User      User    @relation(fields: [userId], references: [id])
-  Voucher   Voucher @relation(fields: [voucherId], references: [code])
+  User      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Voucher   Voucher @relation(fields: [voucherId], references: [code], onDelete: Cascade)
 
   @@id([userId, voucherId])
 }
