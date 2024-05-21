@@ -26,19 +26,20 @@ const DeleteButton = ({ children, onSubmit, loading }: DeleteButtonProps) => {
           Delete
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="w-3/4 rounded-lg">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete{" "}
-            {children} from our server.
-          </AlertDialogDescription>
+          <AlertDialogDescription>{children}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={onSubmit}
+          <AlertDialogCancel
             className={buttonVariants({ variant: "destructive" })}
+          >
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            className={`text-black ${buttonVariants({ variant: "outline" })}`}
+            onClick={onSubmit}
           >
             Continue
           </AlertDialogAction>

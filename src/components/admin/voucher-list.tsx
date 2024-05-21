@@ -27,7 +27,7 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
   const [loading, setLoading] = useState(false);
 
   const checkStatus = (voucher: VoucherProps) => {
-    if (voucher.count_claims >= voucher.max_claims) return "inactive";
+    if (voucher.count_claims >= voucher.max_claims) return "expired";
     if (voucher.active) return "active";
     return "inactive";
   };
@@ -93,7 +93,7 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
                 onSubmit={() => handleSubmit(voucher.code)}
                 loading={loading}
               >
-                voucher
+                Users who claimed this voucher will be deleted as well
               </DeleteButton>
             </TableCell>
           </TableRow>

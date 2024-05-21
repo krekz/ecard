@@ -44,7 +44,7 @@ const features = [
 const Pricing = () => {
   return (
     <section id="pricing" className="relative py-14">
-      <div className="max-w-screen-xl mx-auto text-gray-600 md:px-8">
+      <div className="max-w-screen-xl mx-auto text-gray-600 md:px-8 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, x: -100 }}
           whileInView={{ opacity: 1, x: 0 }}
