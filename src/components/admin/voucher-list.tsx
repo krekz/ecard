@@ -33,8 +33,6 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
   };
 
   const handleSubmit = async (code: string) => {
-    // NEED TO RECONSIDER SINCE THIS IS CLIENT COMPONENT
-    //  BUT THIS ACTIONS WORKS  ??!!!
     try {
       setLoading(true);
       const response = await deleteVoucher(code);

@@ -69,9 +69,7 @@ export const organizerSchema = z
     primary_font: z.string().min(1, "Font is required"),
     secondary_font: z.string().min(1, "Font is required"),
     qrcode: z
-      // .any()
       .custom<File | undefined>()
-      // .refine((file) => file.size < 1024 * 1024 * 2,"File must be less than 2MB")
       .refine(
         (file) =>
           !file || (file instanceof File && file.type.startsWith("image/")),
