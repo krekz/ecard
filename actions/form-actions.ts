@@ -337,9 +337,15 @@ export const voucherClaim = async (formData: FormData) => {
       where: {
         code: voucher_code,
       },
+      select: {
+        code: true,
+        count_claims: true,
+        max_claims: true,
+      },
     });
 
     if (!voucher) return { ok: false, message: "Voucher not found" };
+    if(voucher.count_claims >= voucher.max_claims) return { ok: false, message: "Voucher either expired or already claimed" };
 
     const existingClaim = await prisma.userVoucher.findUnique({
       where: {
