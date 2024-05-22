@@ -41,14 +41,6 @@ export const createCard = async (formData: FormData) => {
       youtube_url,
     } = organizerSchema.parse(values);
 
-    // validate the choosen design and pass to the card
-    const design = await prisma.design.findUnique({
-      where: {
-        designId: design_id,
-      },
-    });
-    if (!design) throw new Error("Design not exists");
-
     const user = await prisma.user.findUnique({
       where: {
         id: session?.user?.id,
@@ -56,10 +48,18 @@ export const createCard = async (formData: FormData) => {
     });
     if (!user) throw new Error("User not exists");
 
+    // validate the choosen design and pass to the card
+    const design = await prisma.design.findUnique({
+      where: {
+        designId: design_id,
+      },
+    });
+    if (!design) return { ok: false, message: "Design not exists" };
+    
     const { data, error } = await supabase.storage
       .from("e-card bucket")
       .upload(
-        `${user.id}/qrcode/qr-${uuidv4()}`,
+        `users/${user.id}/qrcode/qr-${uuidv4()}`,
         formData.get("qrcode") as File
       );
     if (data) {
@@ -130,7 +130,7 @@ export const createCard = async (formData: FormData) => {
 
     // get the auto generate ID in DB
     const { id } = card;
-    return { ok: true, id , message: "Card created"};
+    return { ok: true, id, message: "Card created" };
   } catch (error) {
     console.log(error);
   }
@@ -199,9 +199,7 @@ export const updateCard = async (
         },
       });
 
-      if (!design) {
-        throw new Error("Design not found");
-      }
+      if (!design) return { ok: false, message: "Design not found" };
 
       const promises = [];
 
@@ -242,19 +240,22 @@ export const updateCard = async (
       });
       promises.push(eventUpdatePromise);
 
-      let getQr_url = undefined;
-      if (!donationId) {
-        // check if user submit qrcode
+      let getQr_url: string | undefined = undefined;
+
+      const uploadQrCode = async (qrcode: File, userId: string) => {
+        const { data, error } = await supabase.storage
+          .from("e-card bucket")
+          .upload(`users/${userId}/qrcode/qr-${uuidv4()}`, qrcode);
+        if (error) {
+          console.error(error);
+          throw new Error("Failed to upload QR code");
+        }
+        return data?.path;
+      };
+
+      const handleDonationCreation = async () => {
         if (qrcode) {
-          const { data, error } = await supabase.storage
-            .from("e-card bucket")
-            .upload(`${userId}/qrcode/qr-${uuidv4()}`, qrcode as File);
-          if (data) {
-            console.log(data);
-            getQr_url = data.path;
-          } else {
-            console.log(error);
-          }
+          getQr_url = await uploadQrCode(qrcode as File, userId!);
         }
 
         if (qrcode || acc_name || acc_number || bank) {
@@ -269,36 +270,22 @@ export const updateCard = async (
           });
           promises.push(donationCreatePromise);
         }
-      } else {
+      };
+
+      const handleDonationUpdate = async () => {
         const { data: list } = await supabase.storage
           .from("e-card bucket")
-          .list(`${userId}/qrcode`);
-        // Qr existed in DB?
-        //Only allow 1 Qr
-        if ((list?.length ?? 0) >= 1 && qrcode) {
-          const removedFiles = list?.map(
-            (img) => `${userId}/qrcode/${img.name}`
+          .list(`users/${userId}/qrcode`);
+
+        if (list && list.length >= 1 && qrcode) {
+          const removedFiles = list.map(
+            (img) => `users/${userId}/qrcode/${img.name}`
           );
-          await supabase.storage
-            .from("e-card bucket")
-            .remove(removedFiles as string[]);
-          const { data, error } = await supabase.storage
-            .from("e-card bucket")
-            .upload(`${userId}/qrcode/qr-${uuidv4()}`, qrcode as File);
-          if (data) {
-            getQr_url = data.path;
-          } else {
-            console.log(error);
-          }
-        } else {
-          const { data, error } = await supabase.storage
-            .from("e-card bucket")
-            .upload(`${userId}/qrcode/qr-${uuidv4()}`, qrcode as File);
-          if (data) {
-            getQr_url = data.path;
-          } else {
-            console.log(error);
-          }
+          await supabase.storage.from("e-card bucket").remove(removedFiles);
+        }
+
+        if (qrcode) {
+          getQr_url = await uploadQrCode(qrcode as File, userId!);
         }
 
         const donationUpdatePromise = prisma.donation.update({
@@ -313,12 +300,22 @@ export const updateCard = async (
           },
         });
         promises.push(donationUpdatePromise);
+      };
+
+      try {
+        if (!donationId) {
+          await handleDonationCreation();
+        } else {
+          await handleDonationUpdate();
+        }
+      } catch (error) {
+        console.error(error);
       }
 
       await Promise.all(promises);
-      return { ok: true, message: "Card updated" };
-
       revalidatePath(`/api/card/${cardId}`);
+
+      return { ok: true, message: "Card updated" };
     } catch (error) {
       console.log(error);
     }
@@ -345,7 +342,11 @@ export const voucherClaim = async (formData: FormData) => {
     });
 
     if (!voucher) return { ok: false, message: "Voucher not found" };
-    if(voucher.count_claims >= voucher.max_claims) return { ok: false, message: "Voucher either expired or already claimed" };
+    if (voucher.count_claims >= voucher.max_claims)
+      return {
+        ok: false,
+        message: "Voucher either expired or already claimed",
+      };
 
     const existingClaim = await prisma.userVoucher.findUnique({
       where: {
