@@ -93,6 +93,11 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
               title: response.message,
               variant: "success",
             });
+          } else {
+            toast({
+              title: response?.message,
+              variant: "destructive",
+            });
           }
         } catch (error) {
           console.log(error);
@@ -117,6 +122,11 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           setTimeout(() => {
             router.push(`/preview/${response.id}`);
           }, redirectDelay);
+        } else {
+          toast({
+            title: response?.message,
+            variant: "destructive",
+          });
         }
       } catch (error) {
         console.log(error);
