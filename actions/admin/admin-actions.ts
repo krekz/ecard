@@ -41,42 +41,42 @@ export const uploadDesign = async (formData: FormData) => {
         message: "Image is required",
       };
     }
-    const titleToLower = design_name.toLowerCase();
-    const titleToUpper = design_name.toUpperCase();
+    const design_LOWERCASE = design_name.toLowerCase();
+    const design_UPPERCASE = design_name.toUpperCase();
 
     const supabase = createClient();
 
-    const images = [thumbnail, front_design, content_design];
-    const imageKeys = ["thubmnail", "front", "content"];
+    const images = { thumbnail, front_design, content_design };
+    let imagesUrl: { [key: string]: string } = {};
 
-    let imagesUrl = [];
-    for (let i = 0; i < images.length; i++) {
-      const { data, error } = await supabase.storage
-        .from("e-card bucket")
-        .upload(
-          `design/${titleToLower}/${imageKeys[i]}-${uuidv4()}`,
-          images[i] as File
-        );
+    for (const [key, value] of Object.entries(images)) {
+      if (value) {
+        const { data, error } = await supabase.storage
+          .from("e-card bucket")
+          .upload(
+            `design/${design_LOWERCASE}/${key}-${uuidv4()}`,
+            value as File
+          );
 
-      if (data) {
-        console.log(data);
-        imagesUrl.push(data);
-      } else {
-        console.log(error);
-        return {
-          ok: false,
-          message: "Error uploading images",
-        };
+        if (data) {
+          imagesUrl[key] = data.path;
+        } else {
+          console.log(error);
+          return {
+            ok: false,
+            message: "Error uploading images",
+          };
+        }
       }
     }
 
     await prisma.design.create({
       data: {
-        designId: titleToLower,
-        name: titleToUpper,
-        thumbnail: imagesUrl[0].path,
-        front_design_url: imagesUrl[1].path,
-        content_design_url: imagesUrl[2].path,
+        designId: design_LOWERCASE,
+        name: design_UPPERCASE,
+        thumbnail: imagesUrl.thumbnail,
+        front_design_url: imagesUrl.front_design,
+        content_design_url: imagesUrl.content_design,
         category: category,
       },
     });
@@ -182,9 +182,48 @@ export const updateDesign = async (formData: FormData, designName: string) => {
 
     for (const [key, value] of Object.entries(images)) {
       if (value) {
+        // Check if the image already exists
+        const { data: existingImage, error: checkError } =
+          await supabase.storage
+            .from("e-card bucket")
+            .list(`design/${design_LOWERCASE}`, {
+              search: `${key}-`,
+            });
+
+        if (checkError) {
+          console.log(checkError);
+          return {
+            ok: false,
+            message: "Error checking existing images",
+          };
+        }
+
+        // If the image exists, remove it
+        if (existingImage && existingImage.length > 0) {
+          const { error: removeError } = await supabase.storage
+            .from("e-card bucket")
+            .remove(
+              existingImage.map(
+                (img) => `design/${design_LOWERCASE}/${img.name}`
+              )
+            );
+
+          if (removeError) {
+            console.log(removeError);
+            return {
+              ok: false,
+              message: "Error removing existing images",
+            };
+          }
+        }
+
+        // Upload the new image
         const { data, error } = await supabase.storage
           .from("e-card bucket")
-          .upload(`design/${design_LOWERCASE}/${key}-${uuidv4()}`, value as File);
+          .upload(
+            `design/${design_LOWERCASE}/${key}-${uuidv4()}`,
+            value as File
+          );
 
         if (data) {
           imagesUrl[key] = data.path;
