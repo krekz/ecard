@@ -59,8 +59,8 @@ export const createCard = async (formData: FormData) => {
     const { data, error } = await supabase.storage
       .from("e-card bucket")
       .upload(
-        `users/${user.id}/qrcode/qr-${uuidv4()}`,
-        formData.get("qrcode") as File
+        `users/user-${user.id}/design-${design_id}/qrcode/qr-${uuidv4()}`,
+        qrcode as File
       );
     if (data) {
       console.log(data);
@@ -245,7 +245,7 @@ export const updateCard = async (
       const uploadQrCode = async (qrcode: File, userId: string) => {
         const { data, error } = await supabase.storage
           .from("e-card bucket")
-          .upload(`users/${userId}/qrcode/qr-${uuidv4()}`, qrcode);
+          .upload(`users/user-${userId}/design-${design_id}/qrcode/qr-${uuidv4()}`, qrcode);
         if (error) {
           console.error(error);
           throw new Error("Failed to upload QR code");
@@ -275,11 +275,11 @@ export const updateCard = async (
       const handleDonationUpdate = async () => {
         const { data: list } = await supabase.storage
           .from("e-card bucket")
-          .list(`users/${userId}/qrcode`);
+          .list(`users/user-${userId}/design-${design_id}/qrcode`);
 
         if (list && list.length >= 1 && qrcode) {
           const removedFiles = list.map(
-            (img) => `users/${userId}/qrcode/${img.name}`
+            (img) => `users/user-${userId}/design-${design_id}/qrcode/${img.name}`
           );
           await supabase.storage.from("e-card bucket").remove(removedFiles);
         }
@@ -313,7 +313,6 @@ export const updateCard = async (
       }
 
       await Promise.all(promises);
-      revalidatePath(`/api/card/${cardId}`);
 
       return { ok: true, message: "Card updated" };
     } catch (error) {
