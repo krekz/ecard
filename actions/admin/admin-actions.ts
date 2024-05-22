@@ -12,8 +12,13 @@ import { revalidatePath } from "next/cache";
 
 export const uploadDesign = async (formData: FormData) => {
   const values = Object.fromEntries(formData.entries());
-  const { category, design_name, front_design, content_design, thumbnail } =
-    uploadDesignSchema.parse(values);
+  const {
+    category,
+    design_name,
+    front_design_url,
+    content_design_url,
+    thumbnail_url,
+  } = uploadDesignSchema.parse(values);
 
   try {
     const session = await auth();
@@ -35,7 +40,7 @@ export const uploadDesign = async (formData: FormData) => {
     // TODO: session role != admin
     //TODO:  dynamically change the designId
 
-    if (!front_design || !content_design || !thumbnail) {
+    if (!front_design_url || !content_design_url || !thumbnail_url) {
       return {
         ok: false,
         message: "Image is required",
@@ -46,7 +51,7 @@ export const uploadDesign = async (formData: FormData) => {
 
     const supabase = createClient();
 
-    const images = { thumbnail, front_design, content_design };
+    const images = { thumbnail_url, front_design_url, content_design_url };
     let imagesUrl: { [key: string]: string } = {};
 
     for (const [key, value] of Object.entries(images)) {
@@ -74,9 +79,9 @@ export const uploadDesign = async (formData: FormData) => {
       data: {
         designId: design_LOWERCASE,
         name: design_UPPERCASE,
-        thumbnail: imagesUrl.thumbnail,
-        front_design_url: imagesUrl.front_design,
-        content_design_url: imagesUrl.content_design,
+        thumbnail_url: imagesUrl.thumbnail_url,
+        front_design_url: imagesUrl.front_design_url,
+        content_design_url: imagesUrl.content_design_url,
         category: category,
       },
     });
@@ -93,11 +98,9 @@ export const uploadDesign = async (formData: FormData) => {
 
 export const deleteDesign = async (formData: FormData) => {
   const values = Object.fromEntries(formData.entries());
-  console.log(values);
   const { choose_design } = deleteDesignSchema.parse(values);
   const supabase = createClient();
   const chooseDesign = choose_design.toLowerCase();
-  console.log(chooseDesign);
   try {
     const session = await auth();
     if (!session) throw new Error("Unauthorized access");
@@ -153,12 +156,17 @@ export const deleteDesign = async (formData: FormData) => {
 };
 
 export const updateDesign = async (formData: FormData, designName: string) => {
-  // TODO: admin role
   const values = Object.fromEntries(formData.entries());
-  const { category, design_name, front_design, content_design, thumbnail } =
-    updateDesignSchema.parse(values);
+  const {
+    category,
+    design_name,
+    front_design_url,
+    content_design_url,
+    thumbnail_url,
+  } = updateDesignSchema.parse(values);
   const newDesignName = design_name.toUpperCase();
   const design_LOWERCASE = designName.toLowerCase();
+  const newDesign_LOWERCASE = design_name.toLowerCase();
 
   try {
     const session = await auth();
@@ -177,12 +185,51 @@ export const updateDesign = async (formData: FormData, designName: string) => {
       };
     const supabase = createClient();
 
-    const images = { thumbnail, front_design, content_design };
+    const updateData: { [key: string]: any } = {
+      category,
+      name: newDesignName,
+      designId: newDesign_LOWERCASE,
+    };
+
+    const images = { thumbnail_url, front_design_url, content_design_url };
     let imagesUrl: { [key: string]: string } = {};
+
+    // Rename folder if design name has changed
+    if (design_LOWERCASE !== newDesign_LOWERCASE) {
+      const { data: files, error: listError } = await supabase.storage
+        .from("e-card bucket")
+        .list(`design/${design_LOWERCASE}`);
+
+      if (listError) {
+        console.error(listError);
+        return {
+          ok: false,
+          message: "Failed to list existing files",
+        };
+      }
+
+      const defaultPath = `design/${design_LOWERCASE}`;
+      for (const file of files) {
+        let getFileName = file.name.split("-")[0];
+        const newPath = `design/${newDesign_LOWERCASE}/${file.name}`;
+        const { error: moveError } = await supabase.storage
+          .from("e-card bucket")
+          .move(`${defaultPath}/${file.name}`, newPath);
+
+        if (moveError) {
+          console.error(moveError);
+          return {
+            ok: false,
+            message: "Failed to rename design folder",
+          };
+        }
+        updateData[getFileName] = newPath;
+        console.log("test", updateData[getFileName]);
+      }
+    }
 
     for (const [key, value] of Object.entries(images)) {
       if (value) {
-        // Check if the image already exists
         const { data: existingImage, error: checkError } =
           await supabase.storage
             .from("e-card bucket")
@@ -217,11 +264,10 @@ export const updateDesign = async (formData: FormData, designName: string) => {
           }
         }
 
-        // Upload the new image
         const { data, error } = await supabase.storage
           .from("e-card bucket")
           .upload(
-            `design/${design_LOWERCASE}/${key}-${uuidv4()}`,
+            `design/${newDesign_LOWERCASE}/${key}-${uuidv4()}`,
             value as File
           );
 
@@ -237,16 +283,12 @@ export const updateDesign = async (formData: FormData, designName: string) => {
       }
     }
 
-    const updateData: { [key: string]: any } = {
-      category,
-      name: newDesignName,
-    };
-
-    if (imagesUrl.thumbnail) updateData.thumbnail = imagesUrl.thumbnail;
-    if (imagesUrl.front_design)
-      updateData.front_design_url = imagesUrl.front_design;
-    if (imagesUrl.content_design)
-      updateData.content_design_url = imagesUrl.content_design;
+    if (imagesUrl.thumbnail_url)
+      updateData.thumbnail_url = imagesUrl.thumbnail_url;
+    if (imagesUrl.front_design_url)
+      updateData.front_design_url = imagesUrl.front_design_url;
+    if (imagesUrl.content_design_url)
+      updateData.content_design_url = imagesUrl.content_design_url;
 
     await prisma.design.update({
       where: {
