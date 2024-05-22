@@ -31,7 +31,7 @@ type DesignProps = {
     category: string;
     name: string;
     front_design_url: string;
-    thumbnail: string;
+    thumbnail_url: string;
   }[];
 };
 const EditDesign = ({ cards }: DesignProps) => {

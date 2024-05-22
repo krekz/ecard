@@ -17,7 +17,7 @@ export const getAllDesigns = async () => {
       designId: true,
       category: true,
       name: true,
-      thumbnail: true,
+      thumbnail_url: true,
       front_design_url:true,
     },
   });

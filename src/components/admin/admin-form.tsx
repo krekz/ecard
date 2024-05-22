@@ -58,9 +58,9 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
       form.reset({
         design_name: design.name,
         category: design.category,
-        thumbnail: undefined,
-        front_design: undefined,
-        content_design: undefined,
+        thumbnail_url: undefined,
+        front_design_url: undefined,
+        content_design_url: undefined,
       });
     }
   }, [design, form]);
@@ -165,7 +165,7 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
         />
         <FormField
           control={form.control}
-          name="thumbnail"
+          name="thumbnail_url"
           render={({ field: { value, ...fieldValues } }) => (
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
@@ -185,7 +185,7 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
         />
         <FormField
           control={form.control}
-          name="front_design"
+          name="front_design_url"
           render={({ field: { value, ...fieldValues } }) => (
             <FormItem>
               <FormLabel>Front Design</FormLabel>
@@ -205,7 +205,7 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
           )}
         />
         <FormField
-          name={`content_design`}
+          name={`content_design_url`}
           render={({ field: { value, ...fieldValues } }) => (
             <FormItem>
               <FormLabel>Content Design</FormLabel>

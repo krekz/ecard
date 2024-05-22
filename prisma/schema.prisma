@@ -125,7 +125,7 @@ model Design {
   designId           String  @unique
   content_design_url String
   front_design_url   String
-  thumbnail          String
+  thumbnail_url      String
   ECard              ECard[]
 }
 
@@ -135,7 +135,6 @@ model CardGallery {
   eCardId String?
   ECard   ECard?  @relation(fields: [eCardId], references: [id], onDelete: Cascade)
 }
-
 
 model Voucher {
   code         String        @unique
@@ -149,7 +148,7 @@ model Voucher {
 model UserVoucher {
   voucherId String
   userId    String
-  User      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   Voucher   Voucher @relation(fields: [voucherId], references: [code], onDelete: Cascade)
 
   @@id([userId, voucherId])

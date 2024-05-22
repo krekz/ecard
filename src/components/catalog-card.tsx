@@ -11,7 +11,7 @@ type TCards = {
   designId: string;
   category: string;
   name: string;
-  thumbnail: string;
+  thumbnail_url: string;
 };
 
 const CatalogCard = async ({
@@ -72,7 +72,7 @@ const CatalogCard = async ({
             >
               <Image
                 className="mx-auto p-3"
-                src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${card.thumbnail}`}
+                src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${card.thumbnail_url}`}
                 width={200}
                 height={200}
                 alt={card.name}
