@@ -15,8 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { voucherClaim } from "../../../actions/form-actions";
+import { useToast } from "../ui/use-toast";
 
 const VoucherClaim = () => {
+  const {toast}= useToast()
   const form = useForm<z.infer<typeof voucherClaimSchema>>({
     resolver: zodResolver(voucherClaimSchema),
     defaultValues: {
@@ -33,9 +35,16 @@ const VoucherClaim = () => {
     try{
       const response = await voucherClaim(formData)
       if(response?.ok){
-        alert(response.message)
+        toast({
+          title: response.message,
+          description: "You may now get free card",
+          variant: "success",
+        })
       }else{
-        alert(response?.message)
+       toast({
+        title:response?.message,
+        variant: "destructive",
+       })
       }
     }catch (error){
       console.log(error)
