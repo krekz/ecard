@@ -13,7 +13,7 @@ import { weekday } from "@/lib/constant";
 const ECard = ({ dataFromDB }: CardFormProps) => {
 
   if (!dataFromDB) return null;
-  const { event, donation, images, heirs, Design,primary_font } = dataFromDB;
+  const { event, donation,  heirs, Design,primary_font } = dataFromDB;
 //  const zoneDate = toZonedTime(event.date, 'Asia/Kuala_Lumpur')
 
 
@@ -25,7 +25,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
     <main className={cn("relative", getSecondaryFont?.font.className)}>
       <section className="relative h-screen max-w-[400px] mx-auto flex justify-center">
         <Image
-          src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${dataFromDB.Design.front_design_url}`}
+          src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${dataFromDB.Design?.front_design_url}`}
           alt={"background"}
           layout="fill"
           objectFit="cover"
@@ -66,7 +66,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
         <div
           className="absolute inset-0 object-cover"
           style={{
-            backgroundImage: `url(${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${dataFromDB.Design.content_design_url})`,
+            backgroundImage: `url(${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${dataFromDB.Design?.content_design_url})`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
             backgroundAttachment: "fixed",
@@ -83,7 +83,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
             <h1>{dataFromDB?.mother}</h1>
           </div>
 
-          <p className="text-md font-normal">{dataFromDB?.event.greeting}</p>
+          <p className="text-md font-normal">{dataFromDB?.event?.greeting}</p>
 
           <div className="flex flex-col  text-2xl font-medium italic  p-3 rounded-md bord bg-red-100/50 w-[350px]">
             <h1>{dataFromDB?.bride}</h1>
@@ -94,7 +94,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
           <div className="flex flex-col items-center">
             <HiCalendar size={25} />
             <h2 className="text-amber-700 text-2xl">
-              {event.date
+              {event?.date
                 ? weekday[new Date(event.date).getDay()] +
                   ", " +
                   format(event.date, "dd/L/y")
@@ -109,8 +109,8 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
 
           <div className="flex flex-col items-center">
             <HiLocationMarker size={25} />
-            <h2 className="text-amber-700 text-2xl">{event.venue}</h2>
-            <p className="font-light text-base">{event.address}</p>
+            <h2 className="text-amber-700 text-2xl">{event?.venue}</h2>
+            <p className="font-light text-base">{event?.address}</p>
           </div>
           {/* KIV */}
           <div className="flex flex-col items-center gap-2">
@@ -125,7 +125,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
             </div>
           </div>
 
-          <Countdown event_date={event.date} secondary_font={getSecondaryFont} />
+          <Countdown event_date={event?.date} secondary_font={getSecondaryFont} />
 
           <CardCarousel />
         </div>

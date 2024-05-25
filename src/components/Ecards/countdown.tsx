@@ -2,9 +2,15 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { getFont } from "@/lib/utils";
-import { TFonts} from "@/lib/types";
+import { TFonts } from "@/lib/types";
 
-const Countdown = ({ event_date, secondary_font }: { event_date: Date, secondary_font: TFonts | undefined }) => {
+const Countdown = ({
+  event_date,
+  secondary_font,
+}: {
+  event_date: Date | undefined;
+  secondary_font: TFonts | undefined;
+}) => {
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -12,6 +18,7 @@ const Countdown = ({ event_date, secondary_font }: { event_date: Date, secondary
     seconds: 0,
   });
   useEffect(() => {
+    if (!event_date) return;
     const targetDate = new Date(event_date);
     const interval = setInterval(() => {
       const now = new Date();

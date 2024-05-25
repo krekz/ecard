@@ -11,9 +11,9 @@ import Image from "next/image";
 
 type ContactProp = {
   heirs: {
-    name?: string;
-    phone_number?: string;
-    relationship?: string;
+    name?: string | null;
+    phone_number?: string | null;
+    relationship?: string | null;
   }[];
 };
 
@@ -58,13 +58,12 @@ type DonateDrawerContentProps = {
   donation: {
     id?: number;
     name?: string;
-    bank?: string;
+    bank?: string | null;
     accountNo?: string;
-    qrCode?: string;
+    qrCode?: string | null;
   };
-
 };
-export function DonateDrawerContent({ donation}: DonateDrawerContentProps) {
+export function DonateDrawerContent({ donation }: DonateDrawerContentProps) {
   return (
     <>
       <h1>{donation.name}</h1>
@@ -99,9 +98,9 @@ export function CalendarDrawerContent({
 
 type LocationProps = {
   location: {
-    venue?: string | undefined;
-    gMap?: string | undefined;
-    address?: string | undefined;
+    venue?: string;
+    gMap?: string | null;
+    address?: string;
   };
 };
 
