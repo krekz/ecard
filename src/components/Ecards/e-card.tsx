@@ -8,6 +8,7 @@ import CardCarousel from "@/components/Ecards/card-carousel";
 import { CardFormProps } from "@/lib/types";
 import Countdown from "./countdown";
 import { getFont } from "@/lib/utils";
+import { weekday } from "@/lib/constant";
 
 const ECard = ({ dataFromDB }: CardFormProps) => {
 
@@ -15,24 +16,16 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
   const { event, donation, images, heirs, Design,primary_font } = dataFromDB;
 //  const zoneDate = toZonedTime(event.date, 'Asia/Kuala_Lumpur')
 
-  const weekday = [
-    "Ahad",
-    "Isnin",
-    "Selasa",
-    "Rabu",
-    "Khamis",
-    "Jumaat",
-    "Sabtu",
-  ];
+
 
 
   const getPrimaryFont = getFont(dataFromDB.primary_font);
   const getSecondaryFont = getFont(dataFromDB.secondary_font)
   return (
-    <main className={cn("relative", getPrimaryFont?.font.className)}>
+    <main className={cn("relative", getSecondaryFont?.font.className)}>
       <section className="relative h-screen max-w-[400px] mx-auto flex justify-center">
         <Image
-          src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${dataFromDB.Design.front_design_url}`}
+          src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${dataFromDB.Design.front_design_url}`}
           alt={"background"}
           layout="fill"
           objectFit="cover"
@@ -43,7 +36,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
           <div
             className={cn(
               "flex flex-col text-center text-5xl font-medium",
-              getSecondaryFont?.font.className
+              getPrimaryFont?.font.className
             )}
           >
             <h1>
@@ -73,7 +66,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
         <div
           className="absolute inset-0 object-cover"
           style={{
-            backgroundImage: `url(https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${dataFromDB.Design.content_design_url})`,
+            backgroundImage: `url(${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${dataFromDB.Design.content_design_url})`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
             backgroundAttachment: "fixed",

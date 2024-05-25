@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 const getDetailPage = async (id: string) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/card/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/card/${id}`, {
       cache: "no-cache",
     });
 

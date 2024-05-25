@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 const getCardContent = async (cardId: string | string[] | undefined) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/card/${cardId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/card/${cardId}`, {
       method: "GET",
       cache: "no-cache",
     });
