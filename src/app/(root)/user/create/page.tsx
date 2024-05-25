@@ -1,6 +1,7 @@
 import CardForm from "@/components/forms/form";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import FormNavbar from "@/components/forms/form-navbar";
 
 const CreateCardPage = async ({
   searchParams,
@@ -12,9 +13,10 @@ const CreateCardPage = async ({
   if (!session)
     redirect(`/api/auth/signin?callbackUrl=/user/create?design_id=${designId}`);
 
-
   return (
     <>
+      <h1 className="font-bold text-5xl pt-20 text-center">Create TEAcard</h1>
+      <FormNavbar />
       <CardForm user={session?.user} />
     </>
   );

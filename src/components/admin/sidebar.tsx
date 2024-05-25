@@ -1,5 +1,17 @@
 "use client";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetPortal,
+  SheetClose,
+} from "@/components/ui/sheet";
+
 import { signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,6 +23,7 @@ import {
   LuSettings,
 } from "react-icons/lu";
 import { Button } from "../ui/button";
+import { Session } from "next-auth";
 
 const navigation = [
   {
@@ -68,89 +81,100 @@ const navsFooter = [
   },
 ];
 
-const Sidebar = () => {
-  const { data: session } = useSession();
-  return (
-    <>
-      <nav className="fixed top-0 left-0 w-full h-full border-r bg-white space-y-8 sm:w-44 z-20">
-        <div className="flex flex-col h-full">
-          <div className="h-20 flex items-center px-8">
-            <Link href="/auth/admin" className="flex-none">
-              {/* <Image
-                src="https://floatui.com/logo.svg"
-                width={140}
-                height={140}
-                className="mx-auto"
-                alt="logo"
-              /> */}
-            </Link>
-          </div>
-          <div className="flex-1 flex flex-col h-full overflow-auto">
-            <ul className="px-4 text-sm font-medium flex-1">
-              {navigation.map((item, idx) => (
-                <li key={idx}>
-                  <Link
-                    href={item.href}
-                    className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-50 active:bg-gray-100 duration-150"
-                  >
-                    <div className="text-gray-500">{item.icon}</div>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+const SidebarContent = ({ session }: { session: Session }) => (
+  <div className="flex flex-col h-full">
+    <div className="h-20 flex items-center px-8">
+      <Link href="/auth/admin" className="flex-none">
+        {/* <Image
+          src="https://floatui.com/logo.svg"
+          width={140}
+          height={140}
+          className="mx-auto"
+          alt="logo"
+        /> */}
+      </Link>
+    </div>
+    <div className="flex-1 flex flex-col h-full overflow-auto">
+      <ul className="px-4 sm:text-md text-sm font-medium flex-1">
+        {navigation.map((item, idx) => (
+          <li key={idx}>
+                <Link
+                  href={item.href}
+                  className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
+                >
+                  <div className="text-gray-500 ">{item.icon}</div>
+                  {item.name}
+                </Link>
+          </li>
+        ))}
+      </ul>
+      <div>
+        <ul className="px-4 pb-4 text-sm sm:text-md font-medium">
+          {navsFooter.map((item, idx) => (
+            <li key={idx}>
+              {navsFooter.length === idx + 1 ? (
+                <Button
+                  variant="ghost"
+                  className="w-full flex items-center justify-start gap-x-2 text-gray-600 p-2 rounded-lg duration-150"
+                  onClick={item.href as () => void}
+                >
+                  <div className="text-gray-500">{item.icon}</div>
+                  {item.name}
+                </Button>
+              ) : (
+                <Link
+                  href={item.href as string}
+                  className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
+                >
+                  <div className="text-gray-500">{item.icon}</div>
+                  {item.name}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div className="py-4 px-4 border-t">
+          <div className="flex items-center gap-x-4">
+            <Image
+              src={session?.user?.image || ""}
+              width={40}
+              height={40}
+              className="rounded-full"
+              alt="avatar"
+            />
             <div>
-              <ul className="px-4 pb-4 text-sm font-medium">
-                {navsFooter.map((item, idx) => (
-                  <li key={idx}>
-                    {navsFooter.length === idx + 1 ? (
-                      // Logout button
-                      <Button
-                        variant="ghost"
-                        className="w-full flex items-center justify-start gap-x-2 text-gray-600 p-2 rounded-lg duration-150"
-                        onClick={item.href as () => void}
-                      >
-                        <div className="text-gray-500">{item.icon}</div>
-                        {item.name}
-                      </Button>
-                    ) : (
-                      <Link
-                        href={item.href as string}
-                        className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-50 active:bg-gray-100 duration-150"
-                      >
-                        <div className="text-gray-500">{item.icon}</div>
-                        {item.name}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <div className="py-4 px-4 border-t">
-                <div className="flex items-center gap-x-4">
-                  <Image
-                    src={session?.user?.image || ""}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                    alt="avatar"
-                  />
-                  <div>
-                    <span className="block text-gray-700 text-sm font-semibold">
-                      {session?.user?.name}
-                    </span>
-                    <Link
-                      href="/auth/admin"
-                      className="block mt-px text-gray-600 hover:text-indigo-600 text-xs"
-                    >
-                      Admin
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <span className="block text-gray-700 text-sm font-semibold">
+                {session?.user?.name}
+              </span>
+              <Link
+                href="/auth/admin"
+                className="block mt-px text-gray-600 hover:text-indigo-600 text-xs"
+              >
+                Admin
+              </Link>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+);
+
+const Sidebar = () => {
+  const { data: session } = useSession();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <nav className="hidden sm:block fixed top-0 left-0 h-full border-r bg-white space-y-8 sm:w-72 z-20">
+        <SidebarContent session={session!} />
       </nav>
+      <Sheet>
+        <SheetTrigger className="sm:hidden">Open</SheetTrigger>
+        <SheetContent side="left" className="w-1/2 p-0">
+            <SidebarContent session={session!} />
+        </SheetContent>
+      </Sheet>
     </>
   );
 };

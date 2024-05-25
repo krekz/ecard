@@ -13,6 +13,7 @@ import DeleteButton from "@/components/delete-button";
 import { cn } from "@/lib/utils";
 import { deleteVoucher } from "../../../actions/admin/voucher-actions";
 import { useState } from "react";
+import { LuX } from "react-icons/lu";
 
 type VoucherProps = {
   code: string;
@@ -50,54 +51,66 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
     }
   };
   return (
-    <Table className="w-1/2 mx-auto">
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>No</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="w-[100px]">Code</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Claimed</TableHead>
-          <TableHead>Manage</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {vouchers.map((voucher, index) => (
-          <TableRow
-            key={index}
-            className={cn(
-              checkStatus(voucher) === "active" ? "" : "bg-gray-100"
-            )}
-          >
-            <TableCell className="font-medium">{index + 1}</TableCell>
-            <TableCell>
-              <span
+    <>
+      {vouchers && vouchers.length > 0 ? (
+        <Table className="mx-auto rounded-lg shadow-lg p-0">
+          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>No</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead >Code</TableHead>
+              <TableHead className="w-[200px]">Description</TableHead>
+              <TableHead>Claimed</TableHead>
+              <TableHead>Manage</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {vouchers.map((voucher, index) => (
+              <TableRow
+                key={index}
                 className={cn(
-                  "py-2 px-3 rounded-md capitalize",
-                  checkStatus(voucher) === "active"
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-100 "
+                  checkStatus(voucher) === "active" ? "" : "bg-gray-100"
                 )}
               >
-                {checkStatus(voucher)}
-              </span>
-            </TableCell>
-            <TableCell>{voucher.code}</TableCell>
-            <TableCell>{voucher.description}</TableCell>
-            <TableCell>{`${voucher.count_claims} / ${voucher.max_claims}`}</TableCell>
-            <TableCell className="space-y-2 md:space-x-2">
-              <DeleteButton
-                onSubmit={() => handleSubmit(voucher.code)}
-                loading={loading}
-              >
-                Users who claimed this voucher will be deleted as well
-              </DeleteButton>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>
+                  <span
+                    className={cn(
+                      "py-2 px-3 rounded-md capitalize",
+                      checkStatus(voucher) === "active"
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-100 "
+                    )}
+                  >
+                    {checkStatus(voucher)}
+                  </span>
+                </TableCell>
+                <TableCell>{voucher.code}</TableCell>
+                <TableCell>
+                  {voucher.description}
+                </TableCell>
+                <TableCell>{`${voucher.count_claims} / ${voucher.max_claims}`}</TableCell>
+                <TableCell className="space-y-2 md:space-x-2">
+                  <DeleteButton
+                    onSubmit={() => handleSubmit(voucher.code)}
+                    loading={loading}
+                  >
+                    Users who claimed this voucher will be deleted as well
+                  </DeleteButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <>
+          <div className="col-span-3 h-20 text-center bg-red-500 p-5 w-full rounded-lg text-white font-semibold shadow-lg">
+            <p>No vouchers found</p>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

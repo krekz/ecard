@@ -7,6 +7,7 @@ import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import NavDropdown, { User } from "./navbar-dropdown";
 
+
 const navigation = [
   { title: "Catalog", path: "/catalog" },
   { title: "Pricing", path: "../#pricing" },
@@ -19,11 +20,11 @@ const Navbar = () => {
   const [state, setState] = useState(false);
 
   return (
-    <nav className=" bg-white border-b w-full z-20 fixed md:text-sm md:border-none">
+    <nav className=" bg-purple-50  border-b w-full z-20 fixed md:text-sm md:border-none">
       <div className="items-center px-4 container mx-auto md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <Link href="/" className="text-2xl font-bold">
-            #TELEKUNGTEA
+            #CardTEA
           </Link>
           <div className="md:hidden">
             <button
