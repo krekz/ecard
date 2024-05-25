@@ -4,6 +4,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 // import {Toaster} from 'react-hot-toast'
 import { Toaster } from "@/components/ui/toaster";
+import Loglib from "@loglib/tracker/react";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -25,6 +26,11 @@ export default function RootLayout({
       <body className="min-h-screen bg-pink-100/50 font-sans antialiased ">
         <Toaster />
         {children}
+        <Loglib
+          config={{
+            id: "e-card-test-tea",
+          }}
+        />
       </body>
     </html>
   );
