@@ -16,6 +16,10 @@ type CardProps = {
   userId: string;
   couple: string;
   updatedAt: Date;
+  Design: {
+    designId: string;
+    front_design_url: string;
+  };
 };
 
 const InvoiceTable = ({ card }: { card: CardProps }) => {
@@ -32,7 +36,7 @@ const InvoiceTable = ({ card }: { card: CardProps }) => {
           </TableCell>
           <TableCell className="space-y-2 md:space-x-2">
             <Button asChild variant="secondary">
-              <Link className="w-full md:w-auto" href={`/user/edit?id=${card.id}`}>Edit</Link>
+              <Link className="w-full md:w-auto" href={`/user/edit?id=${card.id}&design_id=${card.Design.designId}`}>Edit</Link>
             </Button>
             <Button asChild>
               <Link className="w-full md:w-auto" target="_blank" href={`/preview/${card.id}`}>

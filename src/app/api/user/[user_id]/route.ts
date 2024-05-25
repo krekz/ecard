@@ -25,6 +25,12 @@ export async function GET(
             userId: true,
             couple: true,
             updatedAt:true,
+            Design: {
+              select: {
+                designId: true,
+                front_design_url: true,
+              },
+            },
             //  TODO : status:true,
           },
           orderBy: {

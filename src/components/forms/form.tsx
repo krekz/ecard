@@ -14,6 +14,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import FormButton from "../button";
 import { Button } from "../ui/button";
 import PromptAlert from "../alert";
+import CardFormPreview from "./cardform-preview";
+import VoucherClaim from "./voucher-claim";
 
 const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   const { toast } = useToast();
@@ -80,29 +82,21 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
     try {
       // update card if props exist
       if (dataFromDB) {
-        try {
-          const response = await updateCard(formData, {
-            cardId: dataFromDB.id,
-            eventId: dataFromDB.event?.id,
-            donationId: dataFromDB.donation?.id,
-            userId: user?.id,
-            // heirsId: dataFromDB.heirs.map((heir) => heir.id),
-          });
-          if (response?.ok) {
-            toast({
-              title: response.message,
-              variant: "success",
-            });
-          } else {
-            toast({
-              title: response?.message,
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          console.log(error);
+        const response = await updateCard(formData, {
+          cardId: dataFromDB.id,
+          eventId: dataFromDB.event?.id,
+          donationId: dataFromDB.donation?.id,
+          userId: user?.id,
+          // heirsId: dataFromDB.heirs.map((heir) => heir.id),
+        });
+        if (response?.ok) {
           toast({
-            title: "An error occurred while updating the card",
+            title: response.message,
+            variant: "success",
+          });
+        } else {
+          toast({
+            title: response?.message,
             variant: "destructive",
           });
         }
@@ -110,28 +104,20 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
       }
 
       //else create new card
-      try {
-        const response = await createCard(formData);
-        if (response?.ok) {
-          toast({
-            title: response?.message,
-            variant: "success",
-          });
-
-          const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
-          setTimeout(() => {
-            router.push(`/preview/${response.id}`);
-          }, redirectDelay);
-        } else {
-          toast({
-            title: response?.message,
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        console.log(error);
+      const response = await createCard(formData);
+      if (response?.ok) {
         toast({
-          title: "An error occurred while creating the card",
+          title: response?.message,
+          variant: "success",
+        });
+
+        const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
+        setTimeout(() => {
+          router.push(`/preview/${response.id}`);
+        }, redirectDelay);
+      } else {
+        toast({
+          title: response?.message,
           variant: "destructive",
         });
       }
@@ -153,11 +139,12 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-5 w-full items-center">
+    <div className="grid grid-cols-3 p-5 gap-5 container">
       <FormProvider {...form}>
+        {/* Main content (form) */}
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-3 w-full sm:w-3/4 2xl:w-1/2"
+          className="col-span-2 flex flex-col gap-5 space-y-3 w-full  "
         >
           {currentStep === 1 && <StepOne />}
           {currentStep === 2 && <StepTwo />}
@@ -175,27 +162,38 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
               )}
             </>
           )}
-        </form>
-      </FormProvider>
 
-      {/* Next and prev button */}
-      <div className="flex flex-row flex-wrap  gap-3">
-        <Button
-          variant="outline"
-          className="w-32"
-          disabled={currentStep === 1}
-          onClick={handlePrevStep}
+          <div className="flex flex-row flex-wrap  gap-3">
+            <Button
+              variant="outline"
+              type="button"
+              className="w-32"
+              disabled={currentStep === 1}
+              onClick={handlePrevStep}
+            >
+              Back
+            </Button>
+            <Button
+              type="button"
+              className="w-32"
+              disabled={currentStep === 3}
+              onClick={handleNextStep}
+            >
+              Next
+            </Button>
+          </div>
+        </form>
+        <div
+          className="flex flex-col gap-5 w-full rounded-lg p-3 "
+          style={{
+            backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)",
+          }}
         >
-          Back
-        </Button>
-        <Button
-          className="w-32"
-          disabled={currentStep === 3}
-          onClick={handleNextStep}
-        >
-          Next
-        </Button>
-      </div>
+          {/* Preview and Voucher on sidebar */}
+          <CardFormPreview />
+          {!dataFromDB && <VoucherClaim />}
+        </div>
+      </FormProvider>
     </div>
   );
 };

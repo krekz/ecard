@@ -16,11 +16,15 @@ export type userCard = {
     userId: string;
     couple: string;
     updatedAt: Date;
+    Design: {
+      designId: string;
+      front_design_url: string;
+    };
   }[];
 };
 
 const getUserCards = async (user_id: string | undefined) => {
-  const res = await fetch(`http://localhost:3000/api/user/${user_id}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/user/${user_id}`);
   const data: userCard = await res.json();
   return data;
 };
