@@ -24,7 +24,7 @@ const eventSchema = z.object({
   // end_time: z.string(),
   venue: z.string().min(1, { message: "Event venue is required" }),
   address: z.string().min(1, { message: "Event address is required" }),
-  google_map: z.string().url().optional().or(z.literal("")),
+  google_map: z.string().url().optional().nullable().or(z.literal("")),
   greeting: z.string().min(1, { message: "Event greeting is required" }),
 });
 
@@ -32,12 +32,14 @@ const donationSchema = z.object({
   acc_name: z
     .string()
     // .regex(stringRegex, { message: "Invalid format" })
-    .optional(),
-  acc_number: z.string().optional(),
+    .optional()
+    .nullable(),
+  acc_number: z.string().optional().nullable(),
   bank: z
     .string()
     // .regex(stringRegex, { message: "Invalid format" })
-    .optional(),
+    .optional()
+    .nullable(),
 });
 
 export const organizerSchema = z
