@@ -1,21 +1,21 @@
 "use client";
-
 // import toast from "react-hot-toast";
 import { useToast } from "@/components/ui/use-toast";
-import { StepOne, StepThree, StepTwo } from "./steps";
 import useStore from "@/store/store";
 import { useForm, FormProvider } from "react-hook-form";
 import { organizerSchema } from "../../../schema/zod/ecard-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createCard, updateCard } from "../../../actions/form-actions";
+import { createCard, updateCard } from "../../../actions/card-actions";
 import { CardFormProps } from "@/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import FormButton from "../button";
 import { Button } from "../ui/button";
 import PromptAlert from "../alert";
 import CardFormPreview from "./cardform-preview";
 import VoucherClaim from "./voucher-claim";
+import StepOne from "./steps/step-one";
+import StepTwo from "./steps/step-two";
+import StepThree from "./steps/step-three";
 
 const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   const { toast } = useToast();
@@ -37,17 +37,17 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           youtube_url: dataFromDB.youtubeURL,
           primary_font: dataFromDB.primary_font,
           secondary_font: dataFromDB.secondary_font,
-          date: dataFromDB.event.date,
-          address: dataFromDB.event.address,
-          greeting: dataFromDB.event.greeting,
-          google_map: dataFromDB.event.gMap,
+          date: dataFromDB.event?.date,
+          address: dataFromDB.event?.address,
+          greeting: dataFromDB.event?.greeting,
+          google_map: dataFromDB.event?.gMap,
           // start_time: "",
           // end_time: "",
-          venue: dataFromDB.event.venue,
+          venue: dataFromDB.event?.venue,
 
-          acc_name: dataFromDB.donation?.name,
+          acc_name: dataFromDB.donation?.acc_name,
           bank: dataFromDB.donation?.bank,
-          acc_number: dataFromDB.donation?.accountNo,
+          acc_number: dataFromDB.donation?.acc_number,
         }
       : {
           father: "",
@@ -130,25 +130,20 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
     }
   };
 
-  const handleNextStep = () => {
-    useStore.setState({ currentStep: currentStep + 1 });
-  };
+  const handleNextStep = () => useStore.setState({ currentStep: currentStep + 1 });
 
-  const handlePrevStep = () => {
-    useStore.setState({ currentStep: currentStep - 1 });
-  };
+  const handlePrevStep = () => useStore.setState({ currentStep: currentStep - 1 });
 
   return (
-    <div className="grid grid-cols-3 p-5 gap-5 container">
+    <div className="grid grid-cols-1 md:grid-cols-3 md:p-5 gap-5 container">
       <FormProvider {...form}>
         {/* Main content (form) */}
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="col-span-2 flex flex-col gap-5 space-y-3 w-full  "
+          className="md:col-span-2 flex flex-col gap-5 space-y-3 w-full  "
         >
           {currentStep === 1 && <StepOne />}
           {currentStep === 2 && <StepTwo />}
-
           {/* Display submit / update button */}
           {currentStep === 3 && (
             <>
@@ -184,7 +179,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           </div>
         </form>
         <div
-          className="flex flex-col gap-5 w-full rounded-lg p-3 "
+          className="flex flex-col gap-5 w-full rounded-lg p-3 order-first md:order-last "
           style={{
             backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)",
           }}
