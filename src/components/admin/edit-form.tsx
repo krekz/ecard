@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { deleteDesignSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
-import { deleteDesign } from "../../../actions/admin/admin-actions";
+import { deleteDesign } from "../../../actions/admin/design-actions";
 import DesignForm from "./admin-form";
 import { useState } from "react";
 import DeleteButton from "@/components/delete-button";

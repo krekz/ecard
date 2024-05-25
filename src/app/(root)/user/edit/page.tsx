@@ -2,23 +2,8 @@ import CardForm from "@/components/forms/form";
 import FormNavbar from "@/components/forms/form-navbar";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-
-const getCardContent = async (cardId: string | string[] | undefined) => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/card/${cardId}`, {
-      method: "GET",
-      cache: "no-cache",
-    });
-    if (!response.ok) {
-      throw new Error("Card not found or API error");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Failed to fetch card content:", error);
-    throw error;
-  }
-};
+import { GetCardDetail } from "../../../../../actions/card-actions";
+import { checkDate } from "@/lib/utils";
 
 const EditCardPage = async ({
   params,
@@ -34,16 +19,29 @@ const EditCardPage = async ({
   if (!cardId || typeof cardId !== "string") redirect("/user/cards");
 
   try {
-    const userCard = await getCardContent(cardId);
-    if (userCard.userId !== session?.user?.id) {
+    const userCard = await GetCardDetail(cardId);
+    if (userCard?.data?.userId !== session?.user?.id) {
       throw new Error("Unauthorized access");
     }
+    const disableEdit = checkDate(userCard?.data?.event?.date)
+    if(disableEdit) {
+      throw new Error("Cannot edit no more..")
+    }
+    const transformedData = {
+      ...userCard?.data,
+      heirs: Array.isArray(userCard?.data?.heirs) ? userCard?.data?.heirs : [],
+    };
+
+    // if (userCard?.id !== session?.user?.id) {
+    //   throw new Error("Unauthorized access");
+    // }
 
     return (
       <>
+        <h1 className="font-bold text-5xl pt-20 text-center">Edit TEAcard</h1>
         <FormNavbar />
         <div className="flex justify-center">
-          <CardForm dataFromDB={userCard} user={session?.user} />
+          <CardForm dataFromDB={transformedData} user={session?.user} />
         </div>
       </>
     );

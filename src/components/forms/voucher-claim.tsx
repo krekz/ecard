@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { voucherClaim } from "../../../actions/form-actions";
+import { voucherClaim } from "../../../actions/card-actions";
 import { useToast } from "../ui/use-toast";
 
 const VoucherClaim = () => {

@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import { GetCards } from "../../../../../actions/card-actions";
 
 export type userCard = {
   cards: {
@@ -20,23 +21,20 @@ export type userCard = {
       designId: string;
       front_design_url: string;
     };
+    event: {
+      date: Date;
+    };
   }[];
-};
-
-const getUserCards = async (user_id: string | undefined) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/user/${user_id}`);
-  const data: userCard = await res.json();
-  return data;
 };
 
 const UserProfilePage = async () => {
   const session = await auth();
   if (!session) redirect("/api/auth/signin");
-  const userCards = await getUserCards(session?.user?.id);
+  const getAllCards = await GetCards(session.user?.id);
   return (
     // TODO : pagination
     <>
-      {userCards.cards.length === 0 ? (
+      {getAllCards?.length === 0 ? (
         <div className="max-w-screen-xl mx-auto px-4 flex flex-col items-start justify-center h-screen md:px-8">
           <div className="max-w-lg mx-auto space-y-3 text-center">
             <h3 className="text-indigo-600 font-semibold">Uh ohh..</h3>
@@ -55,7 +53,7 @@ const UserProfilePage = async () => {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col max-w-2xl mx-auto py-24 gap-5">
+        <div className="flex flex-col container mx-auto py-24 gap-5">
           <h1 className="text-center font-bold text-2xl">Purchased cards</h1>
           <Table>
             <TableCaption>A list of your recent cards.</TableCaption>
@@ -64,9 +62,10 @@ const UserProfilePage = async () => {
                 <TableHead className="w-[100px]">Name</TableHead>
                 <TableHead>Last updated</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Wedding date</TableHead>
               </TableRow>
             </TableHeader>
-            {userCards.cards.map((card) => (
+            {getAllCards?.map((card) => (
               <InvoiceTable key={card.id} card={card} />
             ))}
           </Table>

@@ -28,7 +28,7 @@ import {
 import {
   updateDesign,
   uploadDesign,
-} from "../../../actions/admin/admin-actions";
+} from "../../../actions/admin/design-actions";
 import { useEffect } from "react";
 
 type DesignFormProps = {

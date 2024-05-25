@@ -30,7 +30,13 @@ export async function GET(
                 designId: true,
                 front_design_url: true,
               },
+            
             },
+            event : {
+              select: {
+                date: true,
+              }
+            }
             //  TODO : status:true,
           },
           orderBy: {
