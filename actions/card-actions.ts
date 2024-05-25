@@ -1,15 +1,13 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import prisma from "../prisma";
 import { organizerSchema, voucherClaimSchema } from "../schema/zod/ecard-form";
-import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 
-const supabase = createClient();
-
 export const createCard = async (formData: FormData) => {
+  const supabase = createClient();
+
   try {
     const session = await auth();
     if (!session) {
@@ -55,7 +53,7 @@ export const createCard = async (formData: FormData) => {
       },
     });
     if (!design) return { ok: false, message: "Design not exists" };
-    
+
     const { data, error } = await supabase.storage
       .from("e-card bucket")
       .upload(
@@ -137,8 +135,8 @@ export const createCard = async (formData: FormData) => {
 };
 
 type TUpdateCard = {
-  cardId: string;
-  eventId: number;
+  cardId: string | undefined;
+  eventId: number | undefined;
   donationId: number | undefined;
   userId: string | undefined;
 };
@@ -243,9 +241,14 @@ export const updateCard = async (
       let getQr_url: string | undefined = undefined;
 
       const uploadQrCode = async (qrcode: File, userId: string) => {
+        const supabase = createClient();
+
         const { data, error } = await supabase.storage
           .from("e-card bucket")
-          .upload(`users/user-${userId}/design-${design_id}/qrcode/qr-${uuidv4()}`, qrcode);
+          .upload(
+            `users/user-${userId}/design-${design_id}/qrcode/qr-${uuidv4()}`,
+            qrcode
+          );
         if (error) {
           console.error(error);
           throw new Error("Failed to upload QR code");
@@ -273,13 +276,16 @@ export const updateCard = async (
       };
 
       const handleDonationUpdate = async () => {
+        const supabase = createClient();
+
         const { data: list } = await supabase.storage
           .from("e-card bucket")
           .list(`users/user-${userId}/design-${design_id}/qrcode`);
 
         if (list && list.length >= 1 && qrcode) {
           const removedFiles = list.map(
-            (img) => `users/user-${userId}/design-${design_id}/qrcode/${img.name}`
+            (img) =>
+              `users/user-${userId}/design-${design_id}/qrcode/${img.name}`
           );
           await supabase.storage.from("e-card bucket").remove(removedFiles);
         }
@@ -319,6 +325,57 @@ export const updateCard = async (
       console.log(error);
     }
   };
+
+export const GetCardDetail = async (cardId: string) => {
+  try {
+    const getCard = await prisma.eCard.findUnique({
+      where: {
+        id: cardId,
+      },
+      include: {
+        heirs: true,
+        donation: true,
+        event: true,
+        images: true,
+        Design: true,
+      },
+    });
+    if (!getCard) {
+      return { ok: false, message: "Card not found" };
+    }
+    return { ok: true, data: getCard };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GetCards = async (userId: string | undefined) => {
+  try {
+    const cards = await prisma.eCard.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        id: true,
+        updatedAt: true,
+        couple: true,
+        event: {
+          select: {
+            date: true,
+          },
+        },
+        designId: true,
+      },
+      orderBy: {
+        createdAt: "asc"
+      }
+    });
+
+    return cards;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const voucherClaim = async (formData: FormData) => {
   const values = Object.fromEntries(formData.entries());
