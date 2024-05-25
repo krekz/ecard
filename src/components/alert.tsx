@@ -24,7 +24,7 @@ const PromptAlert = ({ children, onSubmit }: PromptAlertProps) => {
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger className="w-full md:w-24 mx-auto bg-primary p-3 rounded-md">{children}</DialogTrigger>
+      <DialogTrigger disabled={form.formState.isSubmitting} className="w-full md:w-24 mx-auto bg-primary p-3 rounded-md">{children}</DialogTrigger>
       <DialogContent className="w-3/4 rounded-lg">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>

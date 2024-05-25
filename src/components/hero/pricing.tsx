@@ -54,8 +54,8 @@ const Pricing = () => {
         >
           <h3 className="text-indigo-600 font-semibold">Pricing</h3>
           <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">
-            <span className="text-red-600 font-extrabold">
-              No Subscriptions.
+            <span className="text-red-500 font-extrabold">
+              No SUBSCRIPTIONS.
             </span>{" "}
             Just One Perfect Card.
           </p>

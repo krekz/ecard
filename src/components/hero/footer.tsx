@@ -1,6 +1,8 @@
+'use client'
 import Image from "next/image";
+import { motion } from "framer-motion";
 import React from "react";
-import { LuFacebook, LuInstagram, LuLinkedin, LuTwitter } from  "react-icons/lu";
+import { LuFacebook, LuInstagram, LuLinkedin, LuTwitter } from "react-icons/lu";
 
 const Footer = () => {
   const footerNavs = [
@@ -19,13 +21,18 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="text-gray-100 bg-purple-400 px-4 py-5 mx-auto md:px-8">
+    <motion.footer
+      initial={{ opacity: 0, y: 100 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ amount: 0.5, once: true }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="text-white bg-purple-300 px-4 py-5 mx-auto md:px-8"
+    >
       <div className="max-w-lg sm:mx-auto sm:text-center">
         <h1 className="text-2xl font-bold">TELEKUNGTEA</h1>
         <p className="leading-relaxed mt-2 text-[15px]">
-          Lorem Ipsum has been the industry&apos;s standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book.
+          Transform the way you invite with our Digital Wedding Invitations and
+          make your special day even more memorable.
         </p>
       </div>
       <ul className="items-center justify-center mt-8 space-y-5 sm:flex sm:space-x-4 sm:space-y-0">
@@ -42,13 +49,13 @@ const Footer = () => {
         <div className="mt-6 sm:mt-0">
           {/* Icon */}
           <ul className="flex items-center space-x-4">
-            <LuFacebook size={20} color="blue"/>
+            <LuFacebook size={20} color="blue" />
             <LuInstagram size={20} color="red" />
             <LuTwitter size={20} color="#544bae" />
           </ul>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 };
 

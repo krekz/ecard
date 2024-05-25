@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { LuLogOut } from "react-icons/lu";
+import { LuLogOut,LuUser,LuUser2 } from "react-icons/lu";
 import { buttonVariants } from "./ui/button";
 
 export type User = {
@@ -28,9 +28,9 @@ const NavDropdown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className={`w-full ${buttonVariants({ variant: "secondary" })}`}
+        className={` rounded-full bg-white p-1`}
       >
-        {user?.name}
+        <LuUser2 size={30} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
