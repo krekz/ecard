@@ -196,7 +196,7 @@ export const subscriptionPlans: PlanItem[] = [
 import * as f from "@/components/fonts";
 import { TFonts } from "./types";
 
-export const primaryFontsConst: TFonts[] = [
+export const secondaryFontsConst: TFonts[] = [
   {
     id: "cormorant_garamond",
     name: "Cormorant Garamond",
@@ -271,7 +271,7 @@ export const primaryFontsConst: TFonts[] = [
   },
 ];
 
-export const secondaryFontsConst: TFonts[] = [
+export const primaryFontsConst: TFonts[] = [
   {
     id: "euphoria_script",
     name: "Euphoria Script",
@@ -312,4 +312,14 @@ export const secondaryFontsConst: TFonts[] = [
       style: f.meow_script.style,
     },
   },
+];
+
+export const weekday = [
+  "Ahad",
+  "Isnin",
+  "Selasa",
+  "Rabu",
+  "Khamis",
+  "Jumaat",
+  "Sabtu",
 ];
