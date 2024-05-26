@@ -41,76 +41,63 @@ export const uploadDesign = async (formData: FormData) => {
       throw new Error("Unauthorized");
     }
 
+    const designId = design_name.toLowerCase();
+    const designNameUpper = design_name.toUpperCase();
+
     const existedDesign = await prisma.design.findUnique({
-      where: {
-        designId: design_name.toLowerCase(),
-      },
+      where: { designId },
     });
 
-    if (existedDesign)
-      return {
-        ok: false,
-        message: "Design already exists",
-      };
-    // TODO: session role != admin
-    //TODO:  dynamically change the designId
+    if (existedDesign) {
+      return { ok: false, message: "Design already exists" };
+    }
 
     if (!front_design_url || !content_design_url || !thumbnail_url) {
-      return {
-        ok: false,
-        message: "Image is required",
-      };
+      return { ok: false, message: "Image is required" };
     }
-    const design_LOWERCASE = design_name.toLowerCase();
-    const design_UPPERCASE = design_name.toUpperCase();
 
     const supabase = createClient();
-
     const images = { thumbnail_url, front_design_url, content_design_url };
-    let imagesUrl: { [key: string]: string } = {};
+    const imageUploadPromises = Object.entries(images).map(
+      async ([key, value]) => {
+        if (value) {
+          const { data, error } = await supabase.storage
+            .from("e-card bucket")
+            .upload(`design/${designId}/${key}-${uuidv4()}`, value as File);
 
-    for (const [key, value] of Object.entries(images)) {
-      if (value) {
-        const { data, error } = await supabase.storage
-          .from("e-card bucket")
-          .upload(
-            `design/${design_LOWERCASE}/${key}-${uuidv4()}`,
-            value as File
-          );
+          if (error) {
+            throw new Error(`Error uploading ${key}: ${error.message}`);
+          }
 
-        if (data) {
-          imagesUrl[key] = data.path;
-        } else {
-          console.log(error);
-          return {
-            ok: false,
-            message: "Error uploading images",
-          };
+          return { [key]: data.path };
         }
+        return {};
       }
-    }
+    );
+
+    const imagesUrl = (await Promise.all(imageUploadPromises)).reduce(
+      (acc, curr) => ({ ...acc, ...curr }),
+      {}
+    );
 
     await prisma.design.create({
       data: {
-        designId: design_LOWERCASE,
-        name: design_UPPERCASE,
+        designId,
+        name: designNameUpper,
         thumbnail_url: imagesUrl.thumbnail_url,
         front_design_url: imagesUrl.front_design_url,
         content_design_url: imagesUrl.content_design_url,
-        category: category,
+        category,
       },
     });
 
     revalidatePath("/auth/admin/upload-design");
-    return {
-      ok: true,
-      message: "Design uploaded successfully",
-    };
+    return { ok: true, message: "Design uploaded successfully" };
   } catch (error) {
     console.error(error);
+    return { ok: false, message: `Error uploading design` };
   }
 };
-
 export const deleteDesign = async (formData: FormData) => {
   const values = Object.fromEntries(formData.entries());
   const { choose_design } = deleteDesignSchema.parse(values);
@@ -179,6 +166,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     content_design_url,
     thumbnail_url,
   } = updateDesignSchema.parse(values);
+
   const newDesignName = design_name.toUpperCase();
   const design_LOWERCASE = designName.toLowerCase();
   const newDesign_LOWERCASE = design_name.toLowerCase();
@@ -188,18 +176,27 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     if (!session) throw new Error("Unauthorized access");
 
     const design = await prisma.design.findUnique({
-      where: {
-        designId: design_LOWERCASE,
-      },
+      where: { designId: design_LOWERCASE },
     });
 
-    if (!design)
-      return {
-        ok: false,
-        message: "Design not found",
-      };
-    const supabase = createClient();
+    if (!design) {
+      return { ok: false, message: "Design not found" };
+    }
 
+    if (design_LOWERCASE !== newDesign_LOWERCASE) {
+      const existingDesignWithNewName = await prisma.design.findUnique({
+        where: { designId: newDesign_LOWERCASE },
+      });
+
+      if (existingDesignWithNewName) {
+        return {
+          ok: false,
+          message: "Design with the new name already exists",
+        };
+      }
+    }
+
+    const supabase = createClient();
     const updateData: { [key: string]: any } = {
       category,
       name: newDesignName,
@@ -207,7 +204,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     };
 
     const images = { thumbnail_url, front_design_url, content_design_url };
-    let imagesUrl: { [key: string]: string } = {};
+    const imagesUrl: { [key: string]: string } = {};
 
     // Rename folder if design name has changed
     if (design_LOWERCASE !== newDesign_LOWERCASE) {
@@ -217,111 +214,84 @@ export const updateDesign = async (formData: FormData, designName: string) => {
 
       if (listError) {
         console.error(listError);
-        return {
-          ok: false,
-          message: "Failed to list existing files",
-        };
+        return { ok: false, message: "Failed to list existing files" };
       }
 
-      const defaultPath = `design/${design_LOWERCASE}`;
-      for (const file of files) {
-        let getFileName = file.name.split("-")[0];
+      const renamePromises = files.map(async (file) => {
         const newPath = `design/${newDesign_LOWERCASE}/${file.name}`;
         const { error: moveError } = await supabase.storage
           .from("e-card bucket")
-          .move(`${defaultPath}/${file.name}`, newPath);
+          .move(`design/${design_LOWERCASE}/${file.name}`, newPath);
 
         if (moveError) {
-          console.error(moveError);
-          return {
-            ok: false,
-            message: "Failed to rename design folder",
-          };
+          throw new Error(`Failed to rename file: ${file.name}`);
         }
-        updateData[getFileName] = newPath;
-        console.log("test", updateData[getFileName]);
-      }
+
+        const key = file.name.split("-")[0];
+        updateData[key] = newPath;
+      });
+
+      await Promise.all(renamePromises);
     }
 
-    for (const [key, value] of Object.entries(images)) {
-      if (value) {
-        const { data: existingImage, error: checkError } =
-          await supabase.storage
-            .from("e-card bucket")
-            .list(`design/${design_LOWERCASE}`, {
-              search: `${key}-`,
-            });
+    const imageUploadPromises = Object.entries(images).map(
+      async ([key, value]) => {
+        if (value) {
+          const { data: existingImage, error: checkError } =
+            await supabase.storage
+              .from("e-card bucket")
+              .list(`design/${design_LOWERCASE}`, { search: `${key}-` });
 
-        if (checkError) {
-          console.log(checkError);
-          return {
-            ok: false,
-            message: "Error checking existing images",
-          };
-        }
+          if (checkError) {
+            throw new Error(
+              `Error checking existing images: ${checkError.message}`
+            );
+          }
 
-        // If the image exists, remove it
-        if (existingImage && existingImage.length > 0) {
-          const { error: removeError } = await supabase.storage
+          if (existingImage && existingImage.length > 0) {
+            const removePaths = existingImage.map(
+              (img) => `design/${design_LOWERCASE}/${img.name}`
+            );
+            const { error: removeError } = await supabase.storage
+              .from("e-card bucket")
+              .remove(removePaths);
+
+            if (removeError) {
+              throw new Error(
+                `Error removing existing images: ${removeError.message}`
+              );
+            }
+          }
+
+          const { data, error } = await supabase.storage
             .from("e-card bucket")
-            .remove(
-              existingImage.map(
-                (img) => `design/${design_LOWERCASE}/${img.name}`
-              )
+            .upload(
+              `design/${newDesign_LOWERCASE}/${key}-${uuidv4()}`,
+              value as File
             );
 
-          if (removeError) {
-            console.log(removeError);
-            return {
-              ok: false,
-              message: "Error removing existing images",
-            };
+          if (error) {
+            throw new Error(`Error uploading ${key}: ${error.message}`);
           }
-        }
 
-        const { data, error } = await supabase.storage
-          .from("e-card bucket")
-          .upload(
-            `design/${newDesign_LOWERCASE}/${key}-${uuidv4()}`,
-            value as File
-          );
-
-        if (data) {
           imagesUrl[key] = data.path;
-        } else {
-          console.log(error);
-          return {
-            ok: false,
-            message: "Error uploading images",
-          };
         }
       }
-    }
+    );
 
-    if (imagesUrl.thumbnail_url)
-      updateData.thumbnail_url = imagesUrl.thumbnail_url;
-    if (imagesUrl.front_design_url)
-      updateData.front_design_url = imagesUrl.front_design_url;
-    if (imagesUrl.content_design_url)
-      updateData.content_design_url = imagesUrl.content_design_url;
+    await Promise.all(imageUploadPromises);
+
+    Object.assign(updateData, imagesUrl);
 
     await prisma.design.update({
-      where: {
-        designId: design_LOWERCASE,
-      },
+      where: { designId: design_LOWERCASE },
       data: updateData,
     });
 
     revalidatePath("/auth/admin/upload-design");
-    return {
-      ok: true,
-      message: "Design updated successfully",
-    };
+    return { ok: true, message: "Design updated successfully" };
   } catch (error) {
     console.error(error);
-    return {
-      ok: false,
-      message: "Error updating design",
-    };
+    return { ok: false, message: `Error updating design` };
   }
 };
