@@ -9,6 +9,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
+export const maxDuration = 30;
+
 export const metadata: Metadata = {
   title: "Admin Dashboard | TEACard",
   description: "Admin page for TEACard",
