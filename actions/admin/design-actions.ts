@@ -91,7 +91,7 @@ export const uploadDesign = async (formData: FormData) => {
       },
     });
 
-    revalidatePath("/auth/admin/upload-design");
+    revalidatePath("/auth/admin/designs");
     return { ok: true, message: "Design uploaded successfully" };
   } catch (error) {
     console.error(error);
@@ -143,7 +143,7 @@ export const deleteDesign = async (formData: FormData) => {
 
     revalidatePath("/user/cards");
     revalidatePath("/catalog");
-    revalidatePath("/auth/admin/upload-design");
+    revalidatePath("/auth/admin/designs");
     return {
       ok: true,
       message: "Design deleted successfully",
@@ -175,25 +175,22 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     const session = await auth();
     if (!session) throw new Error("Unauthorized access");
 
-    const design = await prisma.design.findUnique({
-      where: { designId: design_LOWERCASE },
-    });
+    const [design, existingDesignWithNewName] = await Promise.all([
+      prisma.design.findUnique({ where: { designId: design_LOWERCASE } }),
+      design_LOWERCASE !== newDesign_LOWERCASE
+        ? prisma.design.findUnique({ where: { designId: newDesign_LOWERCASE } })
+        : null,
+    ]);
 
     if (!design) {
       return { ok: false, message: "Design not found" };
     }
 
-    if (design_LOWERCASE !== newDesign_LOWERCASE) {
-      const existingDesignWithNewName = await prisma.design.findUnique({
-        where: { designId: newDesign_LOWERCASE },
-      });
-
-      if (existingDesignWithNewName) {
-        return {
-          ok: false,
-          message: "Design with the new name already exists",
-        };
-      }
+    if (existingDesignWithNewName) {
+      return {
+        ok: false,
+        message: "Design with the new name already exists",
+      };
     }
 
     const supabase = createClient();
@@ -288,7 +285,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
       data: updateData,
     });
 
-    revalidatePath("/auth/admin/upload-design");
+    revalidatePath("/auth/admin/designs");
     return { ok: true, message: "Design updated successfully" };
   } catch (error) {
     console.error(error);

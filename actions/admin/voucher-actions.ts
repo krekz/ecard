@@ -40,7 +40,7 @@ export const uploadVoucher = async (
         max_claims,
       },
     });
-    revalidatePath("/auth/admin/voucher");
+    revalidatePath("/auth/admin/vouchers");
     return {
       message: "Voucher created successfully",
       ok: true,
@@ -64,7 +64,7 @@ export const deleteVoucher = async (code: string) => {
         voucherId: code,
       },
     });
-    revalidatePath("/auth/admin/voucher");
+    revalidatePath("/auth/admin/vouchers");
     return {
       message: "Voucher deleted successfully",
       ok: true,
