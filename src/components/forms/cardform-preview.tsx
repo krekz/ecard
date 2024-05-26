@@ -63,25 +63,26 @@ const CardFormPreview = () => {
           {/* <Image src="/template.png" alt="template" width={500} height={500} /> */}
           <Image
             //   className="absolute top-[5.5rem] left-[9.3rem] rounded-2xl h-[26.6rem]"
-            className="rounded-2xl ring-8 ring-black"
+            className="rounded-2xl ring-8 ring-black w-40 h-80 "
             src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${design?.front_design_url}`}
             alt="design"
-            width={230}
-            height={200}
+            width={100}
+            height={100}
+            priority={true}
           />
           <div
             className={cn(
-              ` text-3xl absolute max-w-36 top-[35%] break-words mx-auto transform -translate-x-1/2 left-1/2 flex flex-col ${euphoria_script.className}`,
+              ` text-2xl absolute max-w-36 top-[28%] break-words mx-auto transform -translate-x-1/2 left-1/2 flex flex-col ${euphoria_script.className}`,
               primary_font?.font.className
             )}
           >
             <h2>{form?.watch("couple").split("&")[0] || "NAME"}</h2>
             <span>&</span>
             <h2>{form?.watch("couple").split("&")[1] || "NAME"}</h2>
-            <h2 className={cn(`mt-5 text-xl`, secondary_font?.font.className)}>
+            <p className={cn(`mt-5 text-xs`, secondary_font?.font.className)}>
               {" "}
               {weekday[validDate.getDay()] + " " + formattedDate}
-            </h2>
+            </p>
           </div>
           <h2 className="mt-5 font-bold text-2xl">
             {design_params?.toUpperCase()}

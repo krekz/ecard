@@ -48,7 +48,7 @@ const Hero = () => {
           </div>
         </div>
         <div className="flex-none mt-14 md:mt-0 ">
-          <Image src="/laptop-mock.png" width={850} height={600} alt="hero" />
+          <Image src="/laptop-mock.png" priority={true} width={850} height={600} alt="hero" />
         </div>
       </motion.div>
     </section>
