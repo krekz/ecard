@@ -32,7 +32,12 @@ export default async function AuthLayout({
           disableTransitionOnChange
         >
           <Toaster />
-          {children}
+          <section className="grid grid-cols-6 mx-auto">
+            <SessionProvider session={session}>
+              <Sidebar />
+            </SessionProvider>
+            {children}
+          </section>
         </ThemeProvider>
       </body>
     </html>
