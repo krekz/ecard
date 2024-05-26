@@ -1,23 +1,15 @@
 import ECard from "@/components/Ecards/e-card";
-
-const getDemoCard = async (demoId: string) => {
-  try{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api/card/${demoId}`,{
-      cache: "no-cache"
-    });
-    const data = res.json();
-    return data;
-  }catch(error){
-    console.error(error);
-  }
- 
-};
+import { GetCardDetail } from "../../../../actions/card-actions";
 
 const DemoPage = async () => {
-  const data = await getDemoCard("clwh9xs390001fjdxtd7l55h7");
+  const cardData = await GetCardDetail("clwncu447000111e38141goww");
+  const modifiedData = {
+    ...cardData?.data,
+    heirs: Array.isArray(cardData?.data?.heirs) ? cardData?.data.heirs : [],
+  };
   return (
     <>
-      <ECard dataFromDB={data} />
+      <ECard dataFromDB={modifiedData} />
     </>
   );
 };
