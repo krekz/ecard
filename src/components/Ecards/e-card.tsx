@@ -1,5 +1,5 @@
 "use client";
-import {format} from "date-fns-tz";
+import {format} from "date-fns";
 import Bar from "@/components/Ecards/card-navbar";
 import { cn } from "@/lib/utils";
 import Image from "next/image";

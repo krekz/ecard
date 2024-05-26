@@ -70,7 +70,10 @@ const Navbar = () => {
           <ul className="justify-end items-center space-y-6 md:flex md:space-x-6 md:space-y-0">
             {navigation.map((item, idx) => {
               return (
-                <li key={idx} className="text-gray-700 hover:text-indigo-600">
+                <li
+                  key={idx}
+                  className="text-gray-700 hover:text-indigo-600 font-medium"
+                >
                   <Link
                     href={item.path}
                     onClick={() => setState(false)}
@@ -89,7 +92,7 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/catalog"
-                  className="block py-3 px-4 font-medium text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 active:shadow-none rounded-lg shadow md:inline"
+                  className="block py-3 px-4 font-medium text-center text-white bg-primary hover:bg-primary/90 active:bg-primary-foreground active:shadow-none rounded-lg shadow md:inline"
                 >
                   Create Card
                 </Link>

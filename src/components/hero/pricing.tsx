@@ -108,7 +108,7 @@ const Pricing = () => {
                   RM{plan.price}
                 </div>
               </div>
-              <Link href="/catalog" className="mt-4 px-3 py-3 rounded-lg text-center font-semibold text-sm duration-150 text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700">
+              <Link href="/catalog" className="mt-4 px-3 py-3 rounded-lg text-center font-semibold text-sm duration-150 text-white bg-primary hover:bg-primary/90 active:bg-primary/100">
                 Choose your design
               </Link>
             </div>
