@@ -46,6 +46,7 @@ model User {
   emailVerified DateTime?     @map("email_verified") @db.Timestamptz(3)
   image         String?
   role          Role          @default(USER)
+  createdAt     DateTime      @default(now()) @db.Timestamptz(3)
   cards         ECard[]
   vouchers      UserVoucher[]
   accounts      Account[]
