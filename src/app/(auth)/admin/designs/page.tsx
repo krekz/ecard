@@ -15,7 +15,7 @@ const UploadDesignPage = async () => {
   //  TODO: admin role check
   return (
 
-    <section className="flex flex-col gap-10 justify-center items-center h-full py-10">
+    <section className="col-span-6 xl:col-span-5 flex flex-col gap-10 justify-center items-center h-full py-10">
       {/* upload design */}
       <h1 className="text-4xl font-bold">Design Upload</h1>
       <DesignForm formType="upload" />
