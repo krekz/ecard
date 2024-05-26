@@ -54,7 +54,7 @@ const VoucherForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col items-center justify-center gap-2"
+        className="flex flex-col items-center justify-center gap-2 col-span-4 md:col-span-3 "
       >
         <FormField
           control={form.control}

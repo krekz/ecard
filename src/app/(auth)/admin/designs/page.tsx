@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DesignForm from "@/components/admin/admin-form";
 import EditDesign from "@/components/admin/edit-form";
-import { getAllDesigns } from "@/lib/utils";
+import { getAllDesigns } from "../../../../../actions/admin/design-actions";
 
 
 const UploadDesignPage = async () => {

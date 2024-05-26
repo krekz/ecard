@@ -70,7 +70,7 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
               <TableRow
                 key={index}
                 className={cn(
-                  checkStatus(voucher) === "active" ? "" : "bg-gray-100"
+                  checkStatus(voucher) === "active" ? "" : "bg-gray-200 dark:bg-gray-800"
                 )}
               >
                 <TableCell className="font-medium">{index + 1}</TableCell>
@@ -80,7 +80,7 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
                       "py-2 px-3 rounded-md capitalize",
                       checkStatus(voucher) === "active"
                         ? "bg-green-500 text-white"
-                        : "bg-gray-100 "
+                        : "bg-gray-500 text-white dark:bg-gray-600"
                     )}
                   >
                     {checkStatus(voucher)}

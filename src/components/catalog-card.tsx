@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cardList, checkboxList } from "@/lib/constant";
 import CatalogFilter from "@/components/catalog-filter";
-import { getAllDesigns } from "@/lib/utils";
+import { getAllDesigns } from "../../actions/admin/design-actions";
 
 type TCards = {
   designId: string;
@@ -55,9 +55,7 @@ const CatalogCard = async ({
   return (
     <>
       {/* Filter */}
-      <aside className="p-3 w-52 lg:w-52 lg:block">
-        <CatalogFilter checkboxList={checkboxList} />
-      </aside>
+    
       {/* Card Listing */}
       <section className="p-3 w-full mx-auto ">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">

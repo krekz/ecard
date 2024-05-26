@@ -71,10 +71,12 @@ const InsightCard = ({
       <CardDescription>{description}</CardDescription>
     </CardHeader>
     <CardContent>
-      <p className="text-2xl font-bold">{data?.current}</p>
+      <p className="text-2xl font-bold">
+        {data?.current}{title === "Bounce Rate" && data?.current !== undefined ? "%" : ""}
+      </p>
     </CardContent>
     <CardFooter>
-      <p>{data?.change}</p>
+      <p>{data?.change}%</p>
     </CardFooter>
   </Card>
 );

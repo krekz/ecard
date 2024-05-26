@@ -38,7 +38,7 @@ const DeleteButton = ({ children, onSubmit, loading }: DeleteButtonProps) => {
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={`text-black ${buttonVariants({ variant: "outline" })}`}
+            className={`text-foreground${buttonVariants({ variant: "outline" })}`}
             onClick={onSubmit}
           >
             Continue

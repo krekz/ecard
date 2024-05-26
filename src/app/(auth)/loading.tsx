@@ -1,7 +1,7 @@
 import Spinner from "@/components/admin/spinner";
 import React from "react";
 
-const AdminLoading = () => {
+const Loading = () => {
   return (
     <div className="col-span-5 flex justify-center items-center h-screen">
       <Spinner />
@@ -9,4 +9,4 @@ const AdminLoading = () => {
   );
 };
 
-export default AdminLoading;
+export default Loading;

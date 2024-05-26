@@ -7,7 +7,6 @@ import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import NavDropdown, { User } from "./navbar-dropdown";
 
-
 const navigation = [
   { title: "Catalog", path: "/catalog" },
   { title: "Pricing", path: "../#pricing" },
@@ -86,7 +85,7 @@ const Navbar = () => {
               );
             })}
             <span className="hidden w-px h-6 bg-gray-300 md:block"></span>
-            <div className="space-y-3 items-center gap-x-2 md:flex md:space-y-0">
+            <ul className="space-y-3 items-center gap-x-2 md:flex md:space-y-0">
               <li>
                 <Link
                   href="/catalog"
@@ -97,14 +96,21 @@ const Navbar = () => {
               </li>
               <li>
                 {session ? (
-                  <NavDropdown setState={setState} user={session.user as User} />
+                  <NavDropdown
+                    setState={setState}
+                    user={session.user as User}
+                  />
                 ) : (
-                  <Button variant="link"className="w-full" onClick={() => signIn()}>
+                  <Button
+                    variant="link"
+                    className="w-full"
+                    onClick={() => signIn()}
+                  >
                     Sign in
                   </Button>
                 )}
               </li>
-            </div>
+            </ul>
           </ul>
         </div>
       </div>
