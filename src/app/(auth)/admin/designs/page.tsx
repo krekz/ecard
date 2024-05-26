@@ -4,6 +4,7 @@ import DesignForm from "@/components/admin/admin-form";
 import EditDesign from "@/components/admin/edit-form";
 import { getAllDesigns } from "../../../../../actions/admin/design-actions";
 
+export const maxDuration = 30;
 
 const UploadDesignPage = async () => {
   const session = await auth();

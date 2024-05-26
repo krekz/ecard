@@ -40,6 +40,9 @@ type DesignFormProps = {
   formType: "upload" | "update";
 };
 
+export const maxDuration = 30;
+
+
 const DesignForm = ({ design, formType }: DesignFormProps) => {
   const schema =
     formType === "upload" ? uploadDesignSchema : updateDesignSchema;

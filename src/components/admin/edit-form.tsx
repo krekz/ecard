@@ -34,6 +34,9 @@ type DesignProps = {
     thumbnail_url: string;
   }[];
 };
+
+export const maxDuration = 30;
+
 const EditDesign = ({ cards }: DesignProps) => {
   const { toast } = useToast();
   const [selectedDesign, setSelectedDesign] = useState<{
