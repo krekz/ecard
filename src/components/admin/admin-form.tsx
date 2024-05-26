@@ -71,7 +71,6 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
   const { toast } = useToast();
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
-    console.log(data);
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
