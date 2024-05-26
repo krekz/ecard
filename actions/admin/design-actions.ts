@@ -10,6 +10,21 @@ import {
 } from "../../schema/zod/admin-form";
 import { revalidatePath } from "next/cache";
 
+export const getAllDesigns = async () => {
+  const cards = await prisma.design.findMany({
+    take: 12,
+    select: {
+      designId: true,
+      category: true,
+      name: true,
+      thumbnail_url: true,
+      front_design_url: true,
+    },
+  });
+
+  return cards;
+};
+
 export const uploadDesign = async (formData: FormData) => {
   const values = Object.fromEntries(formData.entries());
   const {

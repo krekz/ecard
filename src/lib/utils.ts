@@ -14,20 +14,6 @@ export function getFont(id: string | undefined) {
   );
 }
 
-export const getAllDesigns = async () => {
-  const cards = await prisma.design.findMany({
-    select: {
-      designId: true,
-      category: true,
-      name: true,
-      thumbnail_url: true,
-      front_design_url: true,
-    },
-  });
-
-  return cards;
-};
-
 export const checkDate = (date: Date | null | undefined) => {
   return new Date() >= new Date(date as Date);
 };
