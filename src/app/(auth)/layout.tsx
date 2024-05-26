@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Montserrat } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -22,14 +23,15 @@ export default async function AuthLayout({
   // TODO: check if user is admin
   if (!session) redirect("/");
   return (
-    <html className={montserrat.className}>
-      <body className="bg-background">
+    <html lang="en" className={montserrat.className}>
+      <body className="bg-background antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
+          <Toaster />
           {children}
         </ThemeProvider>
       </body>
