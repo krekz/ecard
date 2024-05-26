@@ -24,26 +24,27 @@ import {
 } from "react-icons/lu";
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
+import { ModeToggle } from "../theme-button";
 
 const navigation = [
   {
-    href: "/auth/admin",
+    href: "/admin",
     name: "Overview",
     icon: <LuLandmark size={20} />,
   },
   {
-    href: "/auth/admin/upload-design",
+    href: "/admin/designs",
     name: "Designs",
     icon: <LuImage size={20} />,
   },
   {
-    href: "/auth/admin/voucher",
+    href: "/admin/vouchers",
     name: "Voucher",
     icon: <LuTag size={20} />,
   },
   {
-    href: "/auth/admin/roles",
-    name: "Roles",
+    href: "/admin/users",
+    name: "Users",
     icon: <LuUser size={20} />,
   },
 ];
@@ -82,7 +83,7 @@ const navsFooter = [
 ];
 
 const SidebarContent = ({ session }: { session: Session }) => (
-  <div className="flex flex-col h-full">
+  <div className="flex flex-col h-screen w-full">
     <div className="h-20 flex items-center px-8">
       <Link href="/auth/admin" className="flex-none">
         {/* <Image
@@ -98,13 +99,15 @@ const SidebarContent = ({ session }: { session: Session }) => (
       <ul className="px-4 sm:text-md text-sm font-medium flex-1">
         {navigation.map((item, idx) => (
           <li key={idx}>
-                <Link
-                  href={item.href}
-                  className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
-                >
-                  <div className="text-gray-500 ">{item.icon}</div>
-                  {item.name}
-                </Link>
+            <Link
+              href={item.href}
+              className="flex items-center gap-x-2 dark:text-primary-foreground p-2 rounded-lg hover:bg-primary active:bg-primary duration-150"
+            >
+              <div className="text-gray-500 dark:text-primary-foreground">
+                {item.icon}
+              </div>
+              {item.name}
+            </Link>
           </li>
         ))}
       </ul>
@@ -115,7 +118,7 @@ const SidebarContent = ({ session }: { session: Session }) => (
               {navsFooter.length === idx + 1 ? (
                 <Button
                   variant="ghost"
-                  className="w-full flex items-center justify-start gap-x-2 text-gray-600 p-2 rounded-lg duration-150"
+                  className="w-full flex items-center justify-start gap-x-2 dark:text-primary-foreground p-2 rounded-lg duration-150"
                   onClick={item.href as () => void}
                 >
                   <div className="text-gray-500">{item.icon}</div>
@@ -124,7 +127,7 @@ const SidebarContent = ({ session }: { session: Session }) => (
               ) : (
                 <Link
                   href={item.href as string}
-                  className="flex items-center gap-x-2 text-gray-600 p-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 duration-150"
+                  className="flex items-center gap-x-2 dark:text-primary-foreground p-2 rounded-lg hover:bg-primary active:bg-primary duration-150"
                 >
                   <div className="text-gray-500">{item.icon}</div>
                   {item.name}
@@ -143,16 +146,17 @@ const SidebarContent = ({ session }: { session: Session }) => (
               alt="avatar"
             />
             <div>
-              <span className="block text-gray-700 text-sm font-semibold">
+              <span className="block dark:text-primary-foreground text-sm font-semibold">
                 {session?.user?.name}
               </span>
               <Link
                 href="/auth/admin"
-                className="block mt-px text-gray-600 hover:text-indigo-600 text-xs"
+                className="block mt-px dark:text-primary-foreground hover:text-indigo-600 text-xs"
               >
                 Admin
               </Link>
             </div>
+            <ModeToggle />
           </div>
         </div>
       </div>
@@ -166,13 +170,13 @@ const Sidebar = () => {
 
   return (
     <>
-      <nav className="hidden sm:block fixed top-0 left-0 h-full border-r bg-white space-y-8 sm:w-72 z-20">
+      <nav className="hidden dark:bg-background xl:block  top-0 left-0 h-full border-r bg-white space-y-8 w-full z-20">
         <SidebarContent session={session!} />
       </nav>
       <Sheet>
-        <SheetTrigger className="sm:hidden">Open</SheetTrigger>
+        <SheetTrigger className="xl:hidden fixed">Open</SheetTrigger>
         <SheetContent side="left" className="w-1/2 p-0">
-            <SidebarContent session={session!} />
+          <SidebarContent session={session!} />
         </SheetContent>
       </Sheet>
     </>

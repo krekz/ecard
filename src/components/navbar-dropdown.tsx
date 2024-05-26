@@ -8,8 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { LuLogOut,LuUser,LuUser2 } from "react-icons/lu";
-import { buttonVariants } from "./ui/button";
+import { LuLogOut,LuUser2 } from "react-icons/lu";
 
 export type User = {
   id: string;
@@ -38,7 +37,7 @@ const NavDropdown = ({
         <Link href={`/user/cards`}>
           <DropdownMenuItem onClick={() => setState(false)}>Cards</DropdownMenuItem>
         </Link>
-        <Link href={`/auth/admin`}>
+        <Link href={`/admin`}>
           <DropdownMenuItem onClick={() => setState(false)}>Dashboard</DropdownMenuItem>
         </Link>
 
