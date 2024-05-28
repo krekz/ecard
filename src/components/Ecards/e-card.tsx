@@ -1,7 +1,6 @@
 "use client";
-import {format} from "date-fns";
 import Bar from "@/components/Ecards/card-navbar";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { HiCalendar, HiOutlineClock, HiLocationMarker } from "react-icons/hi";
 import CardCarousel from "@/components/Ecards/card-carousel";
@@ -11,16 +10,15 @@ import { getFont } from "@/lib/utils";
 import { weekday } from "@/lib/constant";
 
 const ECard = ({ dataFromDB }: CardFormProps) => {
-
   if (!dataFromDB) return null;
-  const { event, donation,  heirs, Design,primary_font } = dataFromDB;
-//  const zoneDate = toZonedTime(event.date, 'Asia/Kuala_Lumpur')
+  const { event, donation, heirs, Design, primary_font } = dataFromDB;
+  //  const zoneDate = toZonedTime(event.date, 'Asia/Kuala_Lumpur')
 
-
-
+  const checkDate = event?.date ? new Date(event.date) : new Date();
+  const getDate = formatDate(checkDate);
 
   const getPrimaryFont = getFont(dataFromDB.primary_font);
-  const getSecondaryFont = getFont(dataFromDB.secondary_font)
+  const getSecondaryFont = getFont(dataFromDB.secondary_font);
   return (
     <main className={cn("relative", getSecondaryFont?.font.className)}>
       <section className="relative h-screen max-w-[400px] mx-auto flex justify-center">
@@ -39,6 +37,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
               getPrimaryFont?.font.className
             )}
           >
+            {/* couple name */}
             <h1>
               {dataFromDB?.couple
                 ? dataFromDB.couple.charAt(0).toUpperCase() +
@@ -57,7 +56,9 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
                 : ""}
             </h1>
           </div>
-          <h3></h3>
+          <h3 className="text-lg font-light">
+            {weekday[checkDate.getDay()].toUpperCase() + " " + getDate}
+          </h3>
         </div>
       </section>
 
@@ -94,11 +95,7 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
           <div className="flex flex-col items-center">
             <HiCalendar size={25} />
             <h2 className="text-amber-700 text-2xl">
-              {event?.date
-                ? weekday[new Date(event.date).getDay()] +
-                  ", " +
-                  format(event.date, "dd/L/y")
-                : ""}
+              {weekday[checkDate.getDay()].toUpperCase() + " " + getDate}
             </h2>
           </div>
           {/* KIV */}
@@ -125,11 +122,14 @@ const ECard = ({ dataFromDB }: CardFormProps) => {
             </div>
           </div>
 
-          <Countdown event_date={event?.date} secondary_font={getSecondaryFont} />
-
+          <Countdown
+            event_date={event?.date}
+            primary_font={getPrimaryFont}
+          />
           <CardCarousel />
         </div>
       </section>
+      {/* Bottom bar */}
       <Bar dataFromDB={dataFromDB} />
     </main>
   );
