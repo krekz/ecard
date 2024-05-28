@@ -35,7 +35,7 @@ const UserProfilePage = async () => {
     // TODO : pagination
     <>
       {getAllCards?.length === 0 ? (
-        <div className="max-w-screen-xl mx-auto px-4 flex flex-col items-start justify-center h-screen md:px-8">
+        <div className="max-w-screen-xl mx-auto px-4 flex flex-col items-center justify-center my-auto h-[70vh] md:px-8">
           <div className="max-w-lg mx-auto space-y-3 text-center">
             <h3 className="text-indigo-600 font-semibold">Uh ohh..</h3>
             <p className="text-gray-800 text-2xl font-semibold">

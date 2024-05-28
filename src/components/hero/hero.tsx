@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 const Hero = () => {
   return (
     <section
-      className="py-32 md:py-5 min-h-[85dvh] overflow-hidden mx-auto"
+      className="py-32 md:py-0 min-h-[85dvh] overflow-hidden mx-auto"
       style={{
         backgroundImage: "linear-gradient(180deg, #A9C9FF 0%, #FFBBEC 100%)",
       }}

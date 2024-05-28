@@ -59,7 +59,8 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           design_id: designId!,
           date: undefined,
           address: "",
-          greeting: "",
+          greeting:
+            "Dengan penuh kesyukuran kehadrat Illahi, kami mempersilakan Dato'/Datin/Dr/Tuan/Puan/Encik/Cik ke walimatulurus anakanda kesayangan kami",
           google_map: "",
           // start_time: "asdasd",
           // end_time: "asdasd",
@@ -130,9 +131,11 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
     }
   };
 
-  const handleNextStep = () => useStore.setState({ currentStep: currentStep + 1 });
+  const handleNextStep = () =>
+    useStore.setState({ currentStep: currentStep + 1 });
 
-  const handlePrevStep = () => useStore.setState({ currentStep: currentStep - 1 });
+  const handlePrevStep = () =>
+    useStore.setState({ currentStep: currentStep - 1 });
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 md:p-5 gap-5 container">

@@ -21,15 +21,11 @@ const Footer = () => {
   ];
 
   return (
-    <motion.footer
-      initial={{ opacity: 0, y: 100 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ amount: 0.5, once: true }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+    <footer
       className="text-white bg-purple-300 px-4 py-5 mx-auto md:px-8"
     >
       <div className="max-w-lg sm:mx-auto sm:text-center">
-        <h1 className="text-2xl font-bold">TELEKUNGTEA</h1>
+        <h1 className="text-2xl font-bold">TeaCard powered by Telekung Tea</h1>
         <p className="leading-relaxed mt-2 text-[15px]">
           Transform the way you invite with our Digital Wedding Invitations and
           make your special day even more memorable.
@@ -55,7 +51,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-    </motion.footer>
+    </footer>
   );
 };
 

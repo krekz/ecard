@@ -56,11 +56,6 @@ const navsFooter = [
     icon: <LuArrowLeft size={20} />,
   },
   {
-    href: "/",
-    name: "Settings",
-    icon: <LuSettings size={20} />,
-  },
-  {
     href: () => signOut({ callbackUrl: "/" }),
     name: "Logout",
     icon: (
@@ -85,6 +80,7 @@ const navsFooter = [
 const SidebarContent = ({ session }: { session: Session }) => (
   <div className="flex flex-col h-screen w-full">
     <div className="h-20 flex items-center px-8">
+      {/* Logo */}
       <Link href="/auth/admin" className="flex-none">
         {/* <Image
           src="https://floatui.com/logo.svg"
@@ -96,22 +92,29 @@ const SidebarContent = ({ session }: { session: Session }) => (
       </Link>
     </div>
     <div className="flex-1 flex flex-col h-full overflow-auto">
+      {/* Nav content */}
       <ul className="px-4 sm:text-md text-sm font-medium flex-1">
-        {navigation.map((item, idx) => (
-          <li key={idx}>
-            <Link
-              href={item.href}
-              className="flex items-center gap-x-2 dark:text-primary-foreground p-2 rounded-lg hover:bg-primary active:bg-primary duration-150"
-            >
-              <div className="text-gray-500 dark:text-primary-foreground">
-                {item.icon}
-              </div>
-              {item.name}
-            </Link>
-          </li>
-        ))}
+        {navigation.map((item, idx) => {
+          if (item.name === "Users" && session?.user?.role !== "super_admin") {
+            return null;
+          }
+          return (
+            <li key={idx}>
+              <Link
+                href={item.href}
+                className="flex items-center gap-x-2 dark:text-primary-foreground p-2 rounded-lg hover:bg-primary active:bg-primary duration-150"
+              >
+                <div className="text-gray-500 dark:text-primary-foreground">
+                  {item.icon}
+                </div>
+                {item.name}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       <div>
+        {/* Nav Footer */}
         <ul className="px-4 pb-4 text-sm sm:text-md font-medium">
           {navsFooter.map((item, idx) => (
             <li key={idx}>
@@ -121,7 +124,9 @@ const SidebarContent = ({ session }: { session: Session }) => (
                   className="w-full flex items-center justify-start gap-x-2 dark:text-primary-foreground p-2 rounded-lg duration-150"
                   onClick={item.href as () => void}
                 >
-                  <div className="text-gray-500">{item.icon}</div>
+                  <div className="text-gray-500 dark:text-primary-foreground">
+                    {item.icon}
+                  </div>
                   {item.name}
                 </Button>
               ) : (
@@ -129,13 +134,16 @@ const SidebarContent = ({ session }: { session: Session }) => (
                   href={item.href as string}
                   className="flex items-center gap-x-2 dark:text-primary-foreground p-2 rounded-lg hover:bg-primary active:bg-primary duration-150"
                 >
-                  <div className="text-gray-500">{item.icon}</div>
+                  <div className="text-gray-500 dark:text-primary-foreground">
+                    {item.icon}
+                  </div>
                   {item.name}
                 </Link>
               )}
             </li>
           ))}
         </ul>
+        {/* User info */}
         <div className="py-4 px-4 border-t">
           <div className="flex items-center gap-x-4">
             <Image
@@ -153,7 +161,11 @@ const SidebarContent = ({ session }: { session: Session }) => (
                 href="/auth/admin"
                 className="block mt-px dark:text-primary-foreground hover:text-indigo-600 text-xs"
               >
-                Admin
+                {session?.user?.role === "super_admin"
+                  ? "Super Admin"
+                  : session?.user?.role === "admin"
+                  ? "Admin"
+                  : "User"}
               </Link>
             </div>
             <ModeToggle />

@@ -6,16 +6,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { User } from "next-auth";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
-import { LuLogOut,LuUser2 } from "react-icons/lu";
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-};
+import { LuLogOut, LuUser2 } from "react-icons/lu";
 
 const NavDropdown = ({
   setState,
@@ -26,20 +21,34 @@ const NavDropdown = ({
 }) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className={` rounded-full bg-white p-1`}
-      >
-        <LuUser2 size={30} />
+      <DropdownMenuTrigger className={` rounded-full bg-white p-1`}>
+        {user?.image ? (
+          <Image
+            src={user?.image}
+            alt={user?.name ?? "user"}
+            className="rounded-full w-auto h-auto"
+            height={30}
+            width={30}
+          />
+        ) : (
+          <LuUser2 size={30} />
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link href={`/user/cards`}>
-          <DropdownMenuItem onClick={() => setState(false)}>Cards</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setState(false)}>
+            Cards
+          </DropdownMenuItem>
         </Link>
-        <Link href={`/admin`}>
-          <DropdownMenuItem onClick={() => setState(false)}>Dashboard</DropdownMenuItem>
-        </Link>
+        {(user?.role === "admin" || user?.role === "super_admin") && (
+          <Link href={`/admin`}>
+            <DropdownMenuItem onClick={() => setState(false)}>
+              Admin
+            </DropdownMenuItem>
+          </Link>
+        )}
 
         <DropdownMenuItem
           className="justify-between  font-medium cursor-pointer"
