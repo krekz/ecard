@@ -4,10 +4,12 @@ import {
   AiFillApple,
   AiOutlineWhatsApp,
   AiOutlinePhone,
+  AiOutlineGoogle,
 } from "react-icons/ai";
 
 import Link from "next/link";
 import Image from "next/image";
+import { Calendar } from "../ui/calendar";
 
 type ContactProp = {
   heirs: {
@@ -91,7 +93,15 @@ export function CalendarDrawerContent({
   return (
     <>
       {/*  BUG */}
-      <h1>{new Date(calendar.date).toDateString()}</h1>
+      <Calendar
+        mode="single"
+        disabled
+        selected={calendar.date}
+        className="rounded-md border"
+      />
+      <h1 className="p-5 font-semibold">
+        {new Date(calendar.date).toDateString()}
+      </h1>
     </>
   );
 }
@@ -107,9 +117,16 @@ type LocationProps = {
 export function LocationDrawerContent({ location }: LocationProps) {
   return (
     <>
-      <h1>{location?.venue}</h1>
-      <h2>{location?.gMap}</h2>
-      <h3>{location?.address}</h3>
+      <h1 className="text-2xl font-bold">{location?.venue}</h1>
+      <h3 className="text-lg">{location?.address}</h3>
+      {location?.gMap && (
+        <Button>
+          <Link href={location?.gMap}>
+            Google Map
+            <AiFillGoogleCircle size={30} />
+          </Link>
+        </Button>
+      )}
     </>
   );
 }
