@@ -3,6 +3,7 @@ import FeaturedDesign from "@/components/hero/featured-design";
 import Hero from "@/components/hero/hero";
 import Partnership from "@/components/hero/partnership";
 import Footer from "@/components/hero/footer";
+import { Faq } from "@/components/hero/faq";
 
 const HomePage = () => {
   return (
@@ -19,6 +20,8 @@ const HomePage = () => {
       {/* Pricing section */}
       <Pricing />
 
+      {/* FAQ section */}
+      <Faq />
       {/* Footer section */}
       <Footer />
     </main>
