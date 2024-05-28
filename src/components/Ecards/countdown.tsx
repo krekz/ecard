@@ -6,10 +6,10 @@ import { TFonts } from "@/lib/types";
 
 const Countdown = ({
   event_date,
-  secondary_font,
+  primary_font,
 }: {
   event_date: Date | undefined;
-  secondary_font: TFonts | undefined;
+  primary_font: TFonts | undefined;
 }) => {
   const [countdown, setCountdown] = useState({
     days: 0,
@@ -40,7 +40,7 @@ const Countdown = ({
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <h2 className={cn("text-4xl", secondary_font?.font.className)}>
+      <h2 className={cn("text-4xl", primary_font?.font.className)}>
         Menghitung Hari
       </h2>
       <div className="flex justify-center gap-10 border p-5 rounded-lg ">

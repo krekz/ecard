@@ -33,7 +33,7 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
             <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
               <div className="flex flex-col items-center max-w-[400px] mx-auto ">
                 <DrawerHeader>
-                  <DrawerTitle className="text-center">DONATION</DrawerTitle>
+                  <DrawerTitle className="text-center text-3xl">DONATION</DrawerTitle>
                   <DrawerDescription className="text-center">
                     <DonateDrawerContent
                       donation={dataFromDB?.donation ?? {}}
@@ -49,7 +49,7 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
         <Drawer>
           <DrawerTrigger>
             <div className="flex flex-col items-center cursor-pointer transition-all hover:-translate-y-1 delay-100">
-              <LuCalendarDays color="white" size={30} className="" />
+              <LuCalendarDays color="white" size={30} />
               <p>Calendar</p>
             </div>
           </DrawerTrigger>
@@ -57,8 +57,9 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
           <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
             <div className="flex flex-col items-center max-w-[400px] mx-auto ">
               <DrawerHeader>
-                <DrawerTitle className="text-center">Calendar</DrawerTitle>
+                <DrawerTitle className="text-center text-3xl">Calendar</DrawerTitle>
                 <DrawerDescription className="text-center">
+                  {/* Calendar component */}
                   <CalendarDrawerContent
                     calendar={{
                       date: dataFromDB?.event?.date ?? new Date(),
@@ -81,8 +82,9 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
           <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
             <div className="flex flex-col items-center max-w-[400px] mx-auto ">
               <DrawerHeader>
-                <DrawerTitle className="text-center">LOCATION</DrawerTitle>
+                <DrawerTitle className="text-center text-3xl">LOCATION</DrawerTitle>
                 <DrawerDescription className="text-center">
+                  {/* Location component */}
                   <LocationDrawerContent location={dataFromDB?.event ?? {}} />
                 </DrawerDescription>
               </DrawerHeader>
@@ -101,8 +103,9 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
           <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
             <div className="flex flex-col items-center max-w-[400px] mx-auto ">
               <DrawerHeader>
-                <DrawerTitle className="text-center">CONTACT</DrawerTitle>
+                <DrawerTitle className="text-center text-3xl">CONTACT</DrawerTitle>
                 <DrawerDescription className="text-center">
+                  {/* Contact component */}
                   <ContactDrawerContent heirs={dataFromDB?.heirs ?? []} />
                 </DrawerDescription>
               </DrawerHeader>
