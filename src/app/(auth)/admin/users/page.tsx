@@ -1,20 +1,19 @@
 import React from "react";
-import {
-  Table,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell,
-  TableBody,
-} from "@/components/ui/table";
-
+import { userColumns } from "./columns";
 import prisma from "../../../../../prisma";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { auth } from "@/auth";
+import { notFound } from "next/navigation";
+import DataTable from "./data-table";
+
+// extend vercel time out request
+export const maxDuration = 45;
 
 const UsersPage = async () => {
-  const [users, count] = await prisma.$transaction([
+  const session = await auth();
+  if (!session || session.user.role !== "super_admin") {
+    notFound();
+  }
+  const [users, totalUsers] = await prisma.$transaction([
     prisma.user.findMany({
       take: 10,
       select: {
@@ -23,47 +22,28 @@ const UsersPage = async () => {
         email: true,
         image: true,
         role: true,
+        cards: {
+          select: {
+            id: true,
+          }
+        }
       },
     }),
     prisma.user.count(),
+
   ]);
 
+  if (!users) return <div>Loading...</div>;
+
   return (
-    <section className="col-span-6 xl:col-span-5 flex flex-col gap-10 items-center h-full py-10">
-      <h1 className="text-4xl font-bold">Users</h1>
-      <h1 className="text-xl font-bold">Total registered users: {count}</h1>
-      <Table>
-        <TableCaption>Lis of total users</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Role</TableHead>
-          </TableRow>
-        </TableHeader>
-        {users?.map((user) => (
-          <TableBody key={user.id}>
-            <TableRow>
-              <TableCell className="font-medium">{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell className="space-y-2 md:space-x-2">
-                <Button>
-                  <Link
-                    className="w-full md:w-auto"
-                    href={`/admin/users/${user.id}`}
-                  >
-                    Manage
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        ))}
-      </Table>
-    </section>
+    <>
+      <section className="col-span-6 xl:col-span-5 flex flex-col gap-10 items-center h-full py-10 overflow-x-auto">
+        <h1 className="text-4xl font-bold">Users</h1>
+        <h1 className="text-xl font-bold">Total registered users: {totalUsers}</h1>
+        <h1 className="text-xl font-bold">Total cards: {}</h1>
+        <DataTable columns={userColumns} data={users} action={true} />
+      </section>
+    </>
   );
 };
 

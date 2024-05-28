@@ -1,14 +1,24 @@
+import { auth } from "@/auth";
 import Location from "@/components/admin/dashboard/location";
 import RecentSales from "@/components/admin/dashboard/recent-sales";
 import View from "@/components/admin/dashboard/view";
 import { TLogLib } from "@/lib/types";
+import { notFound, redirect } from "next/navigation";
 
 const AdminDashboard = async () => {
+  const session = await auth();
+  if (
+    !session ||
+    (session.user.role !== "admin" && session.user.role !== "super_admin")
+  ) {
+    notFound();
+  }
+
   const response = await fetch(
     `https://api.loglib.io/v1/insight?apiKey=${process.env.NEXT_PUBLIC_LOGLIB_API_KEY}&timeZone=asia/kuala_lumpur`,
     {
       next: {
-        revalidate: 3 * 60, //5 minutes
+        revalidate: 3 * 60, //3minutes
       },
     }
   );

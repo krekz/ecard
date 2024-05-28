@@ -26,6 +26,12 @@ export const getAllDesigns = async () => {
 };
 
 export const uploadDesign = async (formData: FormData) => {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized access");
+  if (session.user.role === "user") {
+    throw new Error("You have no right access");
+  }
+
   const values = Object.fromEntries(formData.entries());
   const {
     category,
@@ -99,6 +105,11 @@ export const uploadDesign = async (formData: FormData) => {
   }
 };
 export const deleteDesign = async (formData: FormData) => {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized access");
+  if (session.user.role === "user") {
+    throw new Error("You have no right access");
+  }
   const values = Object.fromEntries(formData.entries());
   const { choose_design } = deleteDesignSchema.parse(values);
   const supabase = createClient();
@@ -158,6 +169,11 @@ export const deleteDesign = async (formData: FormData) => {
 };
 
 export const updateDesign = async (formData: FormData, designName: string) => {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized access");
+  if (session.user.role === "user") {
+    throw new Error("You have no right access");
+  }
   const values = Object.fromEntries(formData.entries());
   const {
     category,

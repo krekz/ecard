@@ -12,8 +12,10 @@ export const uploadVoucher = async (
     createVoucherFormSchema.parse(formData);
   try {
     const session = await auth();
-    // TODO: check if user is admin
-    if (!session) throw new Error("You are not authorized to create a voucher");
+    if (!session) throw new Error("Unauthorized access");
+    if (session.user.role === "user") {
+      throw new Error("You have no right access");
+    }
     if (max_claims <= 0)
       return {
         message: "Quantity cannot be empty",
@@ -51,6 +53,11 @@ export const uploadVoucher = async (
 };
 
 export const deleteVoucher = async (code: string) => {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized access");
+  if (session.user.role === "user") {
+    throw new Error("You have no right access");
+  }
   try {
     // delete voucher
     await prisma.voucher.delete({
