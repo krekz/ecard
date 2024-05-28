@@ -22,8 +22,6 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  // TODO: check if user is admin
-  if (!session) redirect("/");
   return (
     <html lang="en" className={montserrat.className}>
       <body className="bg-background antialiased">
@@ -35,7 +33,11 @@ export default async function AuthLayout({
         >
           <Toaster />
           <section className="grid grid-cols-6 mx-auto">
-            <SessionProvider session={session}>
+            <SessionProvider
+              refetchOnWindowFocus={false}
+              refetchWhenOffline={false}
+              session={session}
+            >
               <Sidebar />
             </SessionProvider>
             {children}
