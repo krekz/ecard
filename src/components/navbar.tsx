@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import NavDropdown, { User } from "./navbar-dropdown";
+import NavDropdown from "./navbar-dropdown";
+import Banner from "./banner";
 
 const navigation = [
   { title: "Catalog", path: "/catalog" },
   { title: "Pricing", path: "../#pricing" },
-  { title: "FAQ", path: "/faq" },
+  { title: "FAQ", path: "../#faq" },
 ];
 
 const Navbar = () => {
@@ -18,12 +19,20 @@ const Navbar = () => {
   const { data: session } = useSession();
   const [state, setState] = useState(false);
 
+  // Complete additional information
+  if (session && (!session?.user.state || !session?.user.district)) {
+    if (pathname !== "/complete-registration") {
+      redirect("/complete-registration");
+    }
+  }
+
   return (
-    <nav className=" bg-purple-50  border-b w-full z-20 fixed md:text-sm md:border-none">
+    <nav className="sticky top-0 bg-purple-50  border-b w-full z-20 md:text-sm md:border-none">
+      <Banner />
       <div className="items-center px-4 container mx-auto md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <Link href="/" className="text-2xl font-bold">
-            #CardTEA
+            TeaCard
           </Link>
           <div className="md:hidden">
             <button
@@ -99,10 +108,7 @@ const Navbar = () => {
               </li>
               <li>
                 {session ? (
-                  <NavDropdown
-                    setState={setState}
-                    user={session.user as User}
-                  />
+                  <NavDropdown setState={setState} user={session.user} />
                 ) : (
                   <Button
                     variant="link"
