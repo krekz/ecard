@@ -1,6 +1,6 @@
 "use server";
 import prisma from "../prisma";
-import { organizerSchema, voucherClaimSchema } from "../schema/zod/ecard-form";
+import { organizerSchema } from "../schema/zod/ecard-form";
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
 import { v4 as uuidv4 } from "uuid";
@@ -367,75 +367,11 @@ export const GetCards = async (userId: string | undefined) => {
         designId: true,
       },
       orderBy: {
-        createdAt: "asc"
-      }
+        createdAt: "asc",
+      },
     });
 
     return cards;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const voucherClaim = async (formData: FormData) => {
-  const values = Object.fromEntries(formData.entries());
-  const { voucher_code } = voucherClaimSchema.parse(values);
-  console.log(voucher_code);
-
-  try {
-    const session = await auth();
-    if (!session) throw new Error("Unauthorized access");
-
-    const voucher = await prisma.voucher.findUnique({
-      where: {
-        code: voucher_code,
-      },
-      select: {
-        code: true,
-        count_claims: true,
-        max_claims: true,
-      },
-    });
-
-    if (!voucher) return { ok: false, message: "Voucher not found" };
-    if (voucher.count_claims >= voucher.max_claims)
-      return {
-        ok: false,
-        message: "Voucher either expired or already claimed",
-      };
-
-    const existingClaim = await prisma.userVoucher.findUnique({
-      where: {
-        userId_voucherId: {
-          userId: session?.user?.id!,
-          voucherId: voucher?.code!,
-        },
-      },
-    });
-
-    if (existingClaim) return { ok: false, message: "Voucher already claimed" };
-
-    //else create new record and update voucher count_claims
-    await prisma.$transaction([
-      prisma.userVoucher.create({
-        data: {
-          voucherId: voucher?.code!,
-          userId: session?.user?.id!,
-        },
-      }),
-      prisma.voucher.update({
-        where: {
-          code: voucher?.code!,
-        },
-        data: {
-          count_claims: {
-            increment: 1,
-          },
-        },
-      }),
-    ]);
-
-    return { ok: true, message: "Voucher claimed" };
   } catch (error) {
     console.log(error);
   }
