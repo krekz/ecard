@@ -26,6 +26,8 @@ const eventSchema = z.object({
   address: z.string().min(1, { message: "Event address is required" }),
   google_map: z.string().url().optional().nullable().or(z.literal("")),
   greeting: z.string().min(1, { message: "Event greeting is required" }),
+  program_name: z.array(z.string().optional()),
+  program_time: z.array(z.string().optional()),
 });
 
 const donationSchema = z.object({
@@ -80,6 +82,24 @@ export const organizerSchema = z
       .refine((file) => {
         return !file || file.size < 1024 * 1024 * 2;
       }, "File must be less than 2MB"),
+    wedding_images: z
+      .array(z.custom<File>())
+      .optional()
+      .refine((files) => !files || files.length < 4, {
+        message: "Must be less than 3 images",
+      })
+      .refine(
+        (files) =>
+          !files ||
+          files.every(
+            (file) =>
+              file?.size <= 1024 * 1024 * 5 &&
+              ["image/png", "image/jpeg", "image/jpg"].includes(file?.type)
+          ),
+        {
+          message: "only .jpeg, .jpg, .png files of 5MB or less are accepted",
+        }
+      ),
   })
   .and(eventSchema)
   .and(donationSchema);

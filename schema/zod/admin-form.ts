@@ -42,9 +42,9 @@ export const updateDesignSchema = z.object({
   content_design_url: OPTIONAL_IMAGE,
 });
 
-export const deleteDesignSchema = z.object({
-  choose_design: z.string().min(2, "You must choose design"),
-});
+// export const deleteDesignSchema = z.object({
+//   choose_design: z.string().min(2, "You must choose design"),
+// });
 
 export const createVoucherFormSchema = z.object({
   code: z
