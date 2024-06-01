@@ -3,7 +3,10 @@ import prisma from "../prisma";
 import { organizerSchema } from "../schema/zod/ecard-form";
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
+
+const maxDuration = 60;
 
 export const createCard = async (formData: FormData) => {
   const supabase = createClient();
@@ -11,18 +14,24 @@ export const createCard = async (formData: FormData) => {
   try {
     const session = await auth();
     if (!session) {
-      throw new Error("You must logged in to create a card");
+      throw new Error("You must be logged in to create a card.");
     }
 
-    const values = Object.fromEntries(formData.entries());
+    const values: Record<string, any> = Object.fromEntries(formData.entries());
+
+    // Accumulate specific keys into arrays
+    ["wedding_images", "program_name", "program_time"].forEach((key) => {
+      if (formData.getAll(key).length >= 1) {
+        values[key] = formData.getAll(key);
+      }
+    });
+
     const {
       address,
       bride,
       couple,
       date,
       design_id,
-      // end_time,
-      // start_time,
       father,
       greeting,
       groom,
@@ -37,16 +46,20 @@ export const createCard = async (formData: FormData) => {
       google_map,
       qrcode,
       youtube_url,
+      wedding_images,
+      program_name,
+      program_time,
     } = organizerSchema.parse(values);
+
+    console.log("SUCCESS", program_time, program_name);
 
     const user = await prisma.user.findUnique({
       where: {
-        id: session?.user?.id,
+        id: session.user?.id,
       },
     });
     if (!user) throw new Error("User not exists");
 
-    // validate the choosen design and pass to the card
     const design = await prisma.design.findUnique({
       where: {
         designId: design_id,
@@ -54,83 +67,126 @@ export const createCard = async (formData: FormData) => {
     });
     if (!design) return { ok: false, message: "Design not exists" };
 
-    const { data, error } = await supabase.storage
-      .from("e-card bucket")
-      .upload(
-        `users/user-${user.id}/design-${design_id}/qrcode/qr-${uuidv4()}`,
-        qrcode as File
-      );
-    if (data) {
-      console.log(data);
-    } else {
-      console.log(error);
-    }
-
-    const donationData =
-      acc_name || bank || acc_number || qrcode
-        ? {
-            create: {
-              acc_name,
-              bank,
-              acc_number,
-              qrCode: `${data?.path}`,
-            },
-          }
-        : undefined;
-
     const card = await prisma.eCard.create({
       data: {
         father,
         mother,
         bride,
-        userId: user?.id ?? "",
+        userId: user.id,
         groom,
         couple,
         phone_number,
-        youtube_url: youtube_url,
+        youtube_url,
         designId: design_id,
         primary_font,
         secondary_font,
-        // plan: plan.name,
         event: {
           create: {
             date,
-            start_time: "test_start",
-            end_time: "test_end",
             venue,
             address,
             greeting,
+            program: {
+              create: program_name.map((name, index) => ({
+                name: name === "" || name === "undefined" ? null : name,
+                start_time:
+                  program_time[index] === "" ||
+                  program_time[index] === "undefined"
+                    ? null
+                    : program_time[index],
+              })),
+              // .filter((program) => program.name !== ""), // filter entries with empty names
+            },
+            start_time: "",
+            end_time: "",
             gMap: google_map,
           },
         },
-        donation: donationData,
-        // heirs: {
-        //   create: validatedData.data.heirs?.map((heir) => ({
-        //     name: heir.name,
-        //     phone_number: heir.phone,
-        //     relationship: heir.relation,
-        //   })),
-        // },
+        donation:
+          acc_name || acc_number || bank || qrcode
+            ? {
+                create: {
+                  acc_name: acc_name || null,
+                  bank: bank || null,
+                  acc_number: acc_number || null,
+                  qrCode: "",
+                },
+              }
+            : undefined,
+      },
+      include: {
+        donation: true, // Include the donation relation in the result
       },
     });
 
-    // console.log(validatedData.data.heirs);
-    // if (validatedData.data.heirs && validatedData.data.heirs.length > 0) {
-    //   await prisma.heirs.createMany({
-    //     data: validatedData.data.heirs.map((heir) => ({
-    //       name: heir.name,
-    //       phone_number: heir.phone,
-    //       relationship: heir.relation,
-    //       eCardId: id,
-    //     })),
-    //   });
-    // }
+    let qrCodePath = "";
+    if (qrcode) {
+      const qrPath = `users/user-${user.id}/card-${
+        card.id
+      }/qrcode/qr-${uuidv4()}`;
+      const { data, error } = await supabase.storage
+        .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+        .upload(qrPath, qrcode as File);
+      if (error) {
+        console.error(error);
+      } else {
+        qrCodePath = data.path;
+        // Ensure donation record exists before updating
+        if (!card.donation) {
+          await prisma.donation.create({
+            data: {
+              eCardId: card.id,
+              qrCode: qrCodePath,
+              acc_name: null,
+              bank: null,
+              acc_number: null,
+            },
+          });
+        } else {
+          await prisma.donation.update({
+            where: { eCardId: card.id },
+            data: { qrCode: qrCodePath },
+          });
+        }
+      }
+    }
 
-    // get the auto generate ID in DB
-    const { id } = card;
-    return { ok: true, id, message: "Card created" };
+    const imageUrls: string[] = [];
+    if (wedding_images) {
+      const uploadPromises = wedding_images.map((image) => {
+        const imagePath = `users/user-${user.id}/card-${
+          card.id
+        }/gallery/img-${uuidv4()}`;
+        return supabase.storage
+          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+          .upload(imagePath, image)
+          .then(({ data, error }) => {
+            if (data) {
+              imageUrls.push(data.path);
+            } else {
+              console.error(error);
+            }
+          });
+      });
+
+      await Promise.all(uploadPromises);
+
+      if (imageUrls.length > 0) {
+        await prisma.eCard.update({
+          where: { id: card.id },
+          data: {
+            images: {
+              create: imageUrls.map((url) => ({ url })),
+            },
+          },
+        });
+      }
+    }
+
+    return { ok: true, id: card.id, message: "Card created" };
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return { ok: false, message: "An error occurred." };
   }
 };
 
@@ -147,9 +203,12 @@ export const updateCard = async (
 ) =>
   //heirsId: number[]
   {
-    // TODO : existed qr code will delete if user update the card
-
-    const values = Object.fromEntries(formData.entries());
+    const values: Record<string, any> = Object.fromEntries(formData.entries());
+    ["wedding_images", "program_name", "program_time"].forEach((key) => {
+      if (formData.getAll(key).length >= 1) {
+        values[key] = formData.getAll(key);
+      }
+    });
     const {
       address,
       bride,
@@ -172,6 +231,9 @@ export const updateCard = async (
       google_map,
       qrcode,
       youtube_url,
+      wedding_images,
+      program_name,
+      program_time,
     } = organizerSchema.parse(values);
 
     try {
@@ -183,12 +245,16 @@ export const updateCard = async (
         },
         select: {
           userId: true,
+          event: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
 
-      if (!existingCard || existingCard.userId !== session?.user?.id) {
+      if (!existingCard || existingCard.userId !== session?.user?.id)
         throw new Error("Unauthorized access");
-      }
 
       // validate the choosen design and pass to the card
       const design = await prisma.design.findUnique({
@@ -199,8 +265,12 @@ export const updateCard = async (
 
       if (!design) return { ok: false, message: "Design not found" };
 
-      const promises = [];
+      const existingImages = await prisma.eCard.findUnique({
+        where: { id: cardId },
+        select: { images: true },
+      });
 
+      const promises = [];
       // update ecard
       const eCardUpdatePromise = prisma.eCard.update({
         where: {
@@ -221,6 +291,20 @@ export const updateCard = async (
       });
       promises.push(eCardUpdatePromise);
 
+      const existingProgram = await prisma.event.findUnique({
+        where: {
+          id: existingCard?.event?.id,
+        },
+        select: {
+          program: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      console.log("EXISTING PROGRAM", existingProgram);
       // pdate the event
       const eventUpdatePromise = prisma.event.update({
         where: {
@@ -234,19 +318,35 @@ export const updateCard = async (
           gMap: google_map,
           greeting,
           venue,
+          program: {
+            update: program_name.map((name, index) => ({
+              where: {
+                id: existingProgram!.program[index]?.id,
+              },
+              data: {
+                name: name === "" || name === "undefined" ? null : name,
+                start_time:
+                  program_time[index] === "" ||
+                  program_time[index] === "undefined"
+                    ? null
+                    : program_time[index],
+              },
+            })),
+          },
         },
       });
       promises.push(eventUpdatePromise);
 
       let getQr_url: string | undefined = undefined;
+      let getGallery_url: undefined | string[] = undefined;
 
       const uploadQrCode = async (qrcode: File, userId: string) => {
         const supabase = createClient();
 
         const { data, error } = await supabase.storage
-          .from("e-card bucket")
+          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
           .upload(
-            `users/user-${userId}/design-${design_id}/qrcode/qr-${uuidv4()}`,
+            `users/user-${userId}/card-${cardId}/qrcode/qr-${uuidv4()}`,
             qrcode
           );
         if (error) {
@@ -256,43 +356,63 @@ export const updateCard = async (
         return data?.path;
       };
 
+      const uploadGallery = async (
+        gallery: File[],
+        userId: string,
+        cardId: string
+      ): Promise<string[]> => {
+        const supabase = createClient();
+        const uploadPromises = gallery.map(async (image) => {
+          const { data, error } = await supabase.storage
+            .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+            .upload(
+              `users/user-${userId}/card-${cardId}/gallery/img-${uuidv4()}`,
+              image
+            );
+          if (error) {
+            console.error(error);
+            throw new Error("Failed to upload gallery image");
+          }
+          return data?.path;
+        });
+        const paths = await Promise.all(uploadPromises);
+        return paths.filter((path): path is string => !!path);
+      };
+
       const handleDonationCreation = async () => {
         if (qrcode) {
           getQr_url = await uploadQrCode(qrcode as File, userId!);
         }
 
-        if (qrcode || acc_name || acc_number || bank) {
-          const donationCreatePromise = prisma.donation.create({
-            data: {
-              eCardId: cardId,
-              acc_name: acc_name || null,
-              acc_number: acc_number || null,
-              bank: bank || null,
-              qrCode: getQr_url || null,
-            },
-          });
-          promises.push(donationCreatePromise);
-        }
+        const donationCreatePromise = prisma.donation.create({
+          data: {
+            eCardId: cardId,
+            acc_name: acc_name || null,
+            acc_number: acc_number || null,
+            bank: bank || null,
+            qrCode: getQr_url || null,
+          },
+        });
+        promises.push(donationCreatePromise);
       };
 
       const handleDonationUpdate = async () => {
         const supabase = createClient();
 
         const { data: list } = await supabase.storage
-          .from("e-card bucket")
-          .list(`users/user-${userId}/design-${design_id}/qrcode`);
+          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+          .list(`users/user-${userId}/card-${cardId}/qrcode`);
 
+        // Check existing donation and user want to replace with new one
         if (list && list.length >= 1 && qrcode) {
           const removedFiles = list.map(
-            (img) =>
-              `users/user-${userId}/design-${design_id}/qrcode/${img.name}`
+            (img) => `users/user-${userId}/card-${cardId}/qrcode/qr-${img.name}`
           );
-          await supabase.storage.from("e-card bucket").remove(removedFiles);
+          await supabase.storage
+            .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+            .remove(removedFiles);
         }
-
-        if (qrcode) {
-          getQr_url = await uploadQrCode(qrcode as File, userId!);
-        }
+        getQr_url = await uploadQrCode(qrcode as File, userId!);
 
         const donationUpdatePromise = prisma.donation.update({
           where: {
@@ -308,18 +428,89 @@ export const updateCard = async (
         promises.push(donationUpdatePromise);
       };
 
+      const handleGalleryCreation = async () => {
+        getGallery_url = await uploadGallery(wedding_images!, userId!, cardId!);
+        const uploadGalleryPromise = prisma.eCard.update({
+          where: {
+            id: cardId,
+          },
+          data: {
+            images: {
+              create: getGallery_url?.map((url) => ({
+                url,
+              })),
+            },
+          },
+        });
+        promises.push(uploadGalleryPromise);
+      };
+
+      const handleGalleryUpdate = async () => {
+        const supabase = createClient();
+
+        // Remove existing images
+        const { data: list } = await supabase.storage
+          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+          .list(`users/user-${userId}/card-${cardId}/gallery`);
+
+        if (list && list.length >= 1 && wedding_images) {
+          const removedFiles = list.map(
+            (img) => `users/user-${userId}/card-${cardId}/gallery/${img.name}`
+          );
+          await supabase.storage
+            .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+            .remove(removedFiles);
+        }
+
+        getGallery_url = await uploadGallery(wedding_images!, userId!, cardId!);
+        const updateGalleryPromise = await prisma.$transaction(
+          async (prisma) => {
+            await prisma.eCard.update({
+              where: { id: cardId },
+              data: {
+                images: {
+                  deleteMany: {},
+                },
+              },
+            });
+
+            await prisma.eCard.update({
+              where: { id: cardId },
+              data: {
+                images: {
+                  create: getGallery_url?.map((url) => ({
+                    url,
+                  })),
+                },
+              },
+            });
+          }
+        );
+        promises.push(updateGalleryPromise);
+      };
+
+      // Try Catch block that perform image upload
       try {
-        if (!donationId) {
+        if (!donationId && (qrcode || acc_name || acc_number || bank)) {
           await handleDonationCreation();
-        } else {
+        } else if (donationId && (qrcode || acc_name || acc_number || bank)) {
           await handleDonationUpdate();
+        }
+
+        if (
+          existingImages?.images.length &&
+          existingImages?.images.length > 0 &&
+          wedding_images // received new input
+        ) {
+          await handleGalleryUpdate();
+        } else if (wedding_images && existingImages?.images.length === 0) {
+          await handleGalleryCreation();
         }
       } catch (error) {
         console.error(error);
       }
 
       await Promise.all(promises);
-
       return { ok: true, message: "Card updated" };
     } catch (error) {
       console.log(error);
@@ -335,9 +526,18 @@ export const GetCardDetail = async (cardId: string) => {
       include: {
         heirs: true,
         donation: true,
-        event: true,
-        images: true,
+        event: {
+          include: {
+            program: true,
+          },
+        },
+        images: {
+          select: {
+            url: true,
+          },
+        },
         Design: true,
+        Program: true,
       },
     });
     if (!getCard) {
