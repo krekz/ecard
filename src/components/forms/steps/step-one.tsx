@@ -1,3 +1,4 @@
+"use client";
 import {
   Select,
   SelectContent,
@@ -14,18 +15,16 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { LuAsterisk } from "react-icons/lu";
+import { useQuery } from "@tanstack/react-query";
+import { getAllDesigns } from "../../../../actions/admin/design-actions";
 
 const StepOne = () => {
-  // if (typeof design !== "string" || design.trim() === "") {
-  //   throw new Error("Design parameter is required");
-  // }
+  const { data: designs } = useQuery({
+    queryKey: ["designs"],
+    queryFn: async () => await getAllDesigns(),
+  });
 
-  // const allowedDesigns = ["wed-1", "wed-2", "wed-3"]; // Example allowed values
-  // if (!allowedDesigns.includes(design)) {
-  //   throw new Error("Invalid design parameter");
-  // }
-
-  // TODO: FETCH ALL DESINGS
   return (
     <>
       <FormField
@@ -56,22 +55,29 @@ const StepOne = () => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="wed-1">WED-1</SelectItem>
-                <SelectItem value="wed-2">WED-2</SelectItem>
-                <SelectItem value="wed-3">WED-3</SelectItem>
+                {designs?.map((design) => (
+                  <SelectItem key={design.designId} value={design.designId}>
+                    {design.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage />
           </FormItem>
         )}
       />
-      <h1 className="text-2xl font-bold">Organizer Informations</h1>
+      <h1 className="text-2xl font-bold flex">
+        Organizer Informations{" "}
+        <span className="text-red-500">
+          <LuAsterisk />
+        </span>
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ">
         <FormField
           name={`bride`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <FormLabel>Bride&apos;s Full Name</FormLabel>
+              <FormLabel>Pengantin Lelaki</FormLabel>
               <FormControl>
                 <Input placeholder="Muhammad Syafiq..." {...field} />
               </FormControl>
@@ -83,7 +89,7 @@ const StepOne = () => {
           name={`groom`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <FormLabel>Groom&apos;s Full Name</FormLabel>
+              <FormLabel>Pengantin Perempuan</FormLabel>
               <FormControl>
                 <Input placeholder="Liya Syamila..." {...field} />
               </FormControl>
@@ -95,7 +101,7 @@ const StepOne = () => {
           name={`couple`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <FormLabel>Couple&apos;s short name</FormLabel>
+              <FormLabel>Nama Pasangan</FormLabel>
               <FormControl>
                 <Input placeholder="Syafiq & Mila" {...field} />
               </FormControl>
@@ -108,7 +114,7 @@ const StepOne = () => {
           name={`phone_number`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Nombor Telefon</FormLabel>
               <FormControl>
                 <Input placeholder="01234567899" type="number" {...field} />
               </FormControl>
@@ -123,7 +129,7 @@ const StepOne = () => {
           name={`father`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <FormLabel>Father&apos;s Full Name</FormLabel>
+              <FormLabel>Ayah Pengantin</FormLabel>
               <FormControl>
                 <Input placeholder="Ayah" {...field} />
               </FormControl>
@@ -135,7 +141,7 @@ const StepOne = () => {
           name={`mother`}
           render={({ field }) => (
             <FormItem className="space-y-0">
-              <FormLabel>Mother&apos;s Full Name</FormLabel>
+              <FormLabel>Ibu Pengantin</FormLabel>
               <FormControl>
                 <Input placeholder="Ibu" {...field} />
               </FormControl>
