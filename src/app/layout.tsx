@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Loglib from "@loglib/tracker/react";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import QueryProvider from "@/context/query-provider";
 
 export const metadata: Metadata = {
   title:
@@ -23,13 +24,15 @@ export default async function RootLayout({
     <html>
       <body>
         <Toaster />
-        <SessionProvider
-          refetchOnWindowFocus={false}
-          refetchWhenOffline={false}
-          session={session}
-        >
-          {children}
-        </SessionProvider>
+        <QueryProvider>
+          <SessionProvider
+            refetchOnWindowFocus={false}
+            refetchWhenOffline={false}
+            session={session}
+          >
+            {children}
+          </SessionProvider>
+        </QueryProvider>
         <Loglib
           config={{
             id: "e-card-test-tea",
