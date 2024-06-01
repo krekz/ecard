@@ -70,7 +70,7 @@ const CatalogCard = async ({
             >
               <Image
                 className="mx-auto p-3"
-                src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${card.thumbnail_url}`}
+                src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${card.thumbnail_url}`}
                 width={200}
                 height={200}
                 alt={card.name}
