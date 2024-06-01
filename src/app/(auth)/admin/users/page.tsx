@@ -1,11 +1,10 @@
 import React from "react";
-import { userColumns } from "./columns";
+import { userColumns } from "../../../../components/table/columns";
 import prisma from "../../../../../prisma";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
-import DataTable from "./data-table";
+import DataTable from "../../../../components/table/data-table";
 
-// extend vercel time out request
 export const maxDuration = 45;
 
 const UsersPage = async () => {
@@ -25,12 +24,11 @@ const UsersPage = async () => {
         cards: {
           select: {
             id: true,
-          }
-        }
+          },
+        },
       },
     }),
     prisma.user.count(),
-
   ]);
 
   if (!users) return <div>Loading...</div>;
@@ -39,8 +37,9 @@ const UsersPage = async () => {
     <>
       <section className="col-span-6 xl:col-span-5 flex flex-col gap-10 items-center h-full py-10 overflow-x-auto">
         <h1 className="text-4xl font-bold">Users</h1>
-        <h1 className="text-xl font-bold">Total registered users: {totalUsers}</h1>
-        <h1 className="text-xl font-bold">Total cards: {}</h1>
+        <h1 className="text-xl font-bold">
+          Total registered users: {totalUsers}
+        </h1>
         <DataTable columns={userColumns} data={users} action={true} />
       </section>
     </>
