@@ -9,7 +9,6 @@ import {
 } from "../../schema/zod/admin-form";
 import { revalidatePath } from "next/cache";
 
-export const maxDuration = 60
 
 export const getAllDesigns = async () => {
   const cards = await prisma.design.findMany({
