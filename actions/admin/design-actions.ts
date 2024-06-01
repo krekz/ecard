@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 import prisma from "../../prisma";
 import {
-  deleteDesignSchema,
   updateDesignSchema,
   uploadDesignSchema,
 } from "../../schema/zod/admin-form";
@@ -23,6 +22,17 @@ export const getAllDesigns = async () => {
   });
 
   return cards;
+};
+
+export const getDesign = async (designId: string | string[] | undefined) => {
+  const design = await prisma.design.findUnique({
+    where: { designId: designId as string },
+    select: {
+      front_design_url: true,
+      content_design_url: true,
+    },
+  });
+  return design;
 };
 
 export const uploadDesign = async (formData: FormData) => {
@@ -97,7 +107,7 @@ export const uploadDesign = async (formData: FormData) => {
       },
     });
 
-    revalidatePath("/auth/admin/designs");
+    revalidatePath("/admin/designs");
     return { ok: true, message: "Design uploaded successfully" };
   } catch (error) {
     console.error(error);
@@ -110,17 +120,14 @@ export const deleteDesign = async (formData: FormData) => {
   if (session.user.role === "user") {
     throw new Error("You have no right access");
   }
-  const values = Object.fromEntries(formData.entries());
-  const { choose_design } = deleteDesignSchema.parse(values);
+  const designId = formData.get("designId");
+  if (!designId) throw new Error("Design not found");
   const supabase = createClient();
-  const chooseDesign = choose_design.toLowerCase();
-  try {
-    const session = await auth();
-    if (!session) throw new Error("Unauthorized access");
 
+  try {
     const design = await prisma.design.findUnique({
       where: {
-        designId: chooseDesign,
+        designId: designId as string,
       },
     });
 
@@ -130,14 +137,11 @@ export const deleteDesign = async (formData: FormData) => {
         message: "Design not found",
       };
 
-    // TODO : Role admin
     const { data: list } = await supabase.storage
       .from("e-card bucket")
-      .list(`design/${chooseDesign}`);
+      .list(`design/${designId}`);
 
-    const filesToRemove = list?.map(
-      (img) => `design/${chooseDesign}/${img.name}`
-    );
+    const filesToRemove = list?.map((img) => `design/${designId}/${img.name}`);
 
     const { data, error } = await supabase.storage
       .from("e-card bucket")
@@ -149,12 +153,10 @@ export const deleteDesign = async (formData: FormData) => {
     }
 
     await prisma.design.delete({
-      where: { designId: chooseDesign },
+      where: { designId: designId as string },
     });
 
-    revalidatePath("/user/cards");
-    revalidatePath("/catalog");
-    revalidatePath("/auth/admin/designs");
+    revalidatePath("/admin/designs");
     return {
       ok: true,
       message: "Design deleted successfully",
@@ -170,10 +172,9 @@ export const deleteDesign = async (formData: FormData) => {
 
 export const updateDesign = async (formData: FormData, designName: string) => {
   const session = await auth();
-  if (!session) throw new Error("Unauthorized access");
-  if (session.user.role === "user") {
-    throw new Error("You have no right access");
-  }
+  if (!session || session.user.role === "user")
+    throw new Error("Unauthorized access");
+
   const values = Object.fromEntries(formData.entries());
   const {
     category,
@@ -188,9 +189,6 @@ export const updateDesign = async (formData: FormData, designName: string) => {
   const newDesign_LOWERCASE = design_name.toLowerCase();
 
   try {
-    const session = await auth();
-    if (!session) throw new Error("Unauthorized access");
-
     const [design, existingDesignWithNewName] = await Promise.all([
       prisma.design.findUnique({ where: { designId: design_LOWERCASE } }),
       design_LOWERCASE !== newDesign_LOWERCASE
@@ -301,7 +299,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
       data: updateData,
     });
 
-    revalidatePath("/auth/admin/designs");
+    revalidatePath("/admin/designs");
     return { ok: true, message: "Design updated successfully" };
   } catch (error) {
     console.error(error);
