@@ -79,7 +79,7 @@ export const uploadDesign = async (formData: FormData) => {
       async ([key, value]) => {
         if (value) {
           const { data, error } = await supabase.storage
-            .from("e-card bucket")
+            .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
             .upload(`design/${designId}/${key}-${uuidv4()}`, value as File);
 
           if (error) {
@@ -139,13 +139,13 @@ export const deleteDesign = async (formData: FormData) => {
       };
 
     const { data: list } = await supabase.storage
-      .from("e-card bucket")
+      .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
       .list(`design/${designId}`);
 
     const filesToRemove = list?.map((img) => `design/${designId}/${img.name}`);
 
     const { data, error } = await supabase.storage
-      .from("e-card bucket")
+      .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
       .remove(filesToRemove as string[]);
     if (data) {
       console.log(data);
@@ -221,7 +221,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     // Rename folder if design name has changed
     if (design_LOWERCASE !== newDesign_LOWERCASE) {
       const { data: files, error: listError } = await supabase.storage
-        .from("e-card bucket")
+        .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
         .list(`design/${design_LOWERCASE}`);
 
       if (listError) {
@@ -232,7 +232,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
       const renamePromises = files.map(async (file) => {
         const newPath = `design/${newDesign_LOWERCASE}/${file.name}`;
         const { error: moveError } = await supabase.storage
-          .from("e-card bucket")
+          .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
           .move(`design/${design_LOWERCASE}/${file.name}`, newPath);
 
         if (moveError) {
@@ -251,7 +251,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
         if (value) {
           const { data: existingImage, error: checkError } =
             await supabase.storage
-              .from("e-card bucket")
+              .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
               .list(`design/${design_LOWERCASE}`, { search: `${key}-` });
 
           if (checkError) {
@@ -265,7 +265,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
               (img) => `design/${design_LOWERCASE}/${img.name}`
             );
             const { error: removeError } = await supabase.storage
-              .from("e-card bucket")
+              .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
               .remove(removePaths);
 
             if (removeError) {
@@ -276,7 +276,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
           }
 
           const { data, error } = await supabase.storage
-            .from("e-card bucket")
+            .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
             .upload(
               `design/${newDesign_LOWERCASE}/${key}-${uuidv4()}`,
               value as File
