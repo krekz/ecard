@@ -30,17 +30,19 @@ export type CardFormProps = {
     designId?: string;
     primary_font?: string;
     secondary_font?: string;
-    // images: string;
+    images?: {
+      url: string;
+    }[];
     // plan: string;
-    heirs?:
-      | {
-          id?: number | null;
-          name?: string | null;
-          phone_number?: string | null;
-          relationship?: string | null;
-          eCardId?: string | null;
-        }[]
-      | null;
+    // heirs?:
+    //   | {
+    //       id?: number | null;
+    //       name?: string | null;
+    //       phone_number?: string | null;
+    //       relationship?: string | null;
+    //       eCardId?: string | null;
+    //     }[]
+    //   | null;
     donation?: {
       id: number;
       bank: string | null;
@@ -54,6 +56,10 @@ export type CardFormProps = {
       date: Date;
       address: string;
       gMap?: string | null;
+      program?: {
+        name?: string | null;
+        start_time?: string | null;
+      }[];
       start_time: string;
       end_time: string;
       venue: string;
