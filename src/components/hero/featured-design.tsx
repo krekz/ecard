@@ -44,7 +44,7 @@ const FeaturedDesign = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: 0.5, once: true }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          className="py-5 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
         >
           {integrations.map((item, idx) => (
             <li key={idx} className="border rounded-lg">
@@ -59,7 +59,7 @@ const FeaturedDesign = () => {
               </div>
               <div className="flex flex-row justify-center p-5">
                 <Button asChild className="w-full" variant="secondary">
-                  <Link target="_blank" href="/preview/demo">
+                  <Link target="_blank" href="/preview/demo?id=wed-1">
                     Preview
                   </Link>
                 </Button>

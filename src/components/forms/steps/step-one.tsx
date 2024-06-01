@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { LuAsterisk } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDesigns } from "../../../../actions/admin/design-actions";
+import { primaryFontsConst, secondaryFontsConst } from "@/lib/constant";
+import { cn } from "@/lib/utils";
 
 const StepOne = () => {
   const { data: designs } = useQuery({
@@ -118,6 +120,65 @@ const StepOne = () => {
               <FormControl>
                 <Input placeholder="01234567899" type="number" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name={`primary_font`}
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <FormLabel className="flex">
+                Primary font <LuAsterisk color="red" />
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your preferred font" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {primaryFontsConst.map((font, index) => (
+                    <SelectItem
+                      className={cn("text-xl", font.font.className)}
+                      key={index}
+                      value={font.id}
+                    >
+                      {font.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name={`secondary_font`}
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <FormLabel className="flex">
+                Secondary font <LuAsterisk color="red" />
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your preferred font" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {secondaryFontsConst.map((font, index) => (
+                    <SelectItem
+                      className={cn("text-xl", font.font.className)}
+                      key={index}
+                      value={font.id}
+                    >
+                      {font.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

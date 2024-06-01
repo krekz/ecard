@@ -61,9 +61,9 @@ const VoucherClaim = () => {
           name="voucher_code"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Claim your voucher</FormLabel>
+              <FormLabel>Voucher</FormLabel>
               <FormControl>
-                <Input placeholder="WED-3" {...field} />
+                <Input placeholder="Enter Voucher Code" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

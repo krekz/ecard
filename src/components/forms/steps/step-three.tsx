@@ -1,13 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { primaryFontsConst, secondaryFontsConst } from "@/lib/constant";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   FormControl,
   FormField,
@@ -23,7 +14,6 @@ import Image from "next/image";
 import { useFormContext } from "react-hook-form";
 import { organizerSchema } from "../../../../schema/zod/ecard-form";
 import { z } from "zod";
-import { LuAsterisk } from "react-icons/lu";
 
 function StepThree() {
   const qrInputRef = useRef<HTMLInputElement>(null);
@@ -33,8 +23,6 @@ function StepThree() {
   const [galleryPreview, setGalleryPreview] = useState<
     (string | null)[] | null
   >(null);
-
-  // console.log(form.watch("wedding_images"));
 
   const handleRemoveQrCode = () => {
     setQrPreview(null);
@@ -50,7 +38,6 @@ function StepThree() {
     if (galleryInputRef.current) {
       galleryInputRef.current.value = "";
     }
-    console.log(form.getValues("wedding_images"));
   };
 
   return (
@@ -152,60 +139,6 @@ function StepThree() {
           </FormItem>
         )}
       />
-      <FormField
-        name={`primary_font`}
-        render={({ field }) => (
-          <FormItem className="space-y-0">
-            <FormLabel className="flex">Primary font <LuAsterisk color="red" /></FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your preferred font" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {primaryFontsConst.map((font, index) => (
-                  <SelectItem
-                    className={cn("text-xl", font.font.className)}
-                    key={index}
-                    value={font.id}
-                  >
-                    {font.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name={`secondary_font`}
-        render={({ field }) => (
-          <FormItem className="space-y-0">
-            <FormLabel className="flex">Secondary font <LuAsterisk color="red" /></FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your preferred font" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {secondaryFontsConst.map((font, index) => (
-                  <SelectItem
-                    className={cn("text-xl", font.font.className)}
-                    key={index}
-                    value={font.id}
-                  >
-                    {font.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       <FormField
         name={`wedding_images`}
@@ -234,7 +167,6 @@ function StepThree() {
                     }
 
                     console.log("Updated Files", updatedFiles);
-                
 
                     form.setValue("wedding_images", updatedFiles);
                     console.log(

@@ -40,7 +40,7 @@ const EditCardPage = async ({
 
     return (
       <>
-        <h1 className="font-bold text-5xl pt-20 text-center">Edit TEAcard</h1>
+        <h1 className="font-bold text-5xl pt-10 text-center">Edit TEAcard</h1>
         <FormNavbar />
         <div className="flex justify-center">
           <CardForm dataFromDB={transformedData} user={session?.user} />

@@ -152,7 +152,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
         {/* Main content (form) */}
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="md:col-span-3 flex flex-col gap-5 space-y-3 w-full  "
+          className="md:col-span-2 flex flex-col gap-5 space-y-3 w-full  "
         >
           {currentStep === 1 && <StepOne />}
           {currentStep === 2 && <StepTwo />}
@@ -191,7 +191,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           </div>
         </form>
         {/* Preview and Voucher on sidebar */}
-        {/* <div
+        <div
           className="flex flex-col gap-5 w-full rounded-lg p-3 order-first md:order-last "
           style={{
             backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)",
@@ -199,7 +199,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
         >
           <CardFormPreview />
           {!dataFromDB && <VoucherClaim />}
-        </div> */}
+        </div>
       </FormProvider>
     </div>
   );

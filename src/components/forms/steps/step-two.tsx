@@ -78,7 +78,7 @@ const StepTwo = () => {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-1/2 pl-3 text-left font-normal",
+                          " pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -109,7 +109,7 @@ const StepTwo = () => {
           <FormField
             name={`google_map`}
             render={({ field }) => (
-              <FormItem className="space-y-0 w-1/2">
+              <FormItem className="space-y-0">
                 <FormLabel>
                   Link Google Map{" "}
                   <span className="text-xs text-muted-foreground">
@@ -129,7 +129,7 @@ const StepTwo = () => {
       <FormField
         name={`greeting`}
         render={({ field }) => (
-          <FormItem className="space-y-0  w-1/2">
+          <FormItem className="space-y-0">
             <FormLabel className="flex">
               Ucapan alu-aluan <LuAsterisk color="red" />
             </FormLabel>
