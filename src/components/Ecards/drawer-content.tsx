@@ -62,7 +62,7 @@ export function DonateDrawerContent({ donation }: DonateDrawerContentProps) {
         <p className="text-md">{donation.acc_number}</p>
       </div>
       <Image
-        src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${donation.qrCode}`}
+        src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${donation.qrCode}`}
         alt="QrCode"
         width={300}
         height={300}
