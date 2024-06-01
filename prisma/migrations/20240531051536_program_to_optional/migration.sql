@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Program" ALTER COLUMN "name" DROP NOT NULL,
+ALTER COLUMN "start_time" DROP NOT NULL;
