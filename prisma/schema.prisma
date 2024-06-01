@@ -66,26 +66,28 @@ model VerificationToken {
 
 model ECard {
   id             String        @id @default(cuid())
-  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
   father         String
   mother         String
   bride          String
   groom          String
   couple         String
   phone_number   String
-  published      Boolean       @default(false)
-  designId       String
   primary_font   String
   secondary_font String
-  userId         String?
   youtube_url    String?
   images         CardGallery[]
   donation       Donation?
-  Design         Design        @relation(fields: [designId], references: [designId], onDelete: Cascade)
-  User           User?         @relation(fields: [userId], references: [id])
   event          Event?
   heirs          Heirs?
+  userId         String?
+  designId       String
+  published      Boolean       @default(false)
+  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
+  Design         Design        @relation(fields: [designId], references: [designId], onDelete: Cascade)
+  User           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Program        Program?      @relation(fields: [programId], references: [id])
+  programId      Int?
 }
 
 model Heirs {
@@ -98,35 +100,49 @@ model Heirs {
 }
 
 model Event {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   venue      String
   address    String
-  date       DateTime @db.Timestamptz(3)
+  date       DateTime  @db.Timestamptz(3)
   gMap       String?
   greeting   String
-  eCardId    String   @unique
+  program    Program[]
   end_time   String
   start_time String
-  ECard      ECard    @relation(fields: [eCardId], references: [id], onDelete: Cascade)
+  eCardId    String    @unique
+
+  ECard     ECard @relation(fields: [eCardId], references: [id], onDelete: Cascade)
+  programId Int?
+}
+
+model Program {
+  id         Int     @id @default(autoincrement())
+  name       String?
+  start_time String?
+
+  ECard   ECard[]
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId Int?
 }
 
 model Donation {
   id         Int     @id @default(autoincrement())
+  acc_name   String?
+  acc_number String?
   bank       String?
   qrCode     String?
   eCardId    String? @unique
-  acc_name   String?
-  acc_number String?
-  ECard      ECard?  @relation(fields: [eCardId], references: [id], onDelete: Cascade)
+
+  ECard ECard? @relation(fields: [eCardId], references: [id], onDelete: Cascade)
 }
 
 model Design {
-  category           String
-  name               String
   designId           String  @unique
-  content_design_url String
-  front_design_url   String
+  name               String
+  category           String
   thumbnail_url      String
+  front_design_url   String
+  content_design_url String
   ECard              ECard[]
 }
 
@@ -139,10 +155,10 @@ model CardGallery {
 
 model Voucher {
   code         String        @unique
-  active       Boolean       @default(true)
   description  String
-  max_claims   Int
+  active       Boolean       @default(true)
   count_claims Int           @default(0)
+  max_claims   Int
   users        UserVoucher[]
 }
 
