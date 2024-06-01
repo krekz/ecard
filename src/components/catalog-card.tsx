@@ -83,7 +83,7 @@ const CatalogCard = async ({
 
               <CardFooter className="gap-2 flex flex-col lg:flex-row items-center justify-center md:w-full">
                 <Link
-                  href="/preview/demo"
+                  href={`/preview/demo?id=${card.designId}`}
                   target="_blank"
                   className={cn(
                     "w-full",
