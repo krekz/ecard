@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import FormNavbar from "@/components/forms/form-navbar";
 
+export const maxDuration = 60
+
 const CreateCardPage = async ({
   searchParams,
 }: {

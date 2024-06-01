@@ -6,6 +6,8 @@ import { LuArrowLeft } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+export const maxDuration = 60
+
 const Page = async ({
   params,
   searchParams,

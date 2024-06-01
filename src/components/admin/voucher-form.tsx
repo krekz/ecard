@@ -19,6 +19,8 @@ import { Textarea } from "../ui/textarea";
 import { uploadVoucher } from "../../../actions/admin/voucher-actions";
 import { useRouter } from "next/navigation";
 
+export const maxDuration = 60
+
 const VoucherForm = () => {
   const router = useRouter();
   const { toast } = useToast();

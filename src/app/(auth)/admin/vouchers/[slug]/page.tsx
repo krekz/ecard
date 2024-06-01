@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import React from "react";
 import { LuArrowLeft } from "react-icons/lu";
 
+export const maxDuration = 60
+
 const Page = async ({
   params,
   searchParams,

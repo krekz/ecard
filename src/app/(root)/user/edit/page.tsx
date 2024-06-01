@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { GetCardDetail } from "../../../../../actions/card-actions";
 import { checkDate } from "@/lib/utils";
 
+export const maxDuration = 60;
+
 const EditCardPage = async ({
   params,
   searchParams,
@@ -23,9 +25,9 @@ const EditCardPage = async ({
     if (userCard?.data?.userId !== session?.user?.id) {
       throw new Error("Unauthorized access");
     }
-    const disableEdit = checkDate(userCard?.data?.event?.date)
-    if(disableEdit) {
-      throw new Error("Cannot edit no more..")
+    const disableEdit = checkDate(userCard?.data?.event?.date);
+    if (disableEdit) {
+      throw new Error("Cannot edit no more..");
     }
     const transformedData = {
       ...userCard?.data,
