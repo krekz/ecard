@@ -33,12 +33,14 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
             <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
               <div className="flex flex-col items-center max-w-[400px] mx-auto ">
                 <DrawerHeader>
-                  <DrawerTitle className="text-center text-3xl">DONATION</DrawerTitle>
-                  <DrawerDescription className="text-center">
+                  <DrawerTitle className="text-center text-3xl">
+                    DONATION
+                  </DrawerTitle>
+                  <div className="text-center">
                     <DonateDrawerContent
                       donation={dataFromDB?.donation ?? {}}
                     />
-                  </DrawerDescription>
+                  </div>
                 </DrawerHeader>
               </div>
             </DrawerContent>
@@ -57,15 +59,17 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
           <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
             <div className="flex flex-col items-center max-w-[400px] mx-auto ">
               <DrawerHeader>
-                <DrawerTitle className="text-center text-3xl">Calendar</DrawerTitle>
-                <DrawerDescription className="text-center">
+                <DrawerTitle className="text-center text-3xl">
+                  Calendar
+                </DrawerTitle>
+                <div className="text-center">
                   {/* Calendar component */}
                   <CalendarDrawerContent
                     calendar={{
                       date: dataFromDB?.event?.date ?? new Date(),
                     }}
                   />
-                </DrawerDescription>
+                </div>
               </DrawerHeader>
             </div>
           </DrawerContent>
@@ -82,11 +86,13 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
           <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
             <div className="flex flex-col items-center max-w-[400px] mx-auto ">
               <DrawerHeader>
-                <DrawerTitle className="text-center text-3xl">LOCATION</DrawerTitle>
-                <DrawerDescription className="text-center">
+                <DrawerTitle className="text-center text-3xl">
+                  Location
+                </DrawerTitle>
+                <div className="text-center">
                   {/* Location component */}
                   <LocationDrawerContent location={dataFromDB?.event ?? {}} />
-                </DrawerDescription>
+                </div>
               </DrawerHeader>
             </div>
           </DrawerContent>
@@ -103,11 +109,15 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
           <DrawerContent className="w-[400px] max-w-[415px] mx-auto">
             <div className="flex flex-col items-center max-w-[400px] mx-auto ">
               <DrawerHeader>
-                <DrawerTitle className="text-center text-3xl">CONTACT</DrawerTitle>
-                <DrawerDescription className="text-center">
+                <DrawerTitle className="text-center text-3xl">
+                  Contact
+                </DrawerTitle>
+                <div className="text-center">
                   {/* Contact component */}
-                  <ContactDrawerContent heirs={dataFromDB?.heirs ?? []} />
-                </DrawerDescription>
+                  <ContactDrawerContent
+                    contact={{ phone_number: dataFromDB?.phone_number }}
+                  />
+                </div>
               </DrawerHeader>
             </div>
           </DrawerContent>

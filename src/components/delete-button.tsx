@@ -32,16 +32,16 @@ const DeleteButton = ({ children, onSubmit, loading }: DeleteButtonProps) => {
           <AlertDialogDescription>{children}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel
-            className={buttonVariants({ variant: "destructive" })}
-          >
+          <AlertDialogCancel className={buttonVariants({ variant: "outline" })}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={`text-foreground${buttonVariants({ variant: "outline" })}`}
+            className={`text-foreground${buttonVariants({
+              variant: "destructive",
+            })}`}
             onClick={onSubmit}
           >
-            Continue
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

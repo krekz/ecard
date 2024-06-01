@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "../ui/textarea";
 import { uploadVoucher } from "../../../actions/admin/voucher-actions";
+import { useRouter } from "next/navigation";
 
 const VoucherForm = () => {
+  const router = useRouter();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof createVoucherFormSchema>>({
     resolver: zodResolver(createVoucherFormSchema),
@@ -37,12 +39,14 @@ const VoucherForm = () => {
           variant: "destructive",
           title: response?.message,
         });
+        return;
       } else {
         toast({
           title: response?.message,
           variant: "success",
         });
       }
+      router.push("/admin/vouchers");
     } catch (error) {
       console.error(error);
     }

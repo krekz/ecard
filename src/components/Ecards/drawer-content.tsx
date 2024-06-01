@@ -12,46 +12,34 @@ import Image from "next/image";
 import { Calendar } from "../ui/calendar";
 
 type ContactProp = {
-  heirs: {
-    name?: string | null;
-    phone_number?: string | null;
-    relationship?: string | null;
-  }[];
+  contact: {
+    phone_number?: string;
+  };
 };
 
-export function ContactDrawerContent({ heirs }: ContactProp) {
+export function ContactDrawerContent({ contact }: ContactProp) {
   const generateWhatsappLink = (phone: string) => {
     return `https://wa.me/${phone}`;
   };
   return (
     <>
-      {heirs.map((heir, index) =>
-        heir.name !== "" ||
-        heir.relationship !== "" ||
-        heir.phone_number !== "" ? (
-          <div
-            key={index}
-            className="mt-1 flex p-5 border rounded-md max-w-[400px] w-[350px] justify-between shadow-md"
-          >
-            <div className="flex flex-col">
-              <h1 className="font-bold text-md">{heir.name}</h1>
-              <p className="font-light text-xs">{heir.relationship}</p>
-            </div>
+      <div className="mt-1 flex p-5 border rounded-md max-w-[400px] w-[350px] justify-between shadow-md">
+        <div className="flex flex-col">
+          <h1 className="font-bold text-md">Pengantin</h1>
+        </div>
 
-            <div className="flex gap-2">
-              <Link
-                target="_blank"
-                href={generateWhatsappLink(heir.phone_number ?? "")}
-              >
-                <AiOutlineWhatsApp size={30} color="green" />
-              </Link>
-              {/* <Link target="_blank" href={contact.phoneLink}>
+        <div className="flex gap-2">
+          <Link
+            target="_blank"
+            href={generateWhatsappLink(contact?.phone_number ?? "")}
+          >
+            <AiOutlineWhatsApp size={30} color="green" />
+          </Link>
+          {/* <Link target="_blank" href={contact.phoneLink}>
           <AiOutlinePhone size={30} color="blue" />
         </Link> */}
-            </div>
-          </div>
-        ) : null
-      )}
+        </div>
+      </div>
     </>
   );
 }
@@ -59,24 +47,26 @@ export function ContactDrawerContent({ heirs }: ContactProp) {
 type DonateDrawerContentProps = {
   donation: {
     id?: number;
-    name?: string;
+    acc_name?: string | null;
     bank?: string | null;
-    accountNo?: string;
+    acc_number?: string | null;
     qrCode?: string | null;
   };
 };
 export function DonateDrawerContent({ donation }: DonateDrawerContentProps) {
   return (
     <>
-      <h1>{donation.name}</h1>
-      <h2>{donation.bank}</h2>
-      <h3>{donation.accountNo}</h3>
+      <div className="flex flex-col gap-2">
+        <p className="text-lg">{donation.acc_name}</p>
+        <p className="text-md p-1 bg-purple-200 rounded-md">{donation.bank}</p>
+        <p className="text-md">{donation.acc_number}</p>
+      </div>
       <Image
         src={`https://bkduabhaudrkgjloqnck.supabase.co/storage/v1/object/public/e-card%20bucket/${donation.qrCode}`}
         alt="QrCode"
-        width={100}
-        height={100}
-        className="mx-auto rounded-lg"
+        width={300}
+        height={300}
+        className="mx-auto rounded-lg  max-w-[300px] max-h-[300px]"
       />
     </>
   );
@@ -99,9 +89,9 @@ export function CalendarDrawerContent({
         selected={calendar.date}
         className="rounded-md border"
       />
-      <h1 className="p-5 font-semibold">
+      <span className="p-5 font-semibold">
         {new Date(calendar.date).toDateString()}
-      </h1>
+      </span>
     </>
   );
 }
@@ -121,8 +111,8 @@ export function LocationDrawerContent({ location }: LocationProps) {
       <h3 className="text-lg">{location?.address}</h3>
       {location?.gMap && (
         <Button>
-          <Link href={location?.gMap}>
-            Google Map
+          <Link target="_blank" className="flex text-xl gap-2 items-center justify-center" href={location?.gMap}>
+            View Map
             <AiFillGoogleCircle size={30} />
           </Link>
         </Button>

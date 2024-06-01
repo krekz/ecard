@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -14,11 +14,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { voucherClaim } from "../../../actions/card-actions";
+import { voucherClaim } from "../../../actions/admin/voucher-actions";
 import { useToast } from "../ui/use-toast";
 
 const VoucherClaim = () => {
-  const {toast}= useToast()
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof voucherClaimSchema>>({
     resolver: zodResolver(voucherClaimSchema),
     defaultValues: {
@@ -32,24 +32,23 @@ const VoucherClaim = () => {
       formData.append(key, value);
     });
 
-    try{
-      const response = await voucherClaim(formData)
-      if(response?.ok){
+    try {
+      const response = await voucherClaim(formData);
+      if (response?.ok) {
         toast({
           title: response.message,
           description: "You may now get free card",
           variant: "success",
-        })
-      }else{
-       toast({
-        title:response?.message,
-        variant: "destructive",
-       })
+        });
+      } else {
+        toast({
+          title: response?.message,
+          variant: "destructive",
+        });
       }
-    }catch (error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-
   };
   return (
     <Form {...form}>

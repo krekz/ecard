@@ -13,9 +13,9 @@ const CatalogPage = async ({
         Browse E-card
       </h1>
       <div className="flex flex-col md:flex-row">
-        <aside className="p-3 w-52 lg:w-52 lg:block mx-auto">
+        {/* <aside className="p-3 w-52 lg:w-52 lg:block mx-auto">
           <CatalogFilter checkboxList={checkboxList} />
-        </aside>
+        </aside> */}
         <CatalogCard searchParams={searchParams} />
       </div>
     </main>

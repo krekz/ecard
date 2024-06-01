@@ -17,6 +17,8 @@ import StepOne from "./steps/step-one";
 import StepTwo from "./steps/step-two";
 import StepThree from "./steps/step-three";
 
+export const maxDuration = 60;
+
 const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -44,10 +46,15 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           // start_time: "",
           // end_time: "",
           venue: dataFromDB.event?.venue,
-
           acc_name: dataFromDB.donation?.acc_name,
           bank: dataFromDB.donation?.bank,
           acc_number: dataFromDB.donation?.acc_number,
+          program_name: dataFromDB.event?.program?.map(
+            (program) => program.name as string
+          ),
+          program_time: dataFromDB.event?.program?.map(
+            (program) => program.start_time as string
+          ),
         }
       : {
           father: "",
@@ -68,14 +75,19 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           acc_name: "",
           acc_number: "",
           bank: "",
+          program_name: Array.from({ length: 3 }).map(() => ""),
+          program_time: Array.from({ length: 3 }).map(() => ""),
         },
   });
 
   const onSubmit = async (data: z.infer<typeof organizerSchema>) => {
     const formData = new FormData();
-
     Object.entries(data).forEach(([key, value]) => {
-      if (value) {
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          formData.append(key, item as Blob); // Append each file under the same key
+        });
+      } else if (value) {
         formData.append(key, value as Blob);
       }
     });
@@ -112,10 +124,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           variant: "success",
         });
 
-        const redirectDelay = 2000; // Delay before redirecting to allow user to see the success message
-        setTimeout(() => {
-          router.push(`/preview/${response.id}`);
-        }, redirectDelay);
+        router.push(`/preview/${response.id}`);
       } else {
         toast({
           title: response?.message,
@@ -143,7 +152,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
         {/* Main content (form) */}
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="md:col-span-2 flex flex-col gap-5 space-y-3 w-full  "
+          className="md:col-span-3 flex flex-col gap-5 space-y-3 w-full  "
         >
           {currentStep === 1 && <StepOne />}
           {currentStep === 2 && <StepTwo />}
@@ -181,16 +190,16 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
             </Button>
           </div>
         </form>
-        <div
+        {/* Preview and Voucher on sidebar */}
+        {/* <div
           className="flex flex-col gap-5 w-full rounded-lg p-3 order-first md:order-last "
           style={{
             backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)",
           }}
         >
-          {/* Preview and Voucher on sidebar */}
           <CardFormPreview />
           {!dataFromDB && <VoucherClaim />}
-        </div>
+        </div> */}
       </FormProvider>
     </div>
   );

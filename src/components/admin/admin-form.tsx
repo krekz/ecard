@@ -30,6 +30,7 @@ import {
   uploadDesign,
 } from "../../../actions/admin/design-actions";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type DesignFormProps = {
   design?: {
@@ -42,8 +43,8 @@ type DesignFormProps = {
 
 export const maxDuration = 30;
 
-
 const DesignForm = ({ design, formType }: DesignFormProps) => {
+  const router = useRouter();
   const schema =
     formType === "upload" ? uploadDesignSchema : updateDesignSchema;
   const form = useForm<z.infer<typeof schema>>({
@@ -80,22 +81,19 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
 
     try {
       if (design) {
-        try {
-          const response = await updateDesign(formData,design.name);
-          if (response?.ok) {
-            toast({
-              title: response.message,
-              variant: "success",
-            });
-          }else {
-            toast({
-              title: response?.message,
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          console.log(error);
+        const response = await updateDesign(formData, design.name);
+        if (response?.ok) {
+          toast({
+            title: response.message,
+            variant: "success",
+          });
+        } else {
+          toast({
+            title: response?.message,
+            variant: "destructive",
+          });
         }
+        router.push("/admin/designs");
         return;
       }
 
@@ -116,6 +114,9 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
         title: "An error occurred while uploading the card",
         variant: "destructive",
       });
+    } finally {
+      router.push("/admin/designs");
+      return;
     }
   };
   return (

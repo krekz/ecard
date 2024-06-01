@@ -14,7 +14,7 @@ export default async function HomeLayout({
 }) {
   return (
     <html lang="en" className={montserrat.className}>
-      <body className="min-h-screen bg-pink-100/50 font-sans antialiased ">
+      <body className="min-h-screen font-sans antialiased ">
         <Navbar />
         <main>{children}</main>
       </body>
