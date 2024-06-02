@@ -69,7 +69,7 @@ const CatalogCard = async ({
               )}
             >
               <Image
-                className="mx-auto p-3"
+                className="mx-auto w-auto h-auto p-3 scale-150"
                 src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${card.thumbnail_url}`}
                 width={200}
                 height={200}
