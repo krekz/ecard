@@ -50,10 +50,10 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           bank: dataFromDB.donation?.bank,
           acc_number: dataFromDB.donation?.acc_number,
           program_name: dataFromDB.event?.program?.map(
-            (program) => program.name as string
+            (program) => program.name === null ? "" : program.name
           ),
           program_time: dataFromDB.event?.program?.map(
-            (program) => program.start_time as string
+            (program) => program.start_time === null ? "" : program.start_time
           ),
         }
       : {
