@@ -63,13 +63,13 @@ const CatalogCard = async ({
             <Card
               key={index}
               className={cn(
-                "text-center relative "
+                "text-center relative overflow-hidden"
                 // card.isPopular &&
                 //   "before:content-['Popular'] before:bg-yellow-400 before:absolute before:-left-5 before:-top-2 before:-rotate-[20deg]   before:w-20  before:rounded-lg before:py-1 before:text-white before:font-bold"
               )}
             >
               <Image
-                className="mx-auto w-auto h-auto p-3 scale-150"
+                className="mx-auto w-auto h-auto p-3 scale-150 overflow-hidden"
                 src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${card.thumbnail_url}`}
                 width={200}
                 height={200}
