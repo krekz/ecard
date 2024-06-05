@@ -1,8 +1,7 @@
-'use client'
-import Image from "next/image";
-import { motion } from "framer-motion";
+"use client";
+import Link from "next/link";
 import React from "react";
-import { LuFacebook, LuInstagram, LuLinkedin, LuTwitter } from "react-icons/lu";
+import { LuInstagram, LuGlobe } from "react-icons/lu";
 
 const Footer = () => {
   const footerNavs = [
@@ -21,9 +20,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer
-      className="text-white bg-purple-300 px-4 py-5 mx-auto md:px-8"
-    >
+    <footer className="text-white bg-fuchsia-400/90 px-4 py-5 mx-auto md:px-8">
       <div className="max-w-lg sm:mx-auto sm:text-center">
         <h1 className="text-2xl font-bold">TeaCard powered by Telekung Tea</h1>
         <p className="leading-relaxed mt-2 text-[15px]">
@@ -45,9 +42,12 @@ const Footer = () => {
         <div className="mt-6 sm:mt-0">
           {/* Icon */}
           <ul className="flex items-center space-x-4">
-            <LuFacebook size={20} color="blue" />
-            <LuInstagram size={20} color="red" />
-            <LuTwitter size={20} color="#544bae" />
+            <Link target="_blank" href="https://www.instagram.com/telekungtea/">
+              <LuInstagram size={25} color="red" />
+            </Link>
+            <Link target="_blank" href="https://telekungtea.com">
+              <LuGlobe size={25} color="blue" />
+            </Link>
           </ul>
         </div>
       </div>

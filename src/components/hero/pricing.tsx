@@ -32,12 +32,12 @@ const features = [
   {
     name: "Seamless Delivery",
     desc: "Send your digital invitations instantly via email, text or social media. ",
-    icon: <LuPackageCheck />
+    icon: <LuPackageCheck />,
   },
   {
     name: "Flexible",
     desc: "Customize every detail – from fonts to images and messages to make your invitation truly one-of-a-kind.",
-    icon: <LuInfinity />
+    icon: <LuInfinity />,
   },
 ];
 
@@ -52,7 +52,6 @@ const Pricing = () => {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="relative max-w-xl space-y-3 px-4 md:px-0"
         >
-          <h3 className="text-indigo-600 font-semibold">Pricing</h3>
           <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">
             <span className="text-red-500 font-extrabold">
               No SUBSCRIPTIONS.
@@ -104,11 +103,15 @@ const Pricing = () => {
                   </span>
                   <p className="mt-3 sm:text-sm">{plan.desc}</p>
                 </div>
-                <div className="flex-none text-gray-800 text-2xl font-semibold sm:text-3xl">
-                  RM{plan.price}
+                <div className="flex-none text-gray-800 text-2xl font-semibold">
+                  <span className="text-3xl font-bold">RM</span>
+                  {plan.price}
                 </div>
               </div>
-              <Link href="/catalog" className="mt-4 px-3 py-3 rounded-lg text-center font-semibold text-sm duration-150 text-white bg-primary hover:bg-primary/90 active:bg-primary/100">
+              <Link
+                href="/catalog"
+                className="mt-4 px-3 py-3 rounded-lg text-center font-semibold text-sm duration-150 text-white bg-fuchsia-500 hover:bg-fuchsia-600"
+              >
                 Choose your design
               </Link>
             </div>

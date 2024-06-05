@@ -116,7 +116,7 @@ const Register = () => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-2/3 space-y-6"
+              className="w-2/3 space-y-6 text-start flex flex-col"
             >
               <FormField
                 control={form.control}
@@ -124,13 +124,13 @@ const Register = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-md font-semibold">
-                      State:{" "}
+                      State
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <FormControl className="w-full md:w-1/2 mx-auto">
+                      <FormControl className="w-full mx-auto">
                         <SelectTrigger>
                           <SelectValue placeholder="select" />
                         </SelectTrigger>
@@ -164,7 +164,7 @@ const Register = () => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <FormControl className="w-full md:w-1/2 mx-auto">
+                      <FormControl className="w-full mx-auto">
                         <SelectTrigger>
                           <SelectValue placeholder="select" />
                         </SelectTrigger>
@@ -197,7 +197,7 @@ const Register = () => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <FormControl className="w-full md:w-1/2 mx-auto">
+                      <FormControl className="w-full mx-auto">
                         <SelectTrigger>
                           <SelectValue placeholder="select" />
                         </SelectTrigger>
@@ -214,7 +214,7 @@ const Register = () => {
                   </FormItem>
                 )}
               />
-              <Button disabled={form.formState.isSubmitting} type="submit">
+              <Button className="text-center mx-auto" disabled={form.formState.isSubmitting || form.formState.isSubmitSuccessful} type="submit">
                 Complete
               </Button>
             </form>

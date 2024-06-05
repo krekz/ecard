@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import FormNavbar from "@/components/forms/form-navbar";
 
-export const maxDuration = 60
+export const maxDuration = 60;
 
 const CreateCardPage = async ({
   searchParams,
@@ -17,7 +17,7 @@ const CreateCardPage = async ({
 
   return (
     <>
-      <h1 className="font-bold text-5xl pt-10 text-center">Create TEAcard</h1>
+      <h1 className="font-bold text-5xl pt-10 text-center">Create TeaCard</h1>
       <FormNavbar />
       <CardForm user={session?.user} />
     </>

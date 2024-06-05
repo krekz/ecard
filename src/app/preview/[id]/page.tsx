@@ -1,5 +1,5 @@
 import ECard from "@/components/Ecards/e-card";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { GetCardDetail } from "../../../../actions/card-actions";
 
 const CardDetailPage = async ({ params }: { params: { id: string } }) => {
@@ -11,6 +11,7 @@ const CardDetailPage = async ({ params }: { params: { id: string } }) => {
     ...cardData?.data,
     heirs: Array.isArray(cardData?.data?.heirs) ? cardData?.data.heirs : [],
   };
+
   return (
     <>
       <ECard dataFromDB={modifiedData} />

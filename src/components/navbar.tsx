@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="items-center px-4 container mx-auto md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <Link href="/" className="text-2xl font-bold">
-            TeaCard
+            <span className="text-fuchsia-500">Tea</span>Card
           </Link>
           <div className="md:hidden">
             <button
@@ -101,7 +101,7 @@ const Navbar = () => {
               <li>
                 <Link
                   href="/catalog"
-                  className="block py-3 px-4 font-medium text-center text-white bg-primary hover:bg-primary/90 active:bg-primary-foreground active:shadow-none rounded-lg shadow md:inline"
+                  className="block py-3 px-4 font-medium text-center text-white bg-fuchsia-500 hover:bg-fuchsia-600 rounded-lg shadow md:inline"
                 >
                   Create Card
                 </Link>

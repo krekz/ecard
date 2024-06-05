@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { GetCards } from "../../../../../actions/card-actions";
+import { LuAlertOctagon } from "react-icons/lu";
 
 export type userCard = {
   cards: {
@@ -53,16 +54,21 @@ const UserProfilePage = async () => {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col container mx-auto py-24 gap-5">
+        <div className="flex flex-col container mx-auto py-24 gap-2">
           <h1 className="text-center font-bold text-2xl">Purchased cards</h1>
           <Table>
-            <TableCaption>A list of your recent cards.</TableCaption>
+            <TableCaption>
+              <p className="flex justify-center gap-1 items-center text-gray-500 text-xs text-center">
+                <LuAlertOctagon size={25} color="yellow" />
+                You are not allowed to edit card once wedding date is passed
+              </p>
+            </TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Name</TableHead>
-                <TableHead>Last updated</TableHead>
+                <TableHead className="hidden md:inline">Last updated</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Wedding date</TableHead>
+                <TableHead className="hidden md:block">Wedding date</TableHead>
               </TableRow>
             </TableHeader>
             {getAllCards?.map((card) => (

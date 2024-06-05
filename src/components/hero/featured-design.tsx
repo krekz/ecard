@@ -4,21 +4,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-const integrations = [
-  {
-    title: "Figma",
-    desc: "Ut enim ad minim veniam",
-  },
-  {
-    title: "Github",
-    desc: "Ut enim ad minim veniam",
-  },
-  {
-    title: "Discord",
-    desc: "Ut enim ad minim veniam",
-  },
-];
+import { LuArrowRight } from "react-icons/lu";
 
 const FeaturedDesign = () => {
   return (
@@ -44,9 +30,9 @@ const FeaturedDesign = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: 0.5, once: true }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="py-5 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          className="py-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {integrations.map((item, idx) => (
+          {Array.from({ length: 3 }).map((_, idx) => (
             <li key={idx} className="border rounded-lg">
               <div className="flex justify-center p-4 overflow-hidden">
                 <Image
@@ -57,13 +43,16 @@ const FeaturedDesign = () => {
                   className="scale-150"
                 />
               </div>
-              <div className="flex flex-row justify-center p-5">
+              <div className="flex flex-row justify-center gap-2 p-5">
                 <Button asChild className="w-full" variant="secondary">
                   <Link target="_blank" href="/preview/demo?id=wed-1">
                     Preview
                   </Link>
                 </Button>
-                <Button asChild className="w-full">
+                <Button
+                  asChild
+                  className="w-full bg-fuchsia-500 hover:bg-fuchsia-600"
+                >
                   <Link href="/user/create">Buy</Link>
                 </Button>
               </div>
@@ -71,8 +60,13 @@ const FeaturedDesign = () => {
           ))}
         </motion.ul>
       </motion.div>
-      <Button asChild className="mt-16">
-        <Link href="/catalog">View all designs</Link>
+      <Button asChild variant="outline" className="mt-16 p-6">
+        <Link
+          href="/catalog"
+          className="outline outline-fuchsia-500 outline-1 hover:bg-fuchsia-600 hover:text-white hover:outline-none flex gap-2 items-center"
+        >
+          View all designs <LuArrowRight />
+        </Link>
       </Button>
     </section>
   );

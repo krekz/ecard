@@ -9,8 +9,8 @@ const CatalogPage = async ({
 }) => {
   return (
     <main className="py-10 md:container flex flex-col flex-wrap">
-      <h1 className="text-center text-4xl font-bold uppercase">
-        Browse E-card
+      <h1 className="text-center text-4xl font-bold">
+        Browse <span className="text-fuchsia-500">Tea</span>Card
       </h1>
       <div className="flex flex-col md:flex-row">
         {/* <aside className="p-3 w-52 lg:w-52 lg:block mx-auto">
