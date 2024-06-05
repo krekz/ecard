@@ -3,10 +3,8 @@ import prisma from "../prisma";
 import { organizerSchema } from "../schema/zod/ecard-form";
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { get } from "http";
 import { v4 as uuidv4 } from "uuid";
-
-const maxDuration = 60;
 
 export const createCard = async (formData: FormData) => {
   const supabase = createClient();
@@ -50,8 +48,6 @@ export const createCard = async (formData: FormData) => {
       program_name,
       program_time,
     } = organizerSchema.parse(values);
-
-    console.log("SUCCESS", program_time, program_name);
 
     const user = await prisma.user.findUnique({
       where: {
@@ -97,8 +93,6 @@ export const createCard = async (formData: FormData) => {
               })),
               // .filter((program) => program.name !== ""), // filter entries with empty names
             },
-            start_time: "",
-            end_time: "",
             gMap: google_map,
           },
         },
@@ -215,8 +209,6 @@ export const updateCard = async (
       couple,
       date,
       design_id,
-      // end_time,
-      // start_time,
       father,
       greeting,
       groom,
@@ -245,6 +237,11 @@ export const updateCard = async (
         },
         select: {
           userId: true,
+          donation: {
+            select: {
+              qrCode: true,
+            },
+          },
           event: {
             select: {
               id: true,
@@ -304,8 +301,6 @@ export const updateCard = async (
         },
       });
 
-      console.log("EXISTING PROGRAM", existingProgram);
-      // pdate the event
       const eventUpdatePromise = prisma.event.update({
         where: {
           id: eventId,
@@ -313,8 +308,6 @@ export const updateCard = async (
         data: {
           date,
           address,
-          start_time: "start_time" || "",
-          end_time: "end_time" || "",
           gMap: google_map,
           greeting,
           venue,
@@ -399,20 +392,25 @@ export const updateCard = async (
       const handleDonationUpdate = async () => {
         const supabase = createClient();
 
-        const { data: list } = await supabase.storage
-          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
-          .list(`users/user-${userId}/card-${cardId}/qrcode`);
-
-        // Check existing donation and user want to replace with new one
-        if (list && list.length >= 1 && qrcode) {
-          const removedFiles = list.map(
-            (img) => `users/user-${userId}/card-${cardId}/qrcode/qr-${img.name}`
-          );
-          await supabase.storage
+        if (qrcode) {
+          const { data: list } = await supabase.storage
             .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
-            .remove(removedFiles);
+            .list(`users/user-${userId}/card-${cardId}/qrcode`);
+
+          // Check existing donation and user want to replace with new one
+          if (list && list.length >= 1 && qrcode) {
+            const removedFiles = list.map(
+              (img) =>
+                `users/user-${userId}/card-${cardId}/qrcode/qr-${img.name}`
+            );
+            await supabase.storage
+              .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+              .remove(removedFiles);
+          }
+          getQr_url = await uploadQrCode(qrcode as File, userId!);
+        } else {
+          getQr_url = existingCard.donation?.qrCode || undefined;
         }
-        getQr_url = await uploadQrCode(qrcode as File, userId!);
 
         const donationUpdatePromise = prisma.donation.update({
           where: {
