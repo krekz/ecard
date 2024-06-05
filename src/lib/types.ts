@@ -26,7 +26,7 @@ export type CardFormProps = {
     groom?: string;
     couple?: string;
     phone_number?: string;
-    youtubeURL?: string;
+    youtube_url?: string | null;
     designId?: string;
     primary_font?: string;
     secondary_font?: string;
@@ -60,8 +60,6 @@ export type CardFormProps = {
         name?: string | null;
         start_time?: string | null;
       }[];
-      start_time: string;
-      end_time: string;
       venue: string;
       greeting: string;
     } | null;
