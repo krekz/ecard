@@ -69,7 +69,20 @@ export const organizerSchema = z
       .refine((val) => val.includes("&"), { message: "Missing '&' character" }),
     phone_number: numberFormat, // phone cannot contain - or + or space
     design_id: z.string().min(1, { message: "Design is required" }),
-    youtube_url: z.string().url().optional().or(z.literal("")),
+    youtube_url: z
+      .string()
+      .url()
+      .optional()
+      .or(z.literal(""))
+      .nullable()
+      .refine(
+        (url) => {
+          return (
+            !url || url.includes("youtube.com") || url.includes("youtu.be")
+          );
+        },
+        { message: "URL must be from 'youtube' or 'youtu.be'" }
+      ),
     primary_font: z.string().min(1, "Font is required"),
     secondary_font: z.string().min(1, "Font is required"),
     qrcode: z
@@ -104,17 +117,7 @@ export const organizerSchema = z
   .and(eventSchema)
   .and(donationSchema);
 
-//  //waris
-//  heirs: z
-//  .array(
-//    z.object({
-//      name: z.string().optional(),
-//      phone: z.string().optional(),
-//      relation: z.string().optional(),
-//    })
-//  )
-//  .optional(),
-
+// voucher schema
 export const voucherClaimSchema = z.object({
   voucher_code: z.string().optional(),
 });
