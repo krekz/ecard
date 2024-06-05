@@ -196,11 +196,19 @@ import { TFonts } from "./types";
 
 export const secondaryFontsConst: TFonts[] = [
   {
-    id: "cormorant_garamond",
-    name: "Cormorant Garamond",
+    id: "crimson_pro",
+    name: "Crimson Pro",
     font: {
-      className: f.cormorant_garamond.className,
-      style: f.cormorant_garamond.style,
+      className: f.crimson_pro.className,
+      style: f.crimson_pro.style,
+    },
+  },
+  {
+    id: "young_serif",
+    name: "Young Serif",
+    font: {
+      className: f.young_serif.className,
+      style: f.young_serif.style,
     },
   },
   {
@@ -244,22 +252,6 @@ export const secondaryFontsConst: TFonts[] = [
     },
   },
   {
-    id: "poppins",
-    name: "Poppins",
-    font: {
-      className: f.poppins.className,
-      style: f.poppins.style,
-    },
-  },
-  {
-    id: "roboto",
-    name: "Roboto",
-    font: {
-      className: f.roboto.className,
-      style: f.roboto.style,
-    },
-  },
-  {
     id: "lato",
     name: "Lato",
     font: {
@@ -279,6 +271,22 @@ export const primaryFontsConst: TFonts[] = [
     },
   },
   {
+    id: "great_vibes",
+    name: "Great Vibes",
+    font: {
+      className: f.great_vibes.className,
+      style: f.great_vibes.style,
+    },
+  },
+  {
+    id: "parisienne",
+    name: "Parisienne",
+    font: {
+      className: f.parisienne.className,
+      style: f.parisienne.style,
+    },
+  },
+  {
     id: "style_script",
     name: "Style Script",
     font: {
@@ -287,19 +295,11 @@ export const primaryFontsConst: TFonts[] = [
     },
   },
   {
-    id: "oleo_script_swash_caps",
-    name: "Oleo Script Swash Caps",
+    id: "pinyon_script",
+    name: "Pinyon Script",
     font: {
-      className: f.oleo_script_swash_caps.className,
-      style: f.oleo_script_swash_caps.style,
-    },
-  },
-  {
-    id: "vujahday_script",
-    name: "Vujahday Script",
-    font: {
-      className: f.vujahday_script.className,
-      style: f.vujahday_script.style,
+      className: f.pinyon_script.className,
+      style: f.pinyon_script.style,
     },
   },
   {
