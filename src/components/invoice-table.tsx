@@ -30,7 +30,9 @@ const InvoiceTable = ({ card }: { card: CardProps }) => {
       <TableBody>
         <TableRow>
           <TableCell className="font-medium">{card.couple}</TableCell>
-          <TableCell>{format(card.updatedAt, "dd/MM/yyyy")}</TableCell>
+          <TableCell className="hidden md:block">
+            {format(card.updatedAt, "dd/MM/yyyy")}
+          </TableCell>
           <TableCell>
             <span
               className={cn(
@@ -41,18 +43,20 @@ const InvoiceTable = ({ card }: { card: CardProps }) => {
               {disableEdit ? "Inactive" : "Active"}
             </span>
           </TableCell>
-          <TableCell>
+          <TableCell className="hidden md:block">
             {format(new Date(card.event.date as Date), "dd/MM/yyyy")}
           </TableCell>
           <TableCell className="space-y-2 md:space-x-2">
-            <Button disabled={disableEdit} variant="outline">
-              <Link
-                className="w-full md:w-auto"
-                href={`/user/edit?id=${card.id}&design_id=${card.designId}`}
-              >
-                Edit
-              </Link>
-            </Button>
+            {!disableEdit && (
+              <Button asChild variant="outline">
+                <Link
+                  className="w-full md:w-auto"
+                  href={`/user/edit?id=${card.id}&design_id=${card.designId}`}
+                >
+                  Edit
+                </Link>
+              </Button>
+            )}
             <Button asChild>
               <Link
                 className="w-full md:w-auto"
