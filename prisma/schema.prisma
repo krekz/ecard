@@ -42,6 +42,7 @@ model User {
   name          String?
   state         String?
   district      String?
+  referral      String?
   email         String?       @unique
   emailVerified DateTime?     @map("email_verified") @db.Timestamptz(3)
   image         String?
@@ -100,16 +101,14 @@ model Heirs {
 }
 
 model Event {
-  id         Int       @id @default(autoincrement())
-  venue      String
-  address    String
-  date       DateTime  @db.Timestamptz(3)
-  gMap       String?
-  greeting   String
-  program    Program[]
-  end_time   String
-  start_time String
-  eCardId    String    @unique
+  id       Int       @id @default(autoincrement())
+  venue    String
+  address  String
+  date     DateTime  @db.Timestamptz(3)
+  gMap     String?
+  greeting String
+  program  Program[]
+  eCardId  String    @unique
 
   ECard     ECard @relation(fields: [eCardId], references: [id], onDelete: Cascade)
   programId Int?

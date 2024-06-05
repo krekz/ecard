@@ -24,6 +24,7 @@ export const UpdateUser = async (
       data: {
         state,
         district,
+        referral,
       },
     });
   } catch (error) {
