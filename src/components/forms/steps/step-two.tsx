@@ -1,9 +1,5 @@
-import {
-  LuAsterisk,
-  LuCalendarCheck,
-  LuPlusCircle,
-  LuTrash,
-} from "react-icons/lu";
+"use client";
+import { LuAsterisk, LuCalendarCheck } from "react-icons/lu";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -23,48 +19,32 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useFormContext } from "react-hook-form";
-import { organizerSchema } from "../../../../schema/zod/ecard-form";
-import { z } from "zod";
+import { useSearchParams } from "next/navigation";
 
 const StepTwo = () => {
-  const form = useFormContext<z.infer<typeof organizerSchema>>();
+  const searchParams = useSearchParams();
+  const cardId = searchParams.get("id");
 
   return (
     <>
       <h3 className="text-2xl font-bold flex">Location </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ">
-        <div className="p-3">
-          <FormField
-            name={`venue`}
-            render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="flex">
-                  Nama lokasi <LuAsterisk color="red" />
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="Glenmarie Shah Alam" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name={`address`}
-            render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="flex">
-                  Alamat lokasi <LuAsterisk color="red" />
-                </FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Jalan duta blabla" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex flex-row md:flex-col gap-2">
+        <FormField
+          name={`venue`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex">
+                Nama lokasi <LuAsterisk color="red" />
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="Glenmarie Shah Alam" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {!cardId && (
           <FormField
             name={`date`}
             render={({ field }) => (
@@ -73,9 +53,10 @@ const StepTwo = () => {
                   Tarikh <LuAsterisk color="red" />
                 </FormLabel>
                 <Popover>
-                  <PopoverTrigger asChild>
+                  <PopoverTrigger disabled={!!cardId} asChild>
                     <FormControl>
                       <Button
+                        disabled={!!cardId}
                         variant={"outline"}
                         className={cn(
                           " pl-3 text-left font-normal",
@@ -106,30 +87,44 @@ const StepTwo = () => {
               </FormItem>
             )}
           />
-          <FormField
-            name={`google_map`}
-            render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel>
-                  Link Google Map{" "}
-                  <span className="text-xs text-muted-foreground">
-                    (Optional)
-                  </span>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="https://maps.google.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        )}
+        <FormField
+          name={`address`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex">
+                Alamat lokasi <LuAsterisk color="red" />
+              </FormLabel>
+              <FormControl>
+                <Textarea placeholder="Jalan duta blabla" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name={`google_map`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Link Google Map{" "}
+                <span className="text-xs text-muted-foreground">
+                  (Optional)
+                </span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="https://maps.google.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
 
       <FormField
         name={`greeting`}
         render={({ field }) => (
-          <FormItem className="space-y-0">
+          <FormItem>
             <FormLabel className="flex">
               Ucapan alu-aluan <LuAsterisk color="red" />
             </FormLabel>

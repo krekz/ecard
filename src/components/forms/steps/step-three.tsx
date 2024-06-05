@@ -13,7 +13,14 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { useFormContext } from "react-hook-form";
 import { organizerSchema } from "../../../../schema/zod/ecard-form";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { z } from "zod";
+import { FaCircleQuestion } from "react-icons/fa6";
 
 function StepThree() {
   const qrInputRef = useRef<HTMLInputElement>(null);
@@ -42,19 +49,28 @@ function StepThree() {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">
+      <div className="flex gap-2 text-2xl font-bold">
+        <h1>
           Donation <span className="text-sm text-gray-500">-Optional</span>
         </h1>
-        <p className="text-sm text-gray-500">
-          Display your bank details to collect donation (Money gift)
-        </p>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger type="button">
+              <FaCircleQuestion />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm font-normal">
+                Display your bank details to collect donation (Money gift)
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 border rounded-md p-3">
         <FormField
           name={`acc_name`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
+            <FormItem>
               <FormLabel>Nama akaun</FormLabel>
               <FormControl>
                 <Input placeholder="Siti Sharmila" {...field} />
@@ -66,7 +82,7 @@ function StepThree() {
         <FormField
           name={`bank`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
+            <FormItem>
               <FormLabel>Bank</FormLabel>
               <FormControl>
                 <Input placeholder="Maybank" {...field} />
@@ -76,24 +92,9 @@ function StepThree() {
           )}
         />
         <FormField
-          name={`acc_number`}
-          render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Nombor Akaun</FormLabel>
-              <FormControl>
-                <Input placeholder="15412876" type="number" {...field} />
-              </FormControl>
-              <FormDescription>
-                No space or special characters allowed
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
           name={`qrcode`}
           render={({ field: { value, ...fieldValues } }) => (
-            <FormItem className="space-y-0">
+            <FormItem>
               <FormLabel>QR code</FormLabel>
               <FormControl>
                 <Input
@@ -114,21 +115,52 @@ function StepThree() {
             </FormItem>
           )}
         />
+
+        <FormField
+          name={`acc_number`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nombor Akaun</FormLabel>
+              <FormControl>
+                <Input placeholder="15412876" type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {qrPreview && (
-          <Image src={qrPreview} alt="preview" width={200} height={200} />
-        )}
-        {qrPreview && (
-          <Button variant="destructive" onClick={handleRemoveQrCode}>
-            Remove
-          </Button>
+          <div className="flex flex-col items-center gap-2">
+            <Image
+              src={qrPreview}
+              className="overflow-hidden scale-125"
+              alt="preview"
+              width={200}
+              height={200}
+            />
+            <Button variant="destructive" onClick={handleRemoveQrCode}>
+              Remove
+            </Button>
+          </div>
         )}
       </div>
 
       <FormField
         name={`youtube_url`}
         render={({ field }) => (
-          <FormItem className="space-y-0">
-            <FormLabel>Youtube URL</FormLabel>
+          <FormItem>
+            <div className="flex gap-x-2 items-center">
+              <FormLabel>Youtube URL</FormLabel>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger type="button">
+                    <FaCircleQuestion />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Song to play in your card</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <FormControl>
               <Input
                 placeholder="https://www.youtube.com/watch?v=video_id"
@@ -143,7 +175,7 @@ function StepThree() {
       <FormField
         name={`wedding_images`}
         render={({ field: { value, ...fieldValues } }) => (
-          <FormItem className="space-y-0">
+          <FormItem>
             <FormLabel>Gallery Photos</FormLabel>
             <FormDescription>You may select up to 3 images.</FormDescription>
             <FormControl>

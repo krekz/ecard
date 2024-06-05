@@ -1,5 +1,4 @@
 "use client";
-// import toast from "react-hot-toast";
 import { useToast } from "@/components/ui/use-toast";
 import useStore from "@/store/store";
 import { useForm, FormProvider } from "react-hook-form";
@@ -24,7 +23,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   const searchParams = useSearchParams();
   const designId = searchParams.get("design_id");
   const router = useRouter();
-  const { currentStep, disableButton, setDisableButton } = useStore();
+  const { currentStep } = useStore();
   const form = useForm<z.infer<typeof organizerSchema>>({
     resolver: zodResolver(organizerSchema),
     defaultValues: dataFromDB
@@ -36,24 +35,22 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           couple: dataFromDB.couple,
           phone_number: dataFromDB.phone_number,
           design_id: dataFromDB.designId,
-          youtube_url: dataFromDB.youtubeURL,
+          youtube_url: dataFromDB.youtube_url,
           primary_font: dataFromDB.primary_font,
           secondary_font: dataFromDB.secondary_font,
           date: dataFromDB.event?.date,
           address: dataFromDB.event?.address,
           greeting: dataFromDB.event?.greeting,
           google_map: dataFromDB.event?.gMap,
-          // start_time: "",
-          // end_time: "",
           venue: dataFromDB.event?.venue,
           acc_name: dataFromDB.donation?.acc_name,
           bank: dataFromDB.donation?.bank,
           acc_number: dataFromDB.donation?.acc_number,
-          program_name: dataFromDB.event?.program?.map(
-            (program) => program.name === null ? "" : program.name
+          program_name: dataFromDB.event?.program?.map((program) =>
+            program.name === null ? "" : program.name
           ),
-          program_time: dataFromDB.event?.program?.map(
-            (program) => program.start_time === null ? "" : program.start_time
+          program_time: dataFromDB.event?.program?.map((program) =>
+            program.start_time === null ? "" : program.start_time
           ),
         }
       : {
@@ -69,8 +66,6 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
           greeting:
             "Dengan penuh kesyukuran kehadrat Illahi, kami mempersilakan Dato'/Datin/Dr/Tuan/Puan/Encik/Cik ke walimatulurus anakanda kesayangan kami",
           google_map: "",
-          // start_time: "asdasd",
-          // end_time: "asdasd",
           venue: "",
           acc_name: "",
           acc_number: "",
@@ -107,6 +102,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
             title: response.message,
             variant: "success",
           });
+          router.push("/user/cards");
         } else {
           toast({
             title: response?.message,
@@ -152,7 +148,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
         {/* Main content (form) */}
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="md:col-span-2 flex flex-col gap-5 space-y-3 w-full  "
+          className="md:col-span-2 flex flex-col gap-2 w-full  "
         >
           {currentStep === 1 && <StepOne />}
           {currentStep === 2 && <StepTwo />}
@@ -192,7 +188,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
         </form>
         {/* Preview and Voucher on sidebar */}
         <div
-          className="flex flex-col gap-5 w-full rounded-lg p-3 order-first md:order-last "
+          className="flex flex-col gap-5 w-full rounded-lg p-3 order-first md:order-last max-h-[52rem]"
           style={{
             backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)",
           }}
