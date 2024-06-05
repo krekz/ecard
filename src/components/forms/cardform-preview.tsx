@@ -16,7 +16,6 @@ const CardFormPreview = () => {
   const form = useFormContext<z.infer<typeof organizerSchema>>();
   const primary_font = getFont(form?.watch("primary_font"));
   const secondary_font = getFont(form?.watch("secondary_font"));
-
   const dateString = form?.watch("date");
   const checkDate = dateString ? new Date(dateString) : new Date();
   const getDate = formatDate(checkDate);
@@ -63,7 +62,7 @@ const CardFormPreview = () => {
           </h2>
         </div>
       ) : (
-        <div>Loading...</div>
+        <div className="mx-auto">Loading Card...</div>
       )}
     </>
   );

@@ -2,16 +2,17 @@
 import Bar from "@/components/Ecards/card-navbar";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
-import { HiCalendar, HiOutlineClock, HiLocationMarker } from "react-icons/hi";
+import { HiCalendar, HiLocationMarker } from "react-icons/hi";
 import CardCarousel from "@/components/Ecards/card-carousel";
 import { CardFormProps } from "@/lib/types";
 import Countdown from "./countdown";
 import { getFont } from "@/lib/utils";
 import { weekday } from "@/lib/constant";
-import { LuGlobe, LuInstagram } from "react-icons/lu";
+import { LuGlobe, LuHeart, LuInstagram } from "react-icons/lu";
 import Link from "next/link";
-import YouTubePlayer from "../youtube-player";
+import YouTubePlayer from "./youtube-player";
 import { motion } from "framer-motion";
+import { Url } from "next/dist/shared/lib/router/router";
 
 const ECard = ({
   dataFromDB,
@@ -21,7 +22,11 @@ const ECard = ({
 }) => {
   if (!dataFromDB) return null;
   const { event } = dataFromDB;
-
+  const youtubeID = dataFromDB.youtube_url?.includes("youtube.com/watch?")
+    ? dataFromDB.youtube_url?.split("v=")[1]?.split("&")[0]
+    : dataFromDB.youtube_url?.includes("youtu.be/")
+    ? dataFromDB.youtube_url?.split("/").pop()?.split("?")[0]
+    : null;
   const checkDate = event?.date ? new Date(event.date) : new Date();
   const getDate = formatDate(checkDate);
 
@@ -161,16 +166,18 @@ const ECard = ({
             <h2 className="text-amber-700 text-2xl">{event?.venue}</h2>
             <p className="font-light text-base">{event?.address}</p>
           </motion.div>
-          {event?.program && event.program.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: false }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-              className="flex flex-col items-center gap-2"
-            >
-              <h2 className="text-amber-700 text-2xl">Atur Cara Majlis</h2>
-              {event?.program?.map((programItem, index) => (
+
+          {event?.program?.map((programItem, index) =>
+            programItem.name !== null ? (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: false }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+                className="flex flex-col items-center gap-2"
+              >
+                <h2 className="text-amber-700 text-2xl">Atur Cara Majlis</h2>
                 <div
                   key={index}
                   className="flex flex-col items-center font-light text-base"
@@ -178,47 +185,60 @@ const ECard = ({
                   <p>{programItem.name}:</p>
                   <p>{programItem.start_time}</p>
                 </div>
-              ))}
-            </motion.div>
+              </motion.div>
+            ) : null
           )}
           {/* Countdown */}
           <Countdown event_date={event?.date} primary_font={getPrimaryFont} />
           {/* Card Carousel */}
-          <h1 className="text-2xl font-semibold">Gallery Photos</h1>
           {dataFromDB.images && dataFromDB.images.length > 0 && (
-            <CardCarousel images={dataFromDB.images} />
+            <>
+              <h1 className="text-2xl font-semibold">Gallery Photos</h1>
+              <CardCarousel images={dataFromDB.images} />
+            </>
           )}
           {/* YT video */}
-          <YouTubePlayer videoId="rtOvBOTyX00" />
+          {dataFromDB.youtube_url && youtubeID && (
+            <YouTubePlayer videoId={youtubeID} />
+          )}
           {/* Footer */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: false }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="flex flex-col justify-center items-center gap-5"
           >
-            <p className="text-xl">
+            <p className="text-3xl">
               #
               {dataFromDB?.couple
                 ? dataFromDB.couple.split("&")[0].trim() +
                   dataFromDB.couple.split("&")[1].trim()
                 : ""}
             </p>
-            <p className="text-md font-light">
-              Tea Card Powered by Telekung Tea
-            </p>
-            <p className="text-md font-light">Get in touched with us</p>
-            <div className="flex gap-5">
-              <Link
-                target="_blank"
-                href={`https://www.instagram.com/telekungtea`}
-              >
-                <LuInstagram size={30} color="red" />
-              </Link>
-              <Link target="_blank" href={`https://telekungtea.com/`}>
-                <LuGlobe size={30} color="blue" />
-              </Link>
+            <div className="flex flex-col items-center p-3">
+              <p className="flex gap-1 text-md font-light">
+                <LuHeart size={20} fill="purple" color="purple" />
+                <Link
+                  className="cursor-pointer underline"
+                  href={process.env.NEXT_PUBLIC_WEB_URL as Url}
+                >
+                  Tea Card
+                </Link>{" "}
+                by <span className="text-purple-700">Telekung Tea</span>{" "}
+                <LuHeart size={20} fill="purple" color="purple" />
+              </p>
+              <p className="text-md font-light">Get in touch with us</p>
+              <div className="flex gap-2">
+                <Link
+                  target="_blank"
+                  href={`https://www.instagram.com/telekungtea`}
+                >
+                  <LuInstagram size={30} color="red" />
+                </Link>
+                <Link target="_blank" href={`https://telekungtea.com/`}>
+                  <LuGlobe size={30} color="blue" />
+                </Link>
+              </div>
             </div>
           </motion.div>
         </div>

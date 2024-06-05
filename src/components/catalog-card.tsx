@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cardList, checkboxList } from "@/lib/constant";
 import CatalogFilter from "@/components/catalog-filter";
@@ -55,7 +55,7 @@ const CatalogCard = async ({
   return (
     <>
       {/* Filter */}
-    
+
       {/* Card Listing */}
       <section className="p-3 w-full mx-auto ">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
@@ -71,36 +71,33 @@ const CatalogCard = async ({
               <Image
                 className="mx-auto w-auto h-auto p-3 scale-150 overflow-hidden"
                 src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${card.thumbnail_url}`}
-                width={200}
-                height={200}
+                width={300}
+                height={300}
                 alt={card.name}
-                quality={25}
+                quality={75}
                 priority
               />
               <CardHeader>
                 <CardTitle>{card.name}</CardTitle>
               </CardHeader>
 
-              <CardFooter className="gap-2 flex flex-col lg:flex-row items-center justify-center md:w-full">
-                <Link
-                  href={`/preview/demo?id=${card.designId}`}
-                  target="_blank"
-                  className={cn(
-                    "w-full",
-                    buttonVariants({ variant: "secondary" })
-                  )}
+              <CardFooter className="gap-1 flex flex-col lg:flex-row items-center justify-center md:w-full">
+                <Button asChild variant="outline" className="w-full">
+                  <Link
+                    href={`/preview/demo?id=${card.designId}`}
+                    target="_blank"
+                  >
+                    Preview
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  className="bg-fuchsia-500 hover:bg-fuchsia-600 w-full"
                 >
-                  Preview
-                </Link>
-                <Link
-                  href={`/user/create?design_id=${card.designId}`}
-                  className={cn(
-                    "w-full",
-                    buttonVariants({ variant: "default" })
-                  )}
-                >
-                  Buy now
-                </Link>
+                  <Link href={`/user/create?design_id=${card.designId}`}>
+                    Buy now
+                  </Link>
+                </Button>
               </CardFooter>
             </Card>
           ))}

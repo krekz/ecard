@@ -19,14 +19,14 @@ import { CardFormProps } from "@/lib/types";
 const Bar = ({ dataFromDB }: CardFormProps) => {
   return (
     <nav className="flex fixed z-50 bottom-5 justify-center w-full">
-      <div className="flex justify-center rounded-md max-w-[400px] p-5 bg-black text-center gap-5 text-xs text-white">
+      <div className="flex justify-center rounded-md max-w-[400px] p-5 bg-purple-700 text-center gap-5 text-xs text-white">
         {/* Donation */}
         {dataFromDB?.donation ? (
           <Drawer>
             <DrawerTrigger>
               <div className="flex flex-col items-center cursor-pointer transition-all hover:-translate-y-1 delay-100">
                 <LuGift color="white" size={30} className="" />
-                <p>Donation</p>
+                <p>Money Gift</p>
               </div>
             </DrawerTrigger>
 
@@ -34,7 +34,7 @@ const Bar = ({ dataFromDB }: CardFormProps) => {
               <div className="flex flex-col items-center max-w-[400px] mx-auto ">
                 <DrawerHeader>
                   <DrawerTitle className="text-center text-3xl">
-                    DONATION
+                    Money Gift
                   </DrawerTitle>
                   <div className="text-center">
                     <DonateDrawerContent

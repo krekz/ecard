@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  AiFillGoogleCircle,
-  AiFillApple,
-  AiOutlineWhatsApp,
-  AiOutlinePhone,
-  AiOutlineGoogle,
-} from "react-icons/ai";
+import { AiFillGoogleCircle, AiOutlineWhatsApp } from "react-icons/ai";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -19,7 +13,7 @@ type ContactProp = {
 
 export function ContactDrawerContent({ contact }: ContactProp) {
   const generateWhatsappLink = (phone: string) => {
-    return `https://wa.me/${phone}`;
+    return `https://wa.me/+6${phone}`;
   };
   return (
     <>
@@ -111,7 +105,11 @@ export function LocationDrawerContent({ location }: LocationProps) {
       <h3 className="text-lg">{location?.address}</h3>
       {location?.gMap && (
         <Button>
-          <Link target="_blank" className="flex text-xl gap-2 items-center justify-center" href={location?.gMap}>
+          <Link
+            target="_blank"
+            className="flex text-xl gap-2 items-center justify-center"
+            href={location?.gMap}
+          >
             View Map
             <AiFillGoogleCircle size={30} />
           </Link>
