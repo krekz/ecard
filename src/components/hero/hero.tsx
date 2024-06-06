@@ -22,8 +22,10 @@ const Hero = () => {
       >
         <div className="flex-none space-y-5 px-4 sm:max-w-lg md:px-0 lg:max-w-xl text-center md:text-left">
           <h2 className="text-5xl text-gray-800 font-extrabold md:text-6xl">
-            <span className="text-fuchsia-600">Going Digital?</span> <br></br>
-            Tie the Knot with Online Invites
+            Going Digital?
+            <br></br>
+            Tie the Knot with{" "}
+            <span className="text-fuchsia-600">Online Invites</span>
           </h2>
           <p className="text-lg">
             The modern, eco-friendly way to invite your loved ones to your
