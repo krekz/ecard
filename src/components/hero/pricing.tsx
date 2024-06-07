@@ -43,7 +43,7 @@ const features = [
 
 const Pricing = () => {
   return (
-    <section id="pricing" className="relative py-14">
+    <section id="pricing" className="relative">
       <div className="max-w-screen-xl mx-auto text-gray-600 md:px-8 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, x: -100 }}
@@ -72,7 +72,7 @@ const Pricing = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ amount: 0.5, once: true }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="flex-1 max-w-md space-y-10 px-4 md:px-0"
+            className="flex-1 max-w-md space-y-10 px-6 md:px-0"
           >
             {features.map((item, idx) => (
               <li key={idx} className="flex gap-x-3">

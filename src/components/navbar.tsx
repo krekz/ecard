@@ -106,7 +106,7 @@ const Navbar = () => {
                   Create Card
                 </Link>
               </li>
-              <li>
+              <li className="flex justify-center">
                 {session ? (
                   <NavDropdown setState={setState} user={session.user} />
                 ) : (

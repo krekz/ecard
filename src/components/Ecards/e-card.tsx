@@ -42,9 +42,11 @@ const ECard = ({
               : dataFromDB.Design?.front_design_url
           }`}
           alt={"background"}
-          layout="fill"
-          objectFit="cover"
-          className="-z-10"
+          width={415}
+          height={1000}
+          priority
+          loading="eager"
+          className="-z-10 absolute"
         />
         <div className="flex flex-col gap-5 items-center justify-center z-10 text-sm">
           <h1 className="text-2xl font-bold">WALIMATUL URUS</h1>

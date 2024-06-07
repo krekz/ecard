@@ -32,9 +32,9 @@ const FaqsCard = (props: any) => {
             stroke="currentColor"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M20 12H4"
             />
           </svg>
@@ -99,7 +99,7 @@ export const Faq = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ amount: 0.5, once: true }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-8"
+      className="leading-relaxed max-w-screen-xl mt-12 mx-auto p-8"
     >
       <div className="space-y-3 text-center">
         <h1 className="text-3xl text-gray-800 font-semibold">

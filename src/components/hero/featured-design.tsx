@@ -8,7 +8,7 @@ import { LuArrowRight } from "react-icons/lu";
 
 const FeaturedDesign = () => {
   return (
-    <section className="py-16 flex flex-col items-center">
+    <section className="pb-16 flex flex-col items-center">
       <motion.div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 100 }}

@@ -37,7 +37,7 @@ const Footer = () => {
       </ul>
       <div className="mt-8 items-center justify-around sm:flex">
         <div className="mt-4 sm:mt-0">
-          &copy; {new Date().getFullYear()} TelekungTEA All rights reserved.
+          &copy; {new Date().getFullYear()} Telekung Tea All rights reserved.
         </div>
         <div className="mt-6 sm:mt-0">
           {/* Icon */}

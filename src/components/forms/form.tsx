@@ -15,6 +15,7 @@ import VoucherClaim from "./voucher-claim";
 import StepOne from "./steps/step-one";
 import StepTwo from "./steps/step-two";
 import StepThree from "./steps/step-three";
+import { LuArrowLeftCircle, LuArrowRightCircle } from "react-icons/lu";
 
 export const maxDuration = 60;
 
@@ -161,12 +162,14 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
                   Update
                 </Button>
               ) : (
-                <PromptAlert onSubmit={onSubmit}>Submit</PromptAlert>
+                <PromptAlert onSubmit={onSubmit}>
+                  Proceed to payment
+                </PromptAlert>
               )}
             </>
           )}
 
-          <div className="flex flex-row flex-wrap  gap-3">
+          <div className="flex flex-row flex-wrap justify-around py-10">
             <Button
               variant="outline"
               type="button"
@@ -174,15 +177,15 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
               disabled={currentStep === 1}
               onClick={handlePrevStep}
             >
-              Back
+              <LuArrowLeftCircle size={30} />
             </Button>
             <Button
               type="button"
-              className="w-32"
+              className="w-32 flex gap-1"
               disabled={currentStep === 3}
               onClick={handleNextStep}
             >
-              Next
+              <LuArrowRightCircle size={30} />
             </Button>
           </div>
         </form>

@@ -12,21 +12,22 @@ const Partnership = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ amount: 0.5, once: true }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="flex justify-center items-center flex-wrap gap-x-12 gap-y-6 mt-6"
+        className="flex justify-center items-center overflow-hidden"
       >
         <Image
+          className="w-52 h-52"
           src="/telekungtea.svg"
           alt="Telekung Tea"
-          width={200}
-          height={200}
+          width={70}
+          height={70}
           quality={50}
         />
         <Image
           src="/krzmtq.svg"
           alt="Krzmtq"
-          className="scale-125"
-          width={200}
-          height={200}
+          className="scale-125 w-52 h-52"
+          width={70}
+          height={70}
           quality={50}
         />
       </motion.div>

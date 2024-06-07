@@ -54,8 +54,8 @@ const UserProfilePage = async () => {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col container mx-auto py-24 gap-2">
-          <h1 className="text-center font-bold text-2xl">Purchased cards</h1>
+        <div className="flex flex-col container mx-auto py-10 gap-2">
+          <h1 className="text-center font-bold text-2xl">Purchased card(s)</h1>
           <Table>
             <TableCaption>
               <p className="flex justify-center gap-1 items-center text-gray-500 text-xs text-center">

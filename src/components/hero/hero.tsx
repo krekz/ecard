@@ -22,9 +22,7 @@ const Hero = () => {
       >
         <div className="flex-none space-y-5 px-4 sm:max-w-lg md:px-0 lg:max-w-xl text-center md:text-left">
           <h2 className="text-5xl text-gray-800 font-extrabold md:text-6xl">
-            Going Digital?
-            <br></br>
-            Tie the Knot with{" "}
+            Make Your Special Day Perfect with{" "}
             <span className="text-fuchsia-600">Online Invites</span>
           </h2>
           <p className="text-lg">
@@ -32,7 +30,7 @@ const Hero = () => {
             special occasions! With our platform, you can create, and send your
             invitations in just Link few clicks.
           </p>
-          <div className="flex items-center gap-3 justify-center md:justify-start">
+          <div className="flex items-center gap-1 justify-center md:justify-start">
             <Link href="/catalog">
               <Button className="bg-fuchsia-500 hover:bg-fuchsia-600">
                 Browse TeaCard
@@ -54,7 +52,8 @@ const Hero = () => {
             height={600}
             placeholder="empty"
             alt="hero"
-            priority={true}
+            loading="eager"
+            priority
           />
         </div>
       </motion.div>

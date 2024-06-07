@@ -9,7 +9,7 @@ const DemoPage = async ({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const cardData = await GetCardDetail("clwxdq22200014kr2zyxkwqzm");
+  const cardData = await GetCardDetail("clx3fjard0001n2y09o193bwh");
   const modifiedData = {
     ...cardData?.data,
     heirs: Array.isArray(cardData?.data?.heirs) ? cardData?.data.heirs : [],
