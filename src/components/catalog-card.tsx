@@ -75,7 +75,7 @@ const CatalogCard = async ({
                 height={300}
                 alt={card.name}
                 quality={75}
-                priority
+                loading="lazy"
               />
               <CardHeader>
                 <CardTitle>{card.name}</CardTitle>
