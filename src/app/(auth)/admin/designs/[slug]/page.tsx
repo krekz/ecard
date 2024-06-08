@@ -5,8 +5,9 @@ import { notFound } from "next/navigation";
 import { LuArrowLeft } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { auth } from "@/auth";
 
-export const maxDuration = 60
+export const maxDuration = 60;
 
 const Page = async ({
   params,
@@ -15,6 +16,13 @@ const Page = async ({
   params: { slug: string };
   searchParams: { [key: string]: string | undefined };
 }) => {
+  const session = await auth();
+  if (
+    !session ||
+    (session.user.role !== "admin" && session.user.role !== "super_admin")
+  )
+    notFound();
+
   if (
     !searchParams.action ||
     (searchParams.action !== "create" && searchParams.action !== "edit")

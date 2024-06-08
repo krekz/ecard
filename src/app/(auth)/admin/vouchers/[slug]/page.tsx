@@ -1,10 +1,11 @@
+import { auth } from "@/auth";
 import VoucherForm from "@/components/admin/voucher-form";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 import { LuArrowLeft } from "react-icons/lu";
 
-export const maxDuration = 60
+export const maxDuration = 60;
 
 const Page = async ({
   params,
@@ -13,6 +14,12 @@ const Page = async ({
   params: { slug: string };
   searchParams: { [key: string]: string | undefined };
 }) => {
+  const session = await auth();
+  if (
+    !session ||
+    (session.user.role !== "admin" && session.user.role !== "super_admin")
+  )
+    notFound();
   if (!searchParams.action || searchParams.action !== "create")
     return notFound();
   return (
