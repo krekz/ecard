@@ -21,6 +21,7 @@ const Partnership = () => {
           width={70}
           height={70}
           quality={50}
+          priority={true}
         />
         <Image
           src="/krzmtq.svg"
@@ -29,6 +30,7 @@ const Partnership = () => {
           width={70}
           height={70}
           quality={50}
+          priority={true}
         />
       </motion.div>
     </div>

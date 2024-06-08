@@ -33,22 +33,21 @@ const UserProfilePage = async () => {
   if (!session) redirect("/api/auth/signin");
   const getAllCards = await GetCards(session.user?.id);
   return (
-    // TODO : pagination
     <>
       {getAllCards?.length === 0 ? (
         <div className="max-w-screen-xl mx-auto px-4 flex flex-col items-center justify-center my-auto h-[70vh] md:px-8">
           <div className="max-w-lg mx-auto space-y-3 text-center">
-            <h3 className="text-indigo-600 font-semibold">Uh ohh..</h3>
+            <h3 className="text-fuchsia-600 font-semibold">Uh ohh..</h3>
             <p className="text-gray-800 text-2xl font-semibold">
-              Apparently, you don&apos;t have any cards yet.
+              Apparently, you don&apos;t have any card yet.
             </p>
             <p className="text-gray-600">
-              You can create a new card by clicking the button below.
+              Create your first wedding card by clicking the button below.
             </p>
           </div>
           <Link
             href="/catalog"
-            className="mx-auto mt-5 py-2 px-4 text-white font-medium bg-indigo-600 duration-150 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg"
+            className="mx-auto mt-5 py-2 px-4 text-white font-medium bg-fuchsia-500 duration-150 hover:bg-fuchsia-600 active:bg-fuchsia-700 rounded-lg"
           >
             Create card
           </Link>
@@ -60,7 +59,7 @@ const UserProfilePage = async () => {
             <TableCaption>
               <p className="flex justify-center gap-1 items-center text-gray-500 text-xs text-center">
                 <LuAlertOctagon size={25} color="yellow" />
-                You are not allowed to edit card once wedding date is passed
+                You are not allowed to edit card once wedding date has passed
               </p>
             </TableCaption>
             <TableHeader>

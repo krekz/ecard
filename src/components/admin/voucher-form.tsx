@@ -9,7 +9,6 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,7 +18,7 @@ import { Textarea } from "../ui/textarea";
 import { uploadVoucher } from "../../../actions/admin/voucher-actions";
 import { useRouter } from "next/navigation";
 
-export const maxDuration = 60
+export const maxDuration = 60;
 
 const VoucherForm = () => {
   const router = useRouter();
@@ -55,8 +54,6 @@ const VoucherForm = () => {
   };
 
   return (
-    //  TODO: toast
-    // TODO: update form
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}

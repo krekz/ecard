@@ -96,7 +96,10 @@ const StepTwo = () => {
                 Alamat lokasi <LuAsterisk color="red" />
               </FormLabel>
               <FormControl>
-                <Textarea placeholder="Jalan duta blabla" {...field} />
+                <Textarea
+                  placeholder="Lorong 123, 55100, Kuala Lumpur"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

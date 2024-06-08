@@ -13,7 +13,6 @@ import DeleteButton from "@/components/delete-button";
 import { cn } from "@/lib/utils";
 import { deleteVoucher } from "../../../actions/admin/voucher-actions";
 import { useState } from "react";
-import { LuX } from "react-icons/lu";
 
 type VoucherProps = {
   code: string;
@@ -59,7 +58,7 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
             <TableRow>
               <TableHead>No</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead >Code</TableHead>
+              <TableHead>Code</TableHead>
               <TableHead className="w-[200px]">Description</TableHead>
               <TableHead>Claimed</TableHead>
               <TableHead>Manage</TableHead>
@@ -70,7 +69,9 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
               <TableRow
                 key={index}
                 className={cn(
-                  checkStatus(voucher) === "active" ? "" : "bg-gray-200 dark:bg-gray-800"
+                  checkStatus(voucher) === "active"
+                    ? ""
+                    : "bg-gray-200 dark:bg-gray-800"
                 )}
               >
                 <TableCell className="font-medium">{index + 1}</TableCell>
@@ -87,9 +88,7 @@ const VoucherList = ({ vouchers }: { vouchers: VoucherProps[] }) => {
                   </span>
                 </TableCell>
                 <TableCell>{voucher.code}</TableCell>
-                <TableCell>
-                  {voucher.description}
-                </TableCell>
+                <TableCell>{voucher.description}</TableCell>
                 <TableCell>{`${voucher.count_claims} / ${voucher.max_claims}`}</TableCell>
                 <TableCell className="space-y-2 md:space-x-2">
                   <DeleteButton

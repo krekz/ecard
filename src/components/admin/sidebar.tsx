@@ -1,17 +1,6 @@
 "use client";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetPortal,
-  SheetClose,
-} from "@/components/ui/sheet";
-
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -20,7 +9,7 @@ import {
   LuUser,
   LuTag,
   LuArrowLeft,
-  LuSettings,
+  LuAlignJustify,
 } from "react-icons/lu";
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
@@ -178,15 +167,18 @@ const SidebarContent = ({ session }: { session: Session }) => (
 
 const Sidebar = () => {
   const { data: session } = useSession();
-  const [open, setOpen] = useState(false);
 
   return (
     <>
+      {/* Desktop View */}
       <nav className="hidden dark:bg-background xl:block  top-0 left-0 h-full border-r bg-white space-y-8 w-full z-20">
         <SidebarContent session={session!} />
       </nav>
+      {/* Mobile View */}
       <Sheet>
-        <SheetTrigger className="xl:hidden fixed">Open</SheetTrigger>
+        <SheetTrigger className="xl:hidden fixed top-5 left-5 cursor-pointer">
+          <LuAlignJustify size={30} />
+        </SheetTrigger>
         <SheetContent side="left" className="w-1/2 p-0">
           <SidebarContent session={session!} />
         </SheetContent>
