@@ -57,7 +57,7 @@ const StepOne = () => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {designs?.map((design) => (
+                {designs?.designs.map((design) => (
                   <SelectItem key={design.designId} value={design.designId}>
                     {design.name}
                   </SelectItem>

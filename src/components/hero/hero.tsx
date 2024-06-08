@@ -28,7 +28,7 @@ const Hero = () => {
           <p className="text-lg">
             The modern, eco-friendly way to invite your loved ones to your
             special occasions! With our platform, you can create, and send your
-            invitations in just Link few clicks.
+            invitations in just few clicks.
           </p>
           <div className="flex items-center gap-1 justify-center md:justify-start">
             <Link href="/catalog">
@@ -47,13 +47,13 @@ const Hero = () => {
         <div className="flex-none mt-14 md:mt-0">
           <Image
             src="/laptop-mock.png"
-            quality={75}
+            quality={80}
             width={700}
-            height={600}
+            height={700}
             placeholder="empty"
             alt="hero"
             loading="eager"
-            priority
+            priority={true}
           />
         </div>
       </motion.div>

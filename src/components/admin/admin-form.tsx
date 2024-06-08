@@ -87,14 +87,13 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
             title: response.message,
             variant: "success",
           });
+          router.push("/admin/designs");
         } else {
           toast({
             title: response?.message,
             variant: "destructive",
           });
         }
-        router.push("/admin/designs");
-        return;
       }
 
       const response = await uploadDesign(formData);
@@ -103,6 +102,7 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
           title: response.message,
           variant: "success",
         });
+        router.push("/admin/designs");
       } else {
         toast({
           title: response?.message,
@@ -114,9 +114,6 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
         title: "An error occurred while uploading the card",
         variant: "destructive",
       });
-    } finally {
-      router.push("/admin/designs");
-      return;
     }
   };
   return (
