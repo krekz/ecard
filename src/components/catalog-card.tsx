@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { cardList, checkboxList } from "@/lib/constant";
 import CatalogFilter from "@/components/catalog-filter";
 import { getAllDesigns } from "../../actions/admin/design-actions";
+import Pagination from "./pagination";
+import { notFound } from "next/navigation";
 
 type TCards = {
   designId: string;
@@ -15,27 +17,34 @@ type TCards = {
 };
 
 const CatalogCard = async ({
+  params,
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  params?: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
+  const page = Number(searchParams?.page || 1);
+  const { designs, totalDesigns } = await getAllDesigns(page);
+  if (page < 1 || page > Math.ceil(totalDesigns / 12)) {
+    notFound();
+  }
+
   const getFilteredCards = async () => {
-    const cards = await getAllDesigns();
-    let filteredCards = cards;
+    let filteredCards = designs;
 
     // sort based on 'filter' query parameter
-    const filters = searchParams.filter;
+    const filters = searchParams?.filter;
     if (filters) {
       const filterArrayParams = Array.isArray(filters) ? filters : [filters]; // convert the 'filter' params to an array if it's not and vice versa
-      filteredCards = filteredCards.filter((card) =>
+      filteredCards = filteredCards.filter((design) =>
         filterArrayParams.some((filter) =>
-          card.category.toLowerCase().includes(filter.toLowerCase())
+          design.category.toLowerCase().includes(filter.toLowerCase())
         )
       );
     }
 
     // sorting based on 'sortBy' query parameter
-    const sortBy = searchParams.sortBy as string;
+    const sortBy = searchParams?.sortBy as string;
     // switch (sortBy) {
     //   case "popular":
     //     filteredCards = filteredCards.filter((card) => card.isPopular);
@@ -102,6 +111,8 @@ const CatalogCard = async ({
             </Card>
           ))}
         </div>
+
+        <Pagination total={totalDesigns} currentPage={page} />
       </section>
     </>
   );

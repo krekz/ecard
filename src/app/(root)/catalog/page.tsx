@@ -5,8 +5,10 @@ import { Suspense } from "react";
 import Loading from "./loading-skeleton";
 
 const CatalogPage = async ({
+  params,
   searchParams,
 }: {
+  params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   return (
@@ -26,7 +28,7 @@ const CatalogPage = async ({
           <CatalogFilter checkboxList={checkboxList} />
         </aside> */}
         <Suspense fallback={<Loading />}>
-          <CatalogCard searchParams={searchParams} />
+          <CatalogCard searchParams={{ page: searchParams.page }} />
         </Suspense>
       </div>
     </main>

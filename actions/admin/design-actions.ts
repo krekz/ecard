@@ -9,10 +9,11 @@ import {
 } from "../../schema/zod/admin-form";
 import { revalidatePath } from "next/cache";
 
-
-export const getAllDesigns = async () => {
-  const cards = await prisma.design.findMany({
-    take: 12,
+export const getAllDesigns = async (page?: number, limit?: number) => {
+  const totalDesigns = await prisma.design.count();
+  const designs = await prisma.design.findMany({
+    take: limit || 12,
+    skip: ((page || 1) - 1) * (limit || 12),
     select: {
       designId: true,
       category: true,
@@ -22,7 +23,7 @@ export const getAllDesigns = async () => {
     },
   });
 
-  return cards;
+  return { designs, totalDesigns };
 };
 
 export const getDesign = async (designId: string | string[] | undefined) => {
@@ -38,10 +39,11 @@ export const getDesign = async (designId: string | string[] | undefined) => {
 
 export const uploadDesign = async (formData: FormData) => {
   const session = await auth();
-  if (!session) throw new Error("Unauthorized access");
-  if (session.user.role === "user") {
-    throw new Error("You have no right access");
-  }
+  if (
+    !session ||
+    (session.user.role !== "admin" && session.user.role !== "super_admin")
+  )
+    throw new Error("Unauthorized access");
 
   const values = Object.fromEntries(formData.entries());
   const {
@@ -115,12 +117,15 @@ export const uploadDesign = async (formData: FormData) => {
     return { ok: false, message: `Error uploading design` };
   }
 };
+
 export const deleteDesign = async (formData: FormData) => {
   const session = await auth();
-  if (!session) throw new Error("Unauthorized access");
-  if (session.user.role === "user") {
-    throw new Error("You have no right access");
-  }
+  if (
+    !session ||
+    (session.user.role !== "admin" && session.user.role !== "super_admin")
+  )
+    throw new Error("Unauthorized access");
+
   const designId = formData.get("designId");
   if (!designId) throw new Error("Design not found");
   const supabase = createClient();
@@ -173,7 +178,10 @@ export const deleteDesign = async (formData: FormData) => {
 
 export const updateDesign = async (formData: FormData, designName: string) => {
   const session = await auth();
-  if (!session || session.user.role === "user")
+  if (
+    !session ||
+    (session.user.role !== "admin" && session.user.role !== "super_admin")
+  )
     throw new Error("Unauthorized access");
 
   const values = Object.fromEntries(formData.entries());
