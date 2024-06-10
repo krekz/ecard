@@ -114,7 +114,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
 
       //else create new card
       setFormDataStore(data); // set global state for payment later
-      router.push(`/checkout?designId=${designId}`);
+      router.replace(`/checkout?designId=${designId}`);
     } catch (e) {
       toast({
         title: "An error occurred while creating the card",

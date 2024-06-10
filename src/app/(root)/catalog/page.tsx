@@ -4,6 +4,8 @@ import { checkboxList } from "@/lib/constant";
 import { Suspense } from "react";
 import Loading from "./loading-skeleton";
 
+export const maxDuration = 30;
+
 const CatalogPage = async ({
   params,
   searchParams,

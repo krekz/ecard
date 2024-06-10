@@ -9,6 +9,8 @@ import { getAllDesigns } from "@/actions/admin/design-actions";
 import Pagination from "./pagination";
 import { notFound } from "next/navigation";
 
+export const maxDuration = 30;
+
 type TCards = {
   designId: string;
   category: string;
