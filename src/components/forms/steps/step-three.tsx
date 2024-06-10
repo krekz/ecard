@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { useFormContext } from "react-hook-form";
 import { organizerSchema } from "../../../../schema/zod/ecard-form";
@@ -21,15 +21,14 @@ import {
 } from "@/components/ui/tooltip";
 import { z } from "zod";
 import { FaCircleQuestion } from "react-icons/fa6";
+import useStore from "@/store/store";
 
 function StepThree() {
+  const { qrPreview, setQrPreview, galleryPreview, setGalleryPreview } =
+    useStore();
   const qrInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext<z.infer<typeof organizerSchema>>();
-  const [qrPreview, setQrPreview] = useState<string | null>(null);
-  const [galleryPreview, setGalleryPreview] = useState<
-    (string | null)[] | null
-  >(null);
 
   const handleRemoveQrCode = () => {
     setQrPreview(null);
@@ -198,13 +197,7 @@ function StepThree() {
                       updatedFiles = updatedFiles.slice(-3); // Keep only the last 3 files
                     }
 
-                    console.log("Updated Files", updatedFiles);
-
                     form.setValue("wedding_images", updatedFiles);
-                    console.log(
-                      "Current Files",
-                      form.getValues("wedding_images")
-                    );
                     fieldValues.onChange(updatedFiles);
 
                     setGalleryPreview(
