@@ -71,7 +71,7 @@ const Form = () => {
       .confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${process.env.NEXT_PUBLIC_WEB_URL}`,
+          return_url: `${process.env.NEXT_PUBLIC_WEB_URL}/checkout/payment-success`,
         },
       })
       .then(({ error }) => {
