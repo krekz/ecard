@@ -1,15 +1,10 @@
+import "../globals.css";
 import { auth } from "@/auth";
 import Sidebar from "@/components/admin/sidebar";
-import { redirect } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Montserrat } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
-
-const montserrat = Montserrat({ subsets: ["latin"] });
-
-export const maxDuration = 30;
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | TEACard",
@@ -23,27 +18,25 @@ export default async function AuthLayout({
 }>) {
   const session = await auth();
   return (
-    <html lang="en" className={montserrat.className}>
-      <body className="bg-background antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Toaster />
-          <section className="grid grid-cols-6 mx-auto">
-            <SessionProvider
-              refetchOnWindowFocus={false}
-              refetchWhenOffline={false}
-              session={session}
-            >
-              <Sidebar />
-            </SessionProvider>
-            {children}
-          </section>
-        </ThemeProvider>
-      </body>
-    </html>
+    <main>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <Toaster />
+        <section className="grid grid-cols-6 mx-auto">
+          <SessionProvider
+            refetchOnWindowFocus={false}
+            refetchWhenOffline={false}
+            session={session}
+          >
+            <Sidebar />
+          </SessionProvider>
+          {children}
+        </section>
+      </ThemeProvider>
+    </main>
   );
 }
