@@ -1,10 +1,10 @@
 "use server";
-import prisma from "../../prisma";
+import prisma from "../../../prisma";
 import { auth } from "@/auth";
-import { createVoucherFormSchema } from "../../schema/zod/admin-form";
+import { createVoucherFormSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { voucherClaimSchema } from "../../schema/zod/ecard-form";
+import { voucherClaimSchema } from "../../../schema/zod/ecard-form";
 
 export const voucherClaim = async (formData: FormData) => {
   const values = Object.fromEntries(formData.entries());

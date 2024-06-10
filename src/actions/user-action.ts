@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
-import prisma from "../prisma";
-import { completeResgistrationSchema } from "../schema/zod/user-form";
+import prisma from "../../prisma";
+import { completeResgistrationSchema } from "../../schema/zod/user-form";
 
 export const checkNewUser = async (userId: string | undefined) => {
   const user = await prisma.user.findUnique({

@@ -2,11 +2,11 @@
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
 import { v4 as uuidv4 } from "uuid";
-import prisma from "../../prisma";
+import prisma from "../../../prisma";
 import {
   updateDesignSchema,
   uploadDesignSchema,
-} from "../../schema/zod/admin-form";
+} from "../../../schema/zod/admin-form";
 import { revalidatePath } from "next/cache";
 
 export const getAllDesigns = async (page?: number, limit?: number) => {
@@ -28,7 +28,7 @@ export const getAllDesigns = async (page?: number, limit?: number) => {
 
 export const getDesign = async (designId: string | string[] | undefined) => {
   const design = await prisma.design.findUnique({
-    where: { designId: designId as string },
+    where: { designId: designId?.toString().toLowerCase() },
     select: {
       front_design_url: true,
       content_design_url: true,
@@ -81,7 +81,7 @@ export const uploadDesign = async (formData: FormData) => {
       async ([key, value]) => {
         if (value) {
           const { data, error } = await supabase.storage
-            .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+            .from(`${process.env.BUCKET_NAME}`)
             .upload(`design/${designId}/${key}-${uuidv4()}`, value as File);
 
           if (error) {
@@ -144,18 +144,16 @@ export const deleteDesign = async (formData: FormData) => {
       };
 
     const { data: list } = await supabase.storage
-      .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+      .from(`${process.env.BUCKET_NAME}`)
       .list(`design/${designId}`);
 
     const filesToRemove = list?.map((img) => `design/${designId}/${img.name}`);
 
-    const { data, error } = await supabase.storage
-      .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+    const { error } = await supabase.storage
+      .from(`${process.env.BUCKET_NAME}`)
       .remove(filesToRemove as string[]);
-    if (data) {
-      console.log(data);
-    } else {
-      console.log(error);
+    if (error) {
+      console.error(error);
     }
 
     await prisma.design.delete({
@@ -229,7 +227,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     // Rename folder if design name has changed
     if (design_LOWERCASE !== newDesign_LOWERCASE) {
       const { data: files, error: listError } = await supabase.storage
-        .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+        .from(`${process.env.BUCKET_NAME}`)
         .list(`design/${design_LOWERCASE}`);
 
       if (listError) {
@@ -240,7 +238,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
       const renamePromises = files.map(async (file) => {
         const newPath = `design/${newDesign_LOWERCASE}/${file.name}`;
         const { error: moveError } = await supabase.storage
-          .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+          .from(`${process.env.BUCKET_NAME}`)
           .move(`design/${design_LOWERCASE}/${file.name}`, newPath);
 
         if (moveError) {
@@ -259,7 +257,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
         if (value) {
           const { data: existingImage, error: checkError } =
             await supabase.storage
-              .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+              .from(`${process.env.BUCKET_NAME}`)
               .list(`design/${design_LOWERCASE}`, { search: `${key}-` });
 
           if (checkError) {
@@ -273,7 +271,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
               (img) => `design/${design_LOWERCASE}/${img.name}`
             );
             const { error: removeError } = await supabase.storage
-              .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+              .from(`${process.env.BUCKET_NAME}`)
               .remove(removePaths);
 
             if (removeError) {
@@ -284,7 +282,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
           }
 
           const { data, error } = await supabase.storage
-            .from(`${process.env.NEXT_PUBLIC_BUCKET_NAME}`)
+            .from(`${process.env.BUCKET_NAME}`)
             .upload(
               `design/${newDesign_LOWERCASE}/${key}-${uuidv4()}`,
               value as File
@@ -309,6 +307,7 @@ export const updateDesign = async (formData: FormData, designName: string) => {
     });
 
     revalidatePath("/admin/designs");
+    revalidatePath("/catalog");
     return { ok: true, message: "Design updated successfully" };
   } catch (error) {
     console.error(error);

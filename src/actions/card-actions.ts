@@ -1,17 +1,16 @@
 "use server";
-import prisma from "../prisma";
-import { organizerSchema } from "../schema/zod/ecard-form";
+import prisma from "../../prisma";
+import { organizerSchema } from "../../schema/zod/ecard-form";
 import { auth } from "@/auth";
 import { createClient } from "@/lib/supabase/server";
 import { get } from "http";
 import { v4 as uuidv4 } from "uuid";
 
-export const createCard = async (formData: FormData) => {
+export const createCard = async (formData: FormData, userId: string) => {
   const supabase = createClient();
 
   try {
-    const session = await auth();
-    if (!session) {
+    if (!userId) {
       throw new Error("You must be logged in to create a card.");
     }
 
@@ -51,7 +50,7 @@ export const createCard = async (formData: FormData) => {
 
     const user = await prisma.user.findUnique({
       where: {
-        id: session.user?.id,
+        id: userId,
       },
     });
     if (!user) throw new Error("User not exists");
@@ -119,7 +118,7 @@ export const createCard = async (formData: FormData) => {
         card.id
       }/qrcode/qr-${uuidv4()}`;
       const { data, error } = await supabase.storage
-        .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+        .from(process.env.BUCKET_NAME!)
         .upload(qrPath, qrcode as File);
       if (error) {
         console.error(error);
@@ -152,7 +151,7 @@ export const createCard = async (formData: FormData) => {
           card.id
         }/gallery/img-${uuidv4()}`;
         return supabase.storage
-          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+          .from(process.env.BUCKET_NAME!)
           .upload(imagePath, image)
           .then(({ data, error }) => {
             if (data) {
@@ -337,7 +336,7 @@ export const updateCard = async (
         const supabase = createClient();
 
         const { data, error } = await supabase.storage
-          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+          .from(process.env.BUCKET_NAME!)
           .upload(
             `users/user-${userId}/card-${cardId}/qrcode/qr-${uuidv4()}`,
             qrcode
@@ -357,7 +356,7 @@ export const updateCard = async (
         const supabase = createClient();
         const uploadPromises = gallery.map(async (image) => {
           const { data, error } = await supabase.storage
-            .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+            .from(process.env.BUCKET_NAME!)
             .upload(
               `users/user-${userId}/card-${cardId}/gallery/img-${uuidv4()}`,
               image
@@ -394,7 +393,7 @@ export const updateCard = async (
 
         if (qrcode) {
           const { data: list } = await supabase.storage
-            .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+            .from(process.env.BUCKET_NAME!)
             .list(`users/user-${userId}/card-${cardId}/qrcode`);
 
           // Check existing donation and user want to replace with new one
@@ -404,7 +403,7 @@ export const updateCard = async (
                 `users/user-${userId}/card-${cardId}/qrcode/qr-${img.name}`
             );
             await supabase.storage
-              .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+              .from(process.env.BUCKET_NAME!)
               .remove(removedFiles);
           }
           getQr_url = await uploadQrCode(qrcode as File, userId!);
@@ -448,7 +447,7 @@ export const updateCard = async (
 
         // Remove existing images
         const { data: list } = await supabase.storage
-          .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+          .from(process.env.BUCKET_NAME!)
           .list(`users/user-${userId}/card-${cardId}/gallery`);
 
         if (list && list.length >= 1 && wedding_images) {
@@ -456,7 +455,7 @@ export const updateCard = async (
             (img) => `users/user-${userId}/card-${cardId}/gallery/${img.name}`
           );
           await supabase.storage
-            .from(process.env.NEXT_PUBLIC_BUCKET_NAME!)
+            .from(process.env.BUCKET_NAME!)
             .remove(removedFiles);
         }
 
