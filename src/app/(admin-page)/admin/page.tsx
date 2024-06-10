@@ -15,7 +15,7 @@ const AdminDashboard = async () => {
   }
 
   const response = await fetch(
-    `https://api.loglib.io/v1/insight?apiKey=${process.env.NEXT_PUBLIC_LOGLIB_API_KEY}&timeZone=asia/kuala_lumpur`,
+    `https://api.loglib.io/v1/insight?apiKey=${process.env.LOGLIB_API_KEY}&timeZone=asia/kuala_lumpur`,
     {
       next: {
         revalidate: 3 * 60, //3minutes

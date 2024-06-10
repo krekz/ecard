@@ -1,9 +1,9 @@
 import React from "react";
-import { userColumns } from "../../../../components/table/columns";
+import { userColumns } from "@/components/table/columns";
 import prisma from "../../../../../prisma";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
-import DataTable from "../../../../components/table/data-table";
+import DataTable from "@/components/table/data-table";
 
 export const maxDuration = 45;
 

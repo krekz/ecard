@@ -2,7 +2,7 @@
 import DeleteButton from "@/components/delete-button";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "react-day-picker";
-import { deleteVoucher } from "../../../../../actions/admin/voucher-actions";
+import { deleteVoucher } from "../../../../actions/admin/voucher-actions";
 import { useToast } from "@/components/ui/use-toast";
 
 export type Voucher = {
