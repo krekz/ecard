@@ -66,29 +66,32 @@ model VerificationToken {
 }
 
 model ECard {
-  id             String        @id @default(cuid())
-  father         String
-  mother         String
-  bride          String
-  groom          String
-  couple         String
-  phone_number   String
-  primary_font   String
-  secondary_font String
-  youtube_url    String?
-  images         CardGallery[]
-  donation       Donation?
-  event          Event?
-  heirs          Heirs?
-  userId         String?
-  designId       String
-  published      Boolean       @default(false)
-  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
-  Design         Design        @relation(fields: [designId], references: [designId], onDelete: Cascade)
-  User           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Program        Program?      @relation(fields: [programId], references: [id])
-  programId      Int?
+  id                   String        @id @default(cuid())
+  father               String
+  mother               String
+  bride                String
+  groom                String
+  couple               String
+  phone_number         String
+  primary_font         String
+  secondary_font       String
+  youtube_url          String?
+  images               CardGallery[]
+  donation             Donation?
+  event                Event?
+  heirs                Heirs?
+  userId               String?
+  designId             String
+  invoice_url          String?
+  paid_amount_in_cents String?
+  voucher_id           String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  Design    Design   @relation(fields: [designId], references: [designId], onDelete: Cascade)
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Program   Program? @relation(fields: [programId], references: [id])
+  programId Int?
 }
 
 model Heirs {
@@ -155,6 +158,7 @@ model CardGallery {
 model Voucher {
   code         String        @unique
   description  String
+  expiration   DateTime      @db.Timestamptz(3)
   active       Boolean       @default(true)
   count_claims Int           @default(0)
   max_claims   Int
