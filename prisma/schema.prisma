@@ -158,7 +158,7 @@ model CardGallery {
 model Voucher {
   code         String        @unique
   description  String
-  expiration   DateTime      @db.Timestamptz(3)
+  expiration   DateTime?     @db.Timestamptz(3)
   active       Boolean       @default(true)
   count_claims Int           @default(0)
   max_claims   Int
