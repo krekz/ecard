@@ -119,7 +119,8 @@ const SidebarContent = ({ session }: { session: Session }) => (
                   {item.name}
                 </Button>
               ) : (
-                <Link
+                // use <a> to prevent the dark mode toggle on homepage when navigate from admin dashboard (darkmode)
+                <a
                   href={item.href as string}
                   className="flex items-center gap-x-2 dark:text-primary-foreground p-2 rounded-lg hover:bg-primary active:bg-primary duration-150"
                 >
@@ -127,7 +128,7 @@ const SidebarContent = ({ session }: { session: Session }) => (
                     {item.icon}
                   </div>
                   {item.name}
-                </Link>
+                </a>
               )}
             </li>
           ))}
