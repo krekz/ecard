@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import DeleteButton from "@/components/delete-button";
 import { cn } from "@/lib/utils";
-import { deleteVoucher } from "../../../actions/admin/voucher-actions";
+import { deleteVoucher } from "@/actions/admin/voucher-actions";
 import { useState } from "react";
 
 type VoucherProps = {

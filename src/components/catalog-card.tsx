@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cardList, checkboxList } from "@/lib/constant";
 import CatalogFilter from "@/components/catalog-filter";
-import { getAllDesigns } from "../../actions/admin/design-actions";
+import { getAllDesigns } from "@/actions/admin/design-actions";
 import Pagination from "./pagination";
 import { notFound } from "next/navigation";
 

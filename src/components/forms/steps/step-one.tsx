@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { LuAsterisk } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDesigns } from "../../../../actions/admin/design-actions";
+import { getAllDesigns } from "@/actions/admin/design-actions";
 import { primaryFontsConst, secondaryFontsConst } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 

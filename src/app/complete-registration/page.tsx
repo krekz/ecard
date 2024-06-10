@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
-import { UpdateUser } from "../../../actions/user-action";
+import { UpdateUser } from "@/actions/user-action";
 import { completeResgistrationSchema } from "../../../schema/zod/user-form";
 import { notFound, redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";

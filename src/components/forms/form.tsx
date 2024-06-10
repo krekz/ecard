@@ -1,30 +1,29 @@
 "use client";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import PromptAlert from "@/components/alert";
+import CardFormPreview from "@/components/forms/cardform-preview";
+import VoucherClaim from "@/components/forms/voucher-claim";
+import StepOne from "@/components/forms/steps/step-one";
+import StepTwo from "@/components/forms/steps/step-two";
+import StepThree from "@/components/forms/steps/step-three";
 import useStore from "@/store/store";
 import { useForm, FormProvider } from "react-hook-form";
 import { organizerSchema } from "../../../schema/zod/ecard-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createCard, updateCard } from "../../../actions/card-actions";
+import { updateCard } from "@/actions/card-actions";
 import { CardFormProps } from "@/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "../ui/button";
-import PromptAlert from "../alert";
-import CardFormPreview from "./cardform-preview";
-import VoucherClaim from "./voucher-claim";
-import StepOne from "./steps/step-one";
-import StepTwo from "./steps/step-two";
-import StepThree from "./steps/step-three";
+
 import { LuArrowLeftCircle, LuArrowRightCircle } from "react-icons/lu";
 
-export const maxDuration = 60;
-
 const CardForm = ({ dataFromDB, user }: CardFormProps) => {
+  const { formDataStore, setFormDataStore, currentStep } = useStore();
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const designId = searchParams.get("design_id");
   const router = useRouter();
-  const { currentStep } = useStore();
   const form = useForm<z.infer<typeof organizerSchema>>({
     resolver: zodResolver(organizerSchema),
     defaultValues: dataFromDB
@@ -81,7 +80,7 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
     Object.entries(data).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((item) => {
-          formData.append(key, item as Blob); // Append each file under the same key
+          formData.append(key, item as Blob);
         });
       } else if (value) {
         formData.append(key, value as Blob);
@@ -114,20 +113,8 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
       }
 
       //else create new card
-      const response = await createCard(formData);
-      if (response?.ok) {
-        toast({
-          title: response?.message,
-          variant: "success",
-        });
-
-        router.push(`/preview/${response.id}`);
-      } else {
-        toast({
-          title: response?.message,
-          variant: "destructive",
-        });
-      }
+      setFormDataStore(data); // set global state for payment later
+      router.push(`/checkout?designId=${designId}`);
     } catch (e) {
       toast({
         title: "An error occurred while creating the card",

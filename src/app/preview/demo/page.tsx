@@ -1,6 +1,6 @@
 import ECard from "@/components/Ecards/e-card";
-import { GetCardDetail } from "../../../../actions/card-actions";
-import { getDesign } from "../../../../actions/admin/design-actions";
+import { GetCardDetail } from "@/actions/card-actions";
+import { getDesign } from "@/actions/admin/design-actions";
 
 const DemoPage = async ({
   params,

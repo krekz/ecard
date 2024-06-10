@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { GetCards } from "../../../../../actions/card-actions";
+import { GetCards } from "@/actions/card-actions";
 import { LuAlertOctagon } from "react-icons/lu";
 
 export type userCard = {

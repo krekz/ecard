@@ -8,7 +8,7 @@ import { cn, formatDate, getFont } from "@/lib/utils";
 import { euphoria_script } from "../fonts";
 import { weekday } from "@/lib/constant";
 import { useQuery } from "@tanstack/react-query";
-import { getDesign } from "../../../actions/admin/design-actions";
+import { getDesign } from "@/actions/admin/design-actions";
 
 const CardFormPreview = () => {
   const params = useSearchParams();
@@ -41,6 +41,7 @@ const CardFormPreview = () => {
               width={100}
               height={100}
               quality={50}
+              priority={true}
             />
           )}
           <div

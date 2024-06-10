@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { createVoucherFormSchema } from "../../../schema/zod/admin-form";
 import { z } from "zod";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,8 +14,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "../ui/textarea";
-import { uploadVoucher } from "../../../actions/admin/voucher-actions";
+import { Textarea } from "@/components/ui/textarea";
+import { uploadVoucher } from "@/actions/admin/voucher-actions";
 import { useRouter } from "next/navigation";
 
 export const maxDuration = 60;

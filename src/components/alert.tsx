@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { useFormContext } from "react-hook-form";
-import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 type PromptAlertProps = {
@@ -24,7 +23,12 @@ const PromptAlert = ({ children, onSubmit }: PromptAlertProps) => {
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger disabled={form.formState.isSubmitting} className="w-full md:w-1/4 mx-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-medium p-3 rounded-md">{children}</DialogTrigger>
+      <DialogTrigger
+        disabled={form.formState.isSubmitting}
+        className="w-full md:w-1/4 mx-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-medium p-3 rounded-md"
+      >
+        {children}
+      </DialogTrigger>
       <DialogContent className="w-3/4 rounded-lg">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -33,7 +37,7 @@ const PromptAlert = ({ children, onSubmit }: PromptAlertProps) => {
             correct otherwise you cannot change or modify the date in the future
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex flex-row gap-2  justify-center" >
+        <DialogFooter className="flex flex-row gap-2  justify-center">
           <DialogClose asChild>
             <Button variant="destructive" className="w-24">
               Close
@@ -46,7 +50,9 @@ const PromptAlert = ({ children, onSubmit }: PromptAlertProps) => {
             onClick={() =>
               form
                 .handleSubmit(onSubmit)()
-                .then(() => setOpen(false))
+                .then(() => {
+                  setOpen(false);
+                })
             }
           >
             Confirm

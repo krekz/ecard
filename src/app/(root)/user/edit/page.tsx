@@ -2,7 +2,7 @@ import CardForm from "@/components/forms/form";
 import FormNavbar from "@/components/forms/form-navbar";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { GetCardDetail } from "../../../../../actions/card-actions";
+import { GetCardDetail } from "@/actions/card-actions";
 import { checkDate } from "@/lib/utils";
 
 export const maxDuration = 60;
