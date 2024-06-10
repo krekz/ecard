@@ -97,6 +97,7 @@ const ECard = ({
           }}
         />
         <div className="relative mt-10 flex flex-col gap-5 mx-auto items-center h-full max-w-72 text-center">
+          {/* Ucapan salam */}
           <motion.h1
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -107,6 +108,7 @@ const ECard = ({
             Assalamualaikum WBT & Salam sejahtera
           </motion.h1>
 
+          {/* Nama ibubapa / parents */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -119,6 +121,7 @@ const ECard = ({
             <h1>{dataFromDB?.mother}</h1>
           </motion.div>
 
+          {/* Ucapan alu-aluan / greeting */}
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -129,6 +132,7 @@ const ECard = ({
             {dataFromDB?.event?.greeting}
           </motion.p>
 
+          {/* Pasangan / couple */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -141,6 +145,7 @@ const ECard = ({
             <h1>{dataFromDB?.groom}</h1>
           </motion.div>
 
+          {/* Tarikh Majlis */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -157,6 +162,7 @@ const ECard = ({
             </h2>
           </motion.div>
 
+          {/* Venue */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -169,17 +175,23 @@ const ECard = ({
             <p className="font-light text-base">{event?.address}</p>
           </motion.div>
 
-          {event?.program?.map((programItem, index) =>
-            programItem.name !== null ? (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: false }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="flex flex-col items-center gap-2"
-              >
-                <h2 className="text-amber-700 text-2xl">Atur Cara Majlis</h2>
+          {/* Atur cara majlis */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-2"
+          >
+            {event?.program &&
+            event.program.every(
+              (programItem) =>
+                programItem.name === null && programItem.start_time === null
+            ) ? null : (
+              <h2 className="text-amber-700 text-2xl">Atur Cara Majlis</h2>
+            )}
+            {event?.program?.map((programItem, index) =>
+              programItem.name !== null ? (
                 <div
                   key={index}
                   className="flex flex-col items-center font-light text-base"
@@ -187,9 +199,9 @@ const ECard = ({
                   <p>{programItem.name}:</p>
                   <p>{programItem.start_time}</p>
                 </div>
-              </motion.div>
-            ) : null
-          )}
+              ) : null
+            )}
+          </motion.div>
           {/* Countdown */}
           <Countdown event_date={event?.date} primary_font={getPrimaryFont} />
           {/* Card Carousel */}
