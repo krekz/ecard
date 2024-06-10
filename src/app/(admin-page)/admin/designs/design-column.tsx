@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
-import { deleteDesign } from "../../../../../actions/admin/design-actions";
+import { deleteDesign } from "../../../../actions/admin/design-actions";
 import DeleteButton from "@/components/delete-button";
 
 // Designs table
@@ -51,7 +51,7 @@ const DesignActionsCell: React.FC<{ designId: string }> = ({ designId }) => {
   return (
     <div className="flex gap-2">
       <Button variant="outline">
-        <Link href={`/admin/designs/q?action=edit&designId=${designId}`}>
+        <Link href={`/admin/designs/update?&designId=${designId}`}>
           Edit
         </Link>
       </Button>

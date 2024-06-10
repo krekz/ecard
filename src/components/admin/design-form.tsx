@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { FormProvider, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,7 +8,7 @@ import {
   updateDesignSchema,
 } from "../../../schema/zod/admin-form";
 import * as z from "zod";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -25,11 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  updateDesign,
-  uploadDesign,
-} from "../../../actions/admin/design-actions";
-import { useEffect } from "react";
+import { updateDesign, uploadDesign } from "@/actions/admin/design-actions";
 import { useRouter } from "next/navigation";
 
 type DesignFormProps = {
@@ -38,44 +34,32 @@ type DesignFormProps = {
     category: string;
     name: string;
   };
-  formType: "upload" | "update";
+  params: "update" | "create";
 };
 
-export const maxDuration = 30;
-
-const DesignForm = ({ design, formType }: DesignFormProps) => {
+const DesignForm = ({ design, params }: DesignFormProps) => {
   const router = useRouter();
-  const schema =
-    formType === "upload" ? uploadDesignSchema : updateDesignSchema;
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: design
-      ? { design_name: design.name, category: design.category }
-      : {
-          design_name: "",
-          category: "",
-        },
-  });
-
-  useEffect(() => {
-    if (design) {
-      form.reset({
-        design_name: design.name,
-        category: design.category,
-        thumbnail_url: undefined,
-        front_design_url: undefined,
-        content_design_url: undefined,
-      });
-    }
-  }, [design, form]);
 
   const { toast } = useToast();
+  console.log("PARAMS FROM COMPONENT", params);
+  const schema = params === "create" ? uploadDesignSchema : updateDesignSchema;
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues:
+      params === "update"
+        ? { design_name: design?.name, category: design?.category }
+        : {
+            design_name: "",
+            category: "",
+          },
+  });
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        formData.append(key, value as Blob);
+        formData.append(key, value);
       }
     });
 
@@ -94,6 +78,7 @@ const DesignForm = ({ design, formType }: DesignFormProps) => {
             variant: "destructive",
           });
         }
+        return;
       }
 
       const response = await uploadDesign(formData);

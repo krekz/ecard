@@ -4,21 +4,21 @@ const OPTIONAL_IMAGE = z
   .custom<File | undefined>()
   .refine(
     (file) => !file || (file instanceof File && file.type.startsWith("image/")),
-    "Must be an image file"
+    "Must be an image THIS IS OPTIONAL file"
   )
   .refine((file) => {
-    return !file || file.size < 1024 * 1024 * 2;
-  }, "File must be less than 2MB");
+    return !file || file.size < 1024 * 1024 * 5;
+  }, "File must be less than 5MB");
 
 const REQUIRED_IMAGE = z
   .custom<File | undefined>()
   .refine(
     (file) => file && file instanceof File && file.type.startsWith("image/"),
-    "Must be an image file"
+    "Must be an THIS SIS REQUIRED image file"
   )
   .refine((file) => {
-    return file && file.size < 1024 * 1024 * 2;
-  }, "File must be less than 2MB");
+    return file && file.size < 1024 * 1024 * 5;
+  }, "File must be less than 5MB");
 
 export const uploadDesignSchema = z.object({
   design_name: z
