@@ -6,13 +6,11 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { voucherClaimSchema } from "../../../schema/zod/ecard-form";
 
-export const voucherClaim = async (formData: FormData) => {
+export const checkVoucher = async (formData: FormData, userId: string) => {
   const values = Object.fromEntries(formData.entries());
   const { voucher_code } = voucherClaimSchema.parse(values);
   try {
-    const session = await auth();
-    if (!session) throw new Error("Unauthorized access");
-
+    if (!userId) throw new Error("Unauthorized access");
     const [voucher, existingClaim] = await Promise.all([
       prisma.voucher.findUnique({
         where: {
@@ -28,7 +26,7 @@ export const voucherClaim = async (formData: FormData) => {
       prisma.userVoucher.findUnique({
         where: {
           userId_voucherId: {
-            userId: session?.user?.id!,
+            userId,
             voucherId: voucher_code!,
           },
         },
@@ -42,24 +40,53 @@ export const voucherClaim = async (formData: FormData) => {
       };
     }
 
+    return {
+      ok: true,
+      message: "Voucher found",
+      code: voucher.code,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const voucherClaim = async (formData: FormData, userId: string) => {
+  const values = Object.fromEntries(formData.entries());
+  const { voucher_code } = voucherClaimSchema.parse(values);
+  try {
+    if (!userId) throw new Error("Unauthorized access");
+
     //else create new record and update voucher count_claims
+    const getVoucher = await prisma.voucher.findUnique({
+      where: {
+        code: voucher_code,
+      },
+      select: {
+        max_claims: true,
+        count_claims: true,
+        active: true,
+      },
+    });
+
     await prisma.$transaction([
       prisma.userVoucher.create({
         data: {
-          voucherId: voucher?.code!,
-          userId: session?.user?.id!,
+          voucherId: voucher_code!,
+          userId: userId,
         },
       }),
       prisma.voucher.update({
         where: {
-          code: voucher?.code!,
+          code: voucher_code,
         },
         data: {
           count_claims: {
             increment: 1,
           },
           active:
-            voucher.count_claims + 1 >= voucher.max_claims ? false : undefined,
+            (getVoucher?.count_claims ?? 0) + 1 >= (getVoucher?.max_claims ?? 0)
+              ? false
+              : undefined,
         },
       }),
     ]);

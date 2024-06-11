@@ -13,10 +13,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { voucherClaim } from "@/actions/admin/voucher-actions";
+import { checkVoucher, voucherClaim } from "@/actions/admin/voucher-actions";
 import { useToast } from "@/components/ui/use-toast";
+import useStore from "@/store/store";
+import { useSession } from "next-auth/react";
 
 const VoucherClaim = () => {
+  const session = useSession();
+  const userId = session.data?.user?.id;
+  const { setVoucherStore } = useStore();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof voucherClaimSchema>>({
     resolver: zodResolver(voucherClaimSchema),
@@ -32,13 +37,14 @@ const VoucherClaim = () => {
     });
 
     try {
-      const response = await voucherClaim(formData);
+      const response = await checkVoucher(formData, userId!);
       if (response?.ok) {
         toast({
           title: response.message,
-          description: "You may now get free card",
+          description: "Continue to payment to fully redeem your voucher",
           variant: "success",
         });
+        setVoucherStore({ voucher_code: response?.code });
       } else {
         toast({
           title: response?.message,

@@ -1,6 +1,6 @@
 import { CardFormProps } from "@/lib/types";
 import { create } from "zustand";
-import { organizerSchema } from "../../schema/zod/ecard-form";
+import { organizerSchema, voucherClaimSchema } from "../../schema/zod/ecard-form";
 import { z } from "zod";
 
 interface StoreState {
@@ -8,11 +8,13 @@ interface StoreState {
   qrPreview: string | null;
   galleryPreview: (string | null)[] | null;
   formDataStore: z.infer<typeof organizerSchema>;
+  voucherStore: z.infer<typeof voucherClaimSchema>
 
   setCurrentStep: (step: number) => void;
   setQrPreview: (qrPreview: string | null) => void;
   setGalleryPreview: (galleryPreview: (string | null)[] | null) => void;
   setFormDataStore: (formData: z.infer<typeof organizerSchema>) => void;
+  setVoucherStore: (voucherStore: z.infer<typeof voucherClaimSchema>) => void;
 }
 
 const useStore = create<StoreState>((set) => ({
@@ -40,10 +42,14 @@ const useStore = create<StoreState>((set) => ({
     qrcode: undefined,
     wedding_images: undefined,
   },
+  voucherStore: {
+    voucher_code: "",
+  },
   setCurrentStep: (step) => set({ currentStep: step }),
   setQrPreview: (qrPreview) => set({ qrPreview }),
   setGalleryPreview: (galleryPreview) => set({ galleryPreview }),
   setFormDataStore: (formDataStore) => set({ formDataStore }),
+  setVoucherStore: (voucherStore) => set({ voucherStore }),
 }));
 
 export default useStore;

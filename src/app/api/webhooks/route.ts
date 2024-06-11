@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { NextResponse, NextRequest } from "next/server";
 import { createCard } from "@/actions/card-actions";
 import { organizerSchema } from "../../../../schema/zod/ecard-form";
+import { checkVoucher, voucherClaim } from "@/actions/admin/voucher-actions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -24,20 +25,10 @@ export async function POST(req: NextRequest) {
       .metadata;
 
     // Convert program_time and program_name string to array and update in formMetadata
-    if (
-      formMetadata.program_time &&
-      typeof formMetadata.program_time === "string"
-    ) {
-      formMetadata.program_time = formMetadata.program_time.split(",");
-    }
+    formMetadata.program_time = String(formMetadata.program_time).split(",");
+    formMetadata.program_name = String(formMetadata.program_name).split(",");
 
-    if (
-      formMetadata.program_name &&
-      typeof formMetadata.program_name === "string"
-    ) {
-      formMetadata.program_name = formMetadata.program_name.split(",");
-    }
-
+    // convert cardform metadata to FormData
     const formData = new FormData();
     Object.entries(formMetadata).forEach(([key, value]) => {
       if (Array.isArray(value)) {
@@ -49,7 +40,10 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    //VALIDATION DATA CHECK BEFORE CREATING CARD
+    const voucherFormData = new FormData();
+
+    // FormData VALIDATION CHECK BEFORE proceed to payment
+    // if validation fails, do not proceed
     const values: Record<string, any> = Object.fromEntries(formData.entries());
     // Accumulate specific keys into arrays
     ["wedding_images", "program_name", "program_time"].forEach((key) => {
@@ -60,16 +54,49 @@ export async function POST(req: NextRequest) {
 
     const { error } = organizerSchema.safeParse(values);
     if (error) {
-      return NextResponse.json({ status: "failed", error });
+      event.type = "charge.failed";
     }
+
     // create card for succesful payment
     if (event.type === "charge.succeeded") {
+      console.log("charge succeeded block");
+      //conver voucher code to FormData
+      if (formMetadata.voucher_code) {
+        voucherFormData.append(
+          "voucher_code",
+          formMetadata.voucher_code as string
+        );
+        const checkVoucherResponse = await checkVoucher(
+          voucherFormData,
+          formMetadata.session as string
+        );
+        if (!checkVoucherResponse?.ok) {
+          return NextResponse.json({
+            status: "failed",
+            error: "Voucher code is invalid",
+          });
+        }
+        const claimVoucher = await voucherClaim(
+          voucherFormData,
+          formMetadata.session as string
+        );
+        if (!claimVoucher?.ok) {
+          return NextResponse.json({
+            status: "failed",
+            error: "Voucher code is invalid",
+          });
+        }
+      }
       await createCard(formData, formMetadata.session as string);
     }
 
     // Todo charge failed
 
-    return NextResponse.json({ status: "success", event: event.type });
+    if (event.type === "charge.failed") {
+      return new NextResponse("Bad request", { status: 400 });
+    }
+
+    return new NextResponse();
   } catch (error) {
     return NextResponse.json({ status: "failed", error });
   }
