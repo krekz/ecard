@@ -14,7 +14,6 @@ const UsersPage = async () => {
   }
   const [users, totalUsers] = await prisma.$transaction([
     prisma.user.findMany({
-      take: 10,
       select: {
         id: true,
         name: true,
@@ -35,7 +34,7 @@ const UsersPage = async () => {
 
   return (
     <>
-      <section className="col-span-6 xl:col-span-5 flex flex-col gap-10 items-center h-full py-10 overflow-x-auto">
+      <section className="col-span-6 xl:col-span-5 flex flex-col gap-3 items-center h-full py-10 overflow-x-auto">
         <h1 className="text-4xl font-bold">Users</h1>
         <h1 className="text-xl font-bold">
           Total registered users: {totalUsers}

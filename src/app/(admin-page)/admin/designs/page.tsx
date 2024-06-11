@@ -4,8 +4,9 @@ import { getAllDesigns } from "@/actions/admin/design-actions";
 import DataTable from "@/components/table/data-table";
 import { designColumns } from "./design-column";
 import Link from "next/link";
+import prisma from "../../../../../prisma";
 
-export const maxDuration = 30;
+export const maxDuration = 45;
 
 const UploadDesignPage = async () => {
   const session = await auth();
@@ -16,9 +17,17 @@ const UploadDesignPage = async () => {
     notFound();
   }
 
-  const { designs } = await getAllDesigns();
+  // const { designs } = await getAllDesigns();
+
+  const designs = await prisma.design.findMany({
+    select: {
+      name: true,
+      category: true,
+      thumbnail_url: true,
+    },
+  });
   return (
-    <section className="col-span-6 xl:col-span-5 flex flex-col gap-10 justify-center items-center h-full py-10">
+    <section className="col-span-6 xl:col-span-5 flex flex-col gap-3 items-center h-full pt-10">
       {designs && designs.length > 0 ? (
         <>
           <h1 className="text-4xl font-bold">Designs</h1>

@@ -9,10 +9,8 @@ import DeleteButton from "@/components/delete-button";
 
 // Designs table
 export type Design = {
-  designId: string;
   category: string;
   name: string;
-  front_design_url: string;
   thumbnail_url: string;
 };
 
@@ -39,7 +37,7 @@ export const designColumns: ColumnDef<Design>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const designId = row.original.designId;
+      const designId = row.original.name.toLowerCase();
       return <DesignActionsCell designId={designId as string} />;
     },
   },
@@ -51,9 +49,7 @@ const DesignActionsCell: React.FC<{ designId: string }> = ({ designId }) => {
   return (
     <div className="flex gap-2">
       <Button variant="outline">
-        <Link href={`/admin/designs/update?&designId=${designId}`}>
-          Edit
-        </Link>
+        <Link href={`/admin/designs/update?&designId=${designId}`}>Edit</Link>
       </Button>
       <DeleteButton
         onSubmit={async () => {
