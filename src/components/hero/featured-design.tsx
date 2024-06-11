@@ -21,8 +21,8 @@ const FeaturedDesign = () => {
             Our featured designs
           </h1>
           <p className="text-gray-600 mt-2">
-            Extend and automate your workflow by using integrations for your
-            favorite tools.
+            Send your invitations instantly via email or social media, ensuring
+            they reach your guests promptly.
           </p>
         </motion.div>
         <motion.ul

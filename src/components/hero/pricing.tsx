@@ -4,7 +4,7 @@ import Link from "next/link";
 import { LuInfinity, LuLeaf, LuPackageCheck, LuSparkles } from "react-icons/lu";
 
 const plan = {
-  name: "One Single Card",
+  name: "Tea Card Price",
   desc: "Browse through our extensive collection to find the perfect match for your event.",
   price: "9.90",
   isMostPop: true,
@@ -54,9 +54,9 @@ const Pricing = () => {
         >
           <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">
             <span className="text-red-500 font-extrabold">
-              No SUBSCRIPTIONS.
+              No Pricing Plans.
             </span>{" "}
-            Just One Perfect Card.
+            Get all the features
           </p>
           <div className="max-w-xl">
             <p>
@@ -104,8 +104,8 @@ const Pricing = () => {
                   <p className="mt-3 sm:text-sm">{plan.desc}</p>
                 </div>
                 <div className="flex-none text-gray-800 text-2xl font-semibold">
-                  <span className="text-3xl font-bold">RM</span>
-                  {plan.price}
+                  RM
+                  <span className="text-4xl font-bold">{plan.price}</span>
                 </div>
               </div>
               <Link
