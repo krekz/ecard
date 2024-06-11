@@ -103,9 +103,15 @@ const PaymentSuccess = async ({
 
       <div className="mt-10 max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="max-w-2xl mx-auto text-center space-y-5">
-          <h3 className="text-white text-2xl font-semibold sm:text-3xl">
-            Get in touch with us
-          </h3>
+          <div className="space-y-1">
+            <h3 className="text-white text-2xl font-semibold sm:text-3xl">
+              Get in touch with us
+            </h3>
+            <p className="text-white">
+              <span className="text-fuchsia-500">Tea</span>Card powered by
+              Telekung Tea
+            </p>
+          </div>
           <div className="flex justify-center items-center space-x-4">
             <Link replace href="https://www.instagram.com/telekungtea/">
               <LuInstagram className=" rounded-full" size={35} color="red" />

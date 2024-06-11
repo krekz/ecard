@@ -9,7 +9,7 @@ export default function CheckoutError() {
         <div className="max-w-lg mx-auto space-y-3 text-center">
           <h3 className="font-semibold text-2xl">400</h3>
           <p className="text-gray-800 text-4xl font-semibold sm:text-5xl">
-            <span className="text-red-600">Bad</span> request
+            Bad Request
           </p>
           <p className="text-gray-600">
             Oopss, something went wrong. Please re-create your card and try
