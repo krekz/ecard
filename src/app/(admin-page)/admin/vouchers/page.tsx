@@ -17,7 +17,7 @@ const VoucherPage = async () => {
   }
   const vouchers = await prisma.voucher.findMany();
   return (
-    <section className="col-span-6 xl:col-span-5 flex flex-col items-center gap-2 h-full pt-10">
+    <>
       {vouchers && vouchers.length > 0 ? (
         <>
           <h1 className="text-4xl font-bold">Create voucher</h1>
@@ -40,7 +40,7 @@ const VoucherPage = async () => {
           </Link>
         </div>
       )}
-    </section>
+    </>
   );
 };
 

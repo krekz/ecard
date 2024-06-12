@@ -34,13 +34,11 @@ const UsersPage = async () => {
 
   return (
     <>
-      <section className="col-span-6 xl:col-span-5 flex flex-col gap-3 items-center h-full py-10 overflow-x-auto">
-        <h1 className="text-4xl font-bold">Users</h1>
-        <h1 className="text-xl font-bold">
-          Total registered users: {totalUsers}
-        </h1>
-        <DataTable columns={userColumns} data={users} action={true} />
-      </section>
+      <h1 className="text-4xl font-bold">Users</h1>
+      <h1 className="text-xl font-bold">
+        Total registered users: {totalUsers}
+      </h1>
+      <DataTable columns={userColumns} data={users} action={true} />
     </>
   );
 };

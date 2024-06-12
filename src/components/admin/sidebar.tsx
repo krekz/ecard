@@ -172,7 +172,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Desktop View */}
-      <nav className="hidden dark:bg-background xl:block  top-0 left-0 h-full border-r bg-white space-y-8 w-full z-20">
+      <nav className="hidden dark:bg-background xl:block xl:sticky top-0 left-0 h-full border-r bg-white space-y-8 w-72 z-20">
         <SidebarContent session={session!} />
       </nav>
       {/* Mobile View */}

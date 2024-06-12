@@ -26,7 +26,8 @@ export default async function AuthLayout({
         disableTransitionOnChange
       >
         <Toaster />
-        <section className="grid grid-cols-6 mx-auto">
+        {/* <section className="grid grid-cols-6 mx-auto"> */}
+        <section className="flex">
           <SessionProvider
             refetchOnWindowFocus={false}
             refetchWhenOffline={false}
@@ -34,7 +35,9 @@ export default async function AuthLayout({
           >
             <Sidebar />
           </SessionProvider>
-          {children}
+          <section className="flex flex-col justify-center mx-auto items-center gap-2 h-full pt-10 w-full">
+            {children}
+          </section>
         </section>
       </ThemeProvider>
     </main>

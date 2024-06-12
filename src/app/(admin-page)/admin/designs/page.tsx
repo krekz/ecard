@@ -27,7 +27,7 @@ const UploadDesignPage = async () => {
     },
   });
   return (
-    <section className="col-span-6 xl:col-span-5 flex flex-col gap-3 items-center h-full pt-10">
+    <>
       {designs && designs.length > 0 ? (
         <>
           <h1 className="text-4xl font-bold">Designs</h1>
@@ -51,7 +51,7 @@ const UploadDesignPage = async () => {
           </Link>
         </div>
       )}
-    </section>
+    </>
   );
 };
 
