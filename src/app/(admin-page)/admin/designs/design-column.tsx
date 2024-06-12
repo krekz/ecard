@@ -48,7 +48,7 @@ const DesignActionsCell: React.FC<{ designId: string }> = ({ designId }) => {
 
   return (
     <div className="flex gap-2">
-      <Button variant="outline">
+      <Button variant="default">
         <Link href={`/admin/designs/update?&designId=${designId}`}>Edit</Link>
       </Button>
       <DeleteButton

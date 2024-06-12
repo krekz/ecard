@@ -75,9 +75,6 @@ const InsightCard = ({
         {data?.current}{title === "Bounce Rate" && data?.current !== undefined ? "%" : ""}
       </p>
     </CardContent>
-    <CardFooter>
-      <p>{data?.change}%</p>
-    </CardFooter>
   </Card>
 );
 

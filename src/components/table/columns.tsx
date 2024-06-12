@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-
 // Users table
 export type User = {
   id: string | null;
@@ -55,11 +54,10 @@ export const userColumns: ColumnDef<User>[] = [
       const userid = row.getValue("id");
 
       return (
-        <Button variant="outline">
+        <Button className="bg-yellow-800 hover:bg-yellow-800/90">
           <Link href={`/admin/users/${userid}`}>Manage</Link>
         </Button>
       );
     },
   },
 ];
-

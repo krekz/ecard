@@ -134,16 +134,8 @@ const DesignForm = ({ design, params }: DesignFormProps) => {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="wedding">Wedding</SelectItem>
-                  <SelectItem value="celebration">Celebration</SelectItem>
-                  <SelectItem value="birthday">Birthday</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>
-                Category not listed? click
-                <Button variant="link" className="text-blue-500">
-                  here
-                </Button>
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -158,7 +150,7 @@ const DesignForm = ({ design, params }: DesignFormProps) => {
                 <Input
                   {...fieldValues}
                   type="file"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpeg, image/jpg"
                   onChange={(e) => {
                     fieldValues.onChange(e.target.files?.[0]);
                   }}
@@ -179,7 +171,7 @@ const DesignForm = ({ design, params }: DesignFormProps) => {
                   {...fieldValues}
                   placeholder="shadcn"
                   type="file"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpeg, image/jpg"
                   onChange={(e) => {
                     fieldValues.onChange(e.target.files?.[0]);
                   }}
@@ -198,13 +190,17 @@ const DesignForm = ({ design, params }: DesignFormProps) => {
                 <Input
                   {...fieldValues}
                   type="file"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpeg, image/jpg"
                   onChange={(e) => {
                     fieldValues.onChange(e.target.files?.[0]);
                   }}
                 />
               </FormControl>
               <FormMessage />
+              <FormDescription>
+                Card dimension{" "}
+                <span className="font-bold italic">415x1000</span> pixels
+              </FormDescription>
             </FormItem>
           )}
         />

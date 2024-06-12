@@ -59,7 +59,6 @@ export async function POST(req: NextRequest) {
 
     // create card for succesful payment
     if (event.type === "charge.succeeded") {
-      console.log("charge succeeded block");
       //conver voucher code to FormData
       if (formMetadata.voucher_code) {
         voucherFormData.append(

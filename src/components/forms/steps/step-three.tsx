@@ -99,7 +99,7 @@ function StepThree() {
                 <Input
                   {...fieldValues}
                   type="file"
-                  accept="image/png"
+                  accept="image/png, image/jpeg, image/jpg"
                   ref={qrInputRef}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
@@ -182,7 +182,7 @@ function StepThree() {
                 {...fieldValues}
                 type="file"
                 multiple
-                accept="image/png"
+                accept="image/png, image/jpeg, image/jpg"
                 ref={galleryInputRef}
                 onChange={(event) => {
                   const files = event.target.files;

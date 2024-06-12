@@ -43,11 +43,12 @@ const NavDropdown = ({
           </DropdownMenuItem>
         </Link>
         {(user?.role === "admin" || user?.role === "super_admin") && (
-          <Link href={`/admin`}>
+          // use <a> to prevent dark mode bug on admin and home
+          <a href={`/admin`}>
             <DropdownMenuItem onClick={() => setState(false)}>
               Admin
             </DropdownMenuItem>
-          </Link>
+          </a>
         )}
 
         <DropdownMenuItem

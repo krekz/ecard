@@ -39,8 +39,6 @@ const Page = async ({
     if (!design) notFound();
   }
 
-  console.log(params.slug);
-
   return (
     <section className="relative col-span-6 xl:col-span-5 flex flex-col gap-10 justify-center items-center h-full py-10">
       <Link href="/admin/designs" className=" p-3 rounded-md bg-purple-500">
