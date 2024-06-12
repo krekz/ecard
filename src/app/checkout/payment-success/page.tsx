@@ -24,23 +24,6 @@ const PaymentSuccess = async ({
   );
   if (paymentIntent.metadata.phone_number == null) return notFound();
 
-  const getPurchasedCard = await prisma.user.findFirst({
-    where: {
-      id: session.user.id,
-    },
-    select: {
-      cards: {
-        select: {
-          id: true,
-        },
-        take: 1,
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-  });
-
   const isSuccess = paymentIntent.status === "succeeded";
 
   return (
@@ -68,28 +51,14 @@ const PaymentSuccess = async ({
           )}
           <div className="space-x-2 space-y-2">
             {isSuccess ? (
-              <>
-                <Button
-                  asChild
-                  className="w-28 bg-transparent text-white"
-                  variant="outline"
-                >
-                  <Link replace href={`/user/cards`}>
-                    Home
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-28 bg-fuchsia-700 hover:bg-fuchsia-800"
-                >
-                  <Link
-                    replace
-                    href={`/preview/${getPurchasedCard?.cards[0].id}`}
-                  >
-                    View Card
-                  </Link>
-                </Button>
-              </>
+              <Button
+                asChild
+                className="w-28 bg-fuchsia-700 hover:bg-fuchsia-800"
+              >
+                <Link replace href={`/user/cards`}>
+                  Return
+                </Link>
+              </Button>
             ) : (
               <Button asChild className="bg-fuchsia-700 hover:bg-fuchsia-800">
                 <Link replace href={`/catalog`}>
