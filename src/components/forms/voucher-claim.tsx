@@ -50,6 +50,7 @@ const VoucherClaim = () => {
           title: response?.message,
           variant: "destructive",
         });
+        setVoucherStore({ voucher_code: "" });
       }
     } catch (error) {
       console.log(error);
