@@ -68,10 +68,14 @@ const Register = () => {
       });
     } catch (error) {
       console.log(error);
-    } finally {
-      router.refresh();
     }
   };
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      router.push("/");
+    }
+  }, [form.formState.isSubmitSuccessful, router]);
 
   const getDistrictsByState = (state: string): string[] | null => {
     const stateData: { state: string; districts: string[] } | undefined =
@@ -214,7 +218,14 @@ const Register = () => {
                   </FormItem>
                 )}
               />
-              <Button className="text-center mx-auto" disabled={form.formState.isSubmitting || form.formState.isSubmitSuccessful} type="submit">
+              <Button
+                className="text-center mx-auto"
+                disabled={
+                  form.formState.isSubmitting ||
+                  form.formState.isSubmitSuccessful
+                }
+                type="submit"
+              >
                 Complete
               </Button>
             </form>
