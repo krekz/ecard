@@ -74,7 +74,7 @@ const PaymentSuccess = async ({
                   className="w-28 bg-transparent text-white"
                   variant="outline"
                 >
-                  <Link replace href={`/`}>
+                  <Link replace href={`/user/cards`}>
                     Home
                   </Link>
                 </Button>

@@ -30,6 +30,7 @@ export const getDesign = async (designId: string | string[] | undefined) => {
   const design = await prisma.design.findUnique({
     where: { designId: designId?.toString().toLowerCase() },
     select: {
+      thumbnail_url:true,
       front_design_url: true,
       content_design_url: true,
     },

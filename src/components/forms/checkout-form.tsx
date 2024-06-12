@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -9,9 +9,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from "../ui/button";
 import useStore from "@/store/store";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { notFound, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import CheckoutError from "@/app/checkout/checkout-error";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,13 +17,18 @@ import { createPaymentIntent } from "@/actions/payment/payment-actions";
 
 type CheckoutFormProps = {
   userId?: string;
+  design_thumbnail: string;
 };
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
 );
 
-export const CheckoutForm = ({ userId }: CheckoutFormProps) => {
+export const CheckoutForm = ({
+  userId,
+  design_thumbnail,
+}: CheckoutFormProps) => {
+  const searchParams = useSearchParams();
   const { voucherStore, formDataStore } = useStore();
   // the pricing are in cents
   const amount =
@@ -50,13 +53,16 @@ export const CheckoutForm = ({ userId }: CheckoutFormProps) => {
           <div className="flex flex-col items-center p-5 overflow-hidden">
             <Image
               className="scale-125"
-              src="/phone-1.png"
+              src={`${process.env.NEXT_PUBLIC_STORAGE_BASE_URL}/${design_thumbnail}`}
               width={300}
               height={300}
+              loading="eager"
               alt="phone"
             />
             <div className="w-full flex flex-col gap-2">
-              <p className="text-center font-semibold text-xl">WED-1</p>
+              <p className="text-center font-semibold text-xl">
+                {searchParams.get("designId")?.toUpperCase()}
+              </p>
               <div className="flex w-full gap-2 justify-around">
                 <p>Weddding date:</p>
                 <p>12/05/2024</p>

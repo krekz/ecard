@@ -15,7 +15,12 @@ const CheckoutPage = async ({
   const design = await getDesign(designId as string);
   if (!design) notFound();
 
-  return <CheckoutForm userId={session.user.id} />;
+  return (
+    <CheckoutForm
+      userId={session.user.id}
+      design_thumbnail={design.thumbnail_url}
+    />
+  );
 };
 
 export default CheckoutPage;
