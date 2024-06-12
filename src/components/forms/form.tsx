@@ -17,6 +17,7 @@ import { CardFormProps } from "@/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LuArrowLeftCircle, LuArrowRightCircle } from "react-icons/lu";
+import { useEffect } from "react";
 
 const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   const { formDataStore, setFormDataStore, currentStep } = useStore();
@@ -130,6 +131,18 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
   const handlePrevStep = () =>
     useStore.setState({ currentStep: currentStep - 1 });
 
+  useEffect(() => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      toast({
+        title: "Oops, there's an error with your input",
+        variant: "destructive",
+      });
+    }
+  }, [form.formState.errors, toast]);
+
+  console.log(form.formState.errors.bride);
+  console.log(form.formState.errors.root);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 md:p-5 gap-5 container">
       <FormProvider {...form}>
@@ -149,9 +162,11 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
                   Update
                 </Button>
               ) : (
-                <PromptAlert onSubmit={onSubmit}>
-                  Proceed to payment
-                </PromptAlert>
+                <>
+                  <PromptAlert onSubmit={onSubmit}>
+                    Proceed to payment
+                  </PromptAlert>
+                </>
               )}
             </>
           )}
