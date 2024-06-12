@@ -31,7 +31,7 @@ const StepOne = () => {
       <FormField
         name={`design_id`}
         render={({ field }) => (
-          <FormItem className="space-y-0">
+          <FormItem>
             <FormLabel className="text-2xl font-bold">
               Select your desired design
             </FormLabel>
@@ -67,18 +67,18 @@ const StepOne = () => {
           </FormItem>
         )}
       />
-      <h1 className="text-2xl font-bold flex">
-        Organizer Informations{" "}
-        <span className="text-red-500">
-          <LuAsterisk />
-        </span>
-      </h1>
+      <h1 className="text-2xl font-bold">Organizer Informations</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ">
         <FormField
           name={`bride`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Pengantin Lelaki</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Pengantin Lelaki
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Muhammad Syafiq" {...field} />
               </FormControl>
@@ -89,8 +89,13 @@ const StepOne = () => {
         <FormField
           name={`groom`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Pengantin Perempuan</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Pengantin Perempuan
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Farah Irdina" {...field} />
               </FormControl>
@@ -101,8 +106,13 @@ const StepOne = () => {
         <FormField
           name={`couple`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Nama Pasangan</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Nama Pasangan
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Syafiq & Farah" {...field} />
               </FormControl>
@@ -114,8 +124,13 @@ const StepOne = () => {
         <FormField
           name={`phone_number`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Nombor Telefon</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Nombor Telefon
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="01234567899" type="number" {...field} />
               </FormControl>
@@ -127,8 +142,13 @@ const StepOne = () => {
         <FormField
           name={`father`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Ayah Pengantin</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Ayah Pengantin
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Ayah" {...field} />
               </FormControl>
@@ -139,8 +159,13 @@ const StepOne = () => {
         <FormField
           name={`mother`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Ibu Pengantin</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Ibu Pengantin
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Ibu" {...field} />
               </FormControl>
@@ -152,8 +177,13 @@ const StepOne = () => {
         <FormField
           name={`primary_font`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Primary font</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Primary font
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -179,8 +209,13 @@ const StepOne = () => {
         <FormField
           name={`secondary_font`}
           render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel>Secondary font</FormLabel>
+            <FormItem>
+              <FormLabel className="flex">
+                Secondary font
+                <span className="text-red-500">
+                  <LuAsterisk />
+                </span>
+              </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -218,7 +253,7 @@ const StepOne = () => {
                   name={`heirs.${i}.name`}
                   render={({ field }) => (
                     <FormItem className="space-y-0 w-52">
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel className="flex">Name</FormLabel>
                       <FormControl>
                         <Input placeholder="Ibu" {...field} />
                       </FormControl>
@@ -230,7 +265,7 @@ const StepOne = () => {
                   name={`heirs.${i}.phone`}
                   render={({ field }) => (
                     <FormItem className="space-y-0 w-52">
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel className="flex">Phone Number</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="0123456789"
@@ -246,7 +281,7 @@ const StepOne = () => {
                   name={`heirs.${i}.relation`}
                   render={({ field }) => (
                     <FormItem className="space-y-0 w-52">
-                      <FormLabel>Relation</FormLabel>
+                      <FormLabel className="flex">Relation</FormLabel>
                       <FormControl>
                         <Input placeholder="Saudara" {...field} />
                       </FormControl>
