@@ -562,6 +562,7 @@ export const GetCards = async (userId: string | undefined) => {
           },
         },
         designId: true,
+        invoice_url:true,
       },
       orderBy: {
         createdAt: "asc",

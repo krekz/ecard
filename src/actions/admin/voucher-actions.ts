@@ -91,7 +91,7 @@ export const voucherClaim = async (formData: FormData, userId: string) => {
       }),
     ]);
 
-    return { ok: true, message: "Voucher claimed" };
+    return { ok: true, message: "Voucher claimed", voucher_id: voucher_code };
   } catch (error) {
     console.log(error);
   }

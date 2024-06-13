@@ -65,7 +65,7 @@ const VoucherActionCell = ({ code }: { code: string }) => {
           if (response?.ok) {
             toast({
               title: response.message,
-              variant: "destructive",
+              variant: "info",
             });
           }
         }}

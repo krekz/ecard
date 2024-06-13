@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { checkDate, cn } from "@/lib/utils";
+import { LuNewspaper } from "react-icons/lu";
+import { Url } from "next/dist/shared/lib/router/router";
 
 type CardProps = {
   id: string;
@@ -20,6 +22,7 @@ type CardProps = {
   event: {
     date: Date;
   } | null;
+  invoice_url: string | null;
 };
 
 const InvoiceTable = ({ card }: { card: CardProps }) => {
@@ -64,6 +67,18 @@ const InvoiceTable = ({ card }: { card: CardProps }) => {
                 href={`/preview/${card.id}`}
               >
                 View
+              </Link>
+            </Button>
+            <Button
+              className="rounded-full bg-transparent hover:bg-transparent"
+              asChild
+            >
+              <Link
+                className="w-full md:w-auto"
+                target="_blank"
+                href={card.invoice_url as Url}
+              >
+                <LuNewspaper color="black" size={20} />
               </Link>
             </Button>
           </TableCell>

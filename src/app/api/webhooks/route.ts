@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { createCard } from "@/actions/card-actions";
 import { organizerSchema } from "../../../../schema/zod/ecard-form";
 import { checkVoucher, voucherClaim } from "@/actions/admin/voucher-actions";
+import prisma from "../../../../prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -59,6 +60,11 @@ export async function POST(req: NextRequest) {
 
     // create card for succesful payment
     if (event.type === "charge.succeeded") {
+      const getCreatedCard = await createCard(
+        formData,
+        formMetadata.session as string
+      );
+
       //conver voucher code to FormData
       if (formMetadata.voucher_code) {
         voucherFormData.append(
@@ -85,11 +91,19 @@ export async function POST(req: NextRequest) {
             error: "Voucher code is invalid",
           });
         }
-      }
-      await createCard(formData, formMetadata.session as string);
-    }
 
-    // Todo charge failed
+        await prisma.eCard.update({
+          where: {
+            id: getCreatedCard.id,
+          },
+          data: {
+            voucher_id: claimVoucher.voucher_id,
+            paid_amount_in_cents: String(event.data.object.amount),
+            invoice_url: event.data.object.receipt_url,
+          },
+        });
+      }
+    }
 
     if (event.type === "charge.failed") {
       return new NextResponse("Bad request", { status: 400 });
