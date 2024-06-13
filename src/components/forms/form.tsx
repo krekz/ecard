@@ -140,9 +140,6 @@ const CardForm = ({ dataFromDB, user }: CardFormProps) => {
     }
   }, [form.formState.errors, toast]);
 
-  console.log(form.formState.errors.bride);
-  console.log(form.formState.errors.root);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 md:p-5 gap-5 container">
       <FormProvider {...form}>
