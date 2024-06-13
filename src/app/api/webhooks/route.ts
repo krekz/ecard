@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
 
     // create card for succesful payment
     if (event.type === "charge.succeeded") {
+      let claimVoucher;
       const getCreatedCard = await createCard(
         formData,
         formMetadata.session as string
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
             error: "Voucher code is invalid",
           });
         }
-        const claimVoucher = await voucherClaim(
+        claimVoucher = await voucherClaim(
           voucherFormData,
           formMetadata.session as string
         );
@@ -91,18 +92,18 @@ export async function POST(req: NextRequest) {
             error: "Voucher code is invalid",
           });
         }
-
-        await prisma.eCard.update({
-          where: {
-            id: getCreatedCard.id,
-          },
-          data: {
-            voucher_id: claimVoucher.voucher_id,
-            paid_amount_in_cents: String(event.data.object.amount),
-            invoice_url: event.data.object.receipt_url,
-          },
-        });
       }
+
+      await prisma.eCard.update({
+        where: {
+          id: getCreatedCard.id,
+        },
+        data: {
+          voucher_id: claimVoucher?.voucher_id || null,
+          paid_amount_in_cents: String(event.data.object.amount),
+          invoice_url: event.data.object.receipt_url,
+        },
+      });
     }
 
     if (event.type === "charge.failed") {
